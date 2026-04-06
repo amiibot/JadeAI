@@ -227,13 +227,13 @@ export function EditorSidebar({ sections, onAddSection, onReorderSections }: Edi
   };
 
   return (
-    <div data-tour="sidebar" className="w-56 shrink-0 border-r bg-white dark:bg-zinc-900 dark:border-zinc-800">
+    <div data-tour="sidebar" className="w-56 shrink-0 border-r bg-white dark:bg-zinc-900 dark:border-zinc-800 max-md:w-full max-md:border-r-0">
       <div className="p-3">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
           {t('sidebar.sections')}
         </h3>
       </div>
-      <ScrollArea className="h-[calc(100vh-7rem)]">
+      <ScrollArea className="h-[calc(100vh-7rem)] max-md:h-[calc(100vh-5rem)]">
         <div className="space-y-0.5 px-2">
           <DndContext
             sensors={sensors}

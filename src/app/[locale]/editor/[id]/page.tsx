@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect } from 'react';
+import { use, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useEditor } from '@/hooks/use-editor';
 import { useFingerprint } from '@/hooks/use-fingerprint';
@@ -12,6 +12,8 @@ import { ThemeEditor } from '@/components/editor/theme-editor';
 import { EditorPreviewPanel } from '@/components/editor/editor-preview-panel';
 import { EditorMobileTabBar } from '@/components/editor/editor-mobile-tab-bar';
 import { AIChatBubble } from '@/components/ai/ai-chat-bubble';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { List } from "lucide-react";
 import { SettingsDialog } from '@/components/settings/settings-dialog';
 import { JdAnalysisDialog } from '@/components/editor/jd-analysis-dialog';
 import { TranslateDialog } from '@/components/editor/translate-dialog';
@@ -41,6 +43,7 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
   const { isLoading: fpLoading } = useFingerprint();
   const { resume, sections, updateSection, addSection, removeSection, reorderSections } = useEditor(id);
   const isMobile = useIsMobile();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { showThemeEditor, mobileActiveTab } = useEditorStore();
   const { activeModal, openModal, closeModal } = useUIStore();
   const { hydrate, _hydrated } = useSettingsStore();
@@ -126,6 +129,30 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
           <EditorPreviewPanel />
         </div>
       </div>
+
+      {/* Mobile sidebar FAB */}
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="fixed bottom-20 left-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-pink-500 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 md:hidden"
+        aria-label="Open sections"
+      >
+        <List className="h-5 w-5" />
+      </button>
+
+      {/* Mobile sidebar Sheet */}
+      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <SheetContent side="left" className="w-72 p-0">
+          <SheetHeader className="border-b px-4 py-3">
+            <SheetTitle className="text-sm font-semibold">Sections</SheetTitle>
+          </SheetHeader>
+          <EditorSidebar
+            sections={sections}
+            onAddSection={(s) => { addSection(s); setSidebarOpen(false); }}
+            onReorderSections={reorderSections}
+          />
+        </SheetContent>
+      </Sheet>
+
       <AIChatBubble resumeId={id} />
       <SettingsDialog />
       <JdAnalysisDialog
