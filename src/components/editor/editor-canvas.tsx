@@ -79,7 +79,7 @@ export function EditorCanvas({
   return (
     <div className="min-w-0 flex-[4] overflow-hidden bg-zinc-50 dark:bg-zinc-950">
       <ScrollArea className="h-full">
-        <div className="mx-auto max-w-3xl px-6 py-8">
+        <div className="mx-auto max-w-3xl px-3 py-4 md:px-6 md:py-8">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -90,7 +90,7 @@ export function EditorCanvas({
               items={sections.map((s) => s.id)}
               strategy={verticalListSortingStrategy}
             >
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {sections.map((section) => (
                   <SortableSection key={section.id} id={section.id}>
                     <SectionWrapper
