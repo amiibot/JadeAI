@@ -73,24 +73,24 @@ export function useInterviewControls({ sessionId, roundId, lastAssistantMessageI
     <div className="flex items-center gap-1">
       <Button variant="ghost" size="sm" className="h-7 gap-1 rounded-lg px-2 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100" onClick={handleSkip} disabled={isLoading}>
         <SkipForward className="h-3 w-3" />
-        {t('skip')}
+        <span className="hidden sm:inline">{t('skip')}</span>
       </Button>
       <Button variant="ghost" size="sm" className="h-7 gap-1 rounded-lg px-2 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100" onClick={handleHint} disabled={isLoading}>
         <Lightbulb className="h-3 w-3" />
-        {t('hint')}
+        <span className="hidden sm:inline">{t('hint')}</span>
       </Button>
       <Button variant="ghost" size="sm" className="h-7 gap-1 rounded-lg px-2 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100" onClick={handleMark} disabled={!lastAssistantMessageId}>
         {isMarked ? <BookmarkCheck className="h-3 w-3" /> : <Bookmark className="h-3 w-3" />}
-        {isMarked ? t('unmark') : t('mark')}
+        <span className="hidden sm:inline">{isMarked ? t('unmark') : t('mark')}</span>
       </Button>
       <div className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
       <Button variant="ghost" size="sm" className="h-7 gap-1 rounded-lg px-2 text-xs text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950" onClick={handleEndRound} disabled={isLoading}>
         <StopCircle className="h-3 w-3" />
-        {t('endRound')}
+        <span className="hidden sm:inline">{t('endRound')}</span>
       </Button>
       <Button variant="ghost" size="sm" className="h-7 gap-1 rounded-lg px-2 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100" onClick={handlePause}>
         <Pause className="h-3 w-3" />
-        {t('pause')}
+        <span className="hidden sm:inline">{t('pause')}</span>
       </Button>
     </div>
   );
