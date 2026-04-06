@@ -4,11 +4,13 @@ import { use, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useEditor } from '@/hooks/use-editor';
 import { useFingerprint } from '@/hooks/use-fingerprint';
+import { useIsMobile } from '@/hooks/use-media-query';
 import { EditorToolbar } from '@/components/editor/editor-toolbar';
 import { EditorSidebar } from '@/components/editor/editor-sidebar';
 import { EditorCanvas } from '@/components/editor/editor-canvas';
 import { ThemeEditor } from '@/components/editor/theme-editor';
 import { EditorPreviewPanel } from '@/components/editor/editor-preview-panel';
+import { EditorMobileTabBar } from '@/components/editor/editor-mobile-tab-bar';
 import { AIChatBubble } from '@/components/ai/ai-chat-bubble';
 import { SettingsDialog } from '@/components/settings/settings-dialog';
 import { JdAnalysisDialog } from '@/components/editor/jd-analysis-dialog';
@@ -24,6 +26,7 @@ import { useUIStore } from '@/stores/ui-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { useTourStore, hasCompletedTour } from '@/stores/tour-store';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 const EDITOR_TOUR_STEPS: TourStepConfig[] = [
   { target: 'sidebar', placement: 'right', i18nKey: 'sidebar' },
@@ -37,7 +40,8 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
   const { id } = use(params);
   const { isLoading: fpLoading } = useFingerprint();
   const { resume, sections, updateSection, addSection, removeSection, reorderSections } = useEditor(id);
-  const { showThemeEditor } = useEditorStore();
+  const isMobile = useIsMobile();
+  const { showThemeEditor, mobileActiveTab } = useEditorStore();
   const { activeModal, openModal, closeModal } = useUIStore();
   const { hydrate, _hydrated } = useSettingsStore();
   const startTour = useTourStore((s) => s.startTour);
@@ -87,20 +91,40 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
   return (
     <div className="flex h-screen flex-col">
       <EditorToolbar resumeId={id} />
+      <EditorMobileTabBar />
+
       <div className="flex flex-1 overflow-hidden">
-        <EditorSidebar
-          sections={sections}
-          onAddSection={addSection}
-          onReorderSections={reorderSections}
-        />
-        <EditorCanvas
-          sections={sections}
-          onUpdateSection={updateSection}
-          onRemoveSection={removeSection}
-          onReorderSections={reorderSections}
-        />
+        {/* Sidebar: hidden on mobile, shown on desktop */}
+        <div className="hidden md:block">
+          <EditorSidebar
+            sections={sections}
+            onAddSection={addSection}
+            onReorderSections={reorderSections}
+          />
+        </div>
+
+        {/* Canvas: always mounted, hidden on mobile when preview tab active */}
+        <div className={cn(
+          "min-w-0 flex-1",
+          isMobile && mobileActiveTab !== "edit" && "hidden"
+        )}>
+          <EditorCanvas
+            sections={sections}
+            onUpdateSection={updateSection}
+            onRemoveSection={removeSection}
+            onReorderSections={reorderSections}
+          />
+        </div>
+
         {showThemeEditor && <ThemeEditor />}
-        <EditorPreviewPanel />
+
+        {/* Preview: always mounted, hidden on mobile when edit tab active */}
+        <div className={cn(
+          "min-w-0 flex-1 md:flex-[6]",
+          isMobile && mobileActiveTab !== "preview" && "hidden"
+        )}>
+          <EditorPreviewPanel />
+        </div>
       </div>
       <AIChatBubble resumeId={id} />
       <SettingsDialog />
