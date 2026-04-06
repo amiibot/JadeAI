@@ -1,11 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { Settings } from 'lucide-react';
+import { Settings, Menu } from 'lucide-react';
 import { LocaleSwitcher } from './locale-switcher';
 import { UserMenu } from './user-menu';
 import { Link, usePathname } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useUIStore } from '@/stores/ui-store';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
@@ -28,7 +29,7 @@ export function Header() {
           <Link href="/dashboard" className="flex items-center gap-1">
             <Image src="/logo.svg" alt="JadeAI" width={120} height={36} priority />
           </Link>
-          <nav className="flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const isActive = pathname.startsWith(item.match);
               return (
@@ -64,6 +65,38 @@ export function Header() {
             <Settings className="h-4 w-4" />
           </Button>
           <UserMenu />
+          {/* Mobile menu */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-64">
+                <nav className="flex flex-col gap-2 pt-8">
+                  {NAV_ITEMS.map((item) => {
+                    const isActive = pathname.startsWith(item.match);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        data-tour={item.tourId}
+                        className={cn(
+                          'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                          isActive
+                            ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
+                            : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
+                        )}
+                      >
+                        {t(item.i18nKey)}
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>
