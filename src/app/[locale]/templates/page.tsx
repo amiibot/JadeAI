@@ -341,7 +341,7 @@ export default function TemplatesPage() {
           if (!open) setPreviewTemplate(null);
         }}
       >
-        <DialogContent className="flex h-[90vh] w-[90vw] flex-col gap-0 overflow-hidden p-0 sm:max-w-[900px]">
+        <DialogContent className="flex h-[90vh] w-[90vw] max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-[900px]">
           <DialogHeader className="shrink-0 border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
             <DialogTitle>
               {previewTemplate && t(templateLabelKeys[previewTemplate])}
@@ -353,6 +353,22 @@ export default function TemplatesPage() {
                 <ResumePreview resume={buildMockResume(previewTemplate)} />
               </div>
             )}
+          </div>
+          <div className="sticky bottom-0 border-t bg-white p-3 dark:bg-background sm:hidden">
+            <Button
+              className="w-full cursor-pointer bg-pink-500 hover:bg-pink-600"
+              disabled={creatingTemplate === previewTemplate}
+              onClick={() => previewTemplate && handleUseTemplate(previewTemplate)}
+            >
+              {creatingTemplate === previewTemplate ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('templates.creating')}
+                </>
+              ) : (
+                t('templates.useTemplate')
+              )}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
