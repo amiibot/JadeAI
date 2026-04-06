@@ -108,7 +108,7 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
 
         {/* Canvas: always mounted, hidden on mobile when preview tab active */}
         <div className={cn(
-          "min-w-0 flex-1 overflow-hidden",
+          "min-w-0 flex-1 overflow-hidden md:flex-[4]",
           isMobile && mobileActiveTab !== "edit" && "hidden"
         )}>
           <EditorCanvas

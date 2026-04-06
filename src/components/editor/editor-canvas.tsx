@@ -77,7 +77,7 @@ export function EditorCanvas({
   const activeSection = activeId ? sections.find((s) => s.id === activeId) : null;
 
   return (
-    <div className="min-w-0 flex-1 overflow-hidden bg-zinc-50 md:flex-[4] dark:bg-zinc-950">
+    <div className="h-full min-w-0 overflow-hidden bg-zinc-50 dark:bg-zinc-950">
       <ScrollArea className="h-full">
         <div className="mx-auto max-w-3xl px-3 py-4 md:px-6 md:py-8">
           <DndContext
