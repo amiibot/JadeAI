@@ -2,9 +2,15 @@
 
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
-import { ArrowLeft, Undo2, Redo2, Download, Upload, Settings, Palette, Save, FileSearch, Languages, FileText, SpellCheck, Share2 } from 'lucide-react';
+import { ArrowLeft, Undo2, Redo2, Download, Upload, Settings, Palette, Save, FileSearch, Languages, FileText, SpellCheck, Share2, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useEditorStore } from '@/stores/editor-store';
 import { useResumeStore } from '@/stores/resume-store';
 import { useUIStore } from '@/stores/ui-store';
@@ -38,7 +44,7 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
   };
 
   return (
-    <div className="flex h-12 items-center justify-between border-b bg-white px-3 dark:bg-background dark:border-zinc-800">
+    <div className="flex h-12 items-center justify-between border-b bg-white px-3 overflow-x-auto dark:bg-background dark:border-zinc-800">
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
@@ -69,6 +75,7 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
       </div>
 
       <div className="flex items-center gap-1">
+        {/* Primary: undo/redo — always visible */}
         <Button
           variant="ghost"
           size="sm"
@@ -90,78 +97,139 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
           <Redo2 className="h-4 w-4" />
         </Button>
         <Separator orientation="vertical" className="h-6" />
-        <Button
-          data-tour="export"
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('export')}
-          className="cursor-pointer"
-          title={t('exportPdf')}
-        >
-          <Download className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('exportPdf')}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('import')}
-          className="cursor-pointer"
-          title={t('import')}
-        >
-          <Upload className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('import')}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('share')}
-          className="cursor-pointer"
-          title={t('share')}
-        >
-          <Share2 className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('share')}</span>
-        </Button>
-        <Separator orientation="vertical" className="h-6" />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('jd-analysis')}
-          className="cursor-pointer"
-          title={t('jdAnalysis')}
-        >
-          <FileSearch className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('jdAnalysis')}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('translate')}
-          className="cursor-pointer"
-          title={t('translate')}
-        >
-          <Languages className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('translate')}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('cover-letter')}
-          className="cursor-pointer"
-          title={t('coverLetter')}
-        >
-          <FileText className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('coverLetter')}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('grammar-check')}
-          className="cursor-pointer"
-          title={t('grammarCheck')}
-        >
-          <SpellCheck className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('grammarCheck')}</span>
-        </Button>
+
+        {/* Desktop: show all secondary buttons */}
+        <div className="hidden items-center gap-1 md:flex">
+          <Button
+            data-tour="export"
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('export')}
+            className="cursor-pointer"
+            title={t('exportPdf')}
+          >
+            <Download className="h-4 w-4" />
+            <span className="ml-1 text-xs hidden sm:inline">{t('exportPdf')}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('import')}
+            className="cursor-pointer"
+            title={t('import')}
+          >
+            <Upload className="h-4 w-4" />
+            <span className="ml-1 text-xs hidden sm:inline">{t('import')}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('share')}
+            className="cursor-pointer"
+            title={t('share')}
+          >
+            <Share2 className="h-4 w-4" />
+            <span className="ml-1 text-xs hidden sm:inline">{t('share')}</span>
+          </Button>
+          <Separator orientation="vertical" className="h-6" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('jd-analysis')}
+            className="cursor-pointer"
+            title={t('jdAnalysis')}
+          >
+            <FileSearch className="h-4 w-4" />
+            <span className="ml-1 text-xs hidden sm:inline">{t('jdAnalysis')}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('translate')}
+            className="cursor-pointer"
+            title={t('translate')}
+          >
+            <Languages className="h-4 w-4" />
+            <span className="ml-1 text-xs hidden sm:inline">{t('translate')}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('cover-letter')}
+            className="cursor-pointer"
+            title={t('coverLetter')}
+          >
+            <FileText className="h-4 w-4" />
+            <span className="ml-1 text-xs hidden sm:inline">{t('coverLetter')}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('grammar-check')}
+            className="cursor-pointer"
+            title={t('grammarCheck')}
+          >
+            <SpellCheck className="h-4 w-4" />
+            <span className="ml-1 text-xs hidden sm:inline">{t('grammarCheck')}</span>
+          </Button>
+          <Separator orientation="vertical" className="h-6" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openModal('settings')}
+            className="cursor-pointer"
+            title={t('settings')}
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Mobile: "more" dropdown */}
+        <div className="md:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => openModal('export')}>
+                <Download className="mr-2 h-4 w-4" />
+                {t('exportPdf')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openModal('import')}>
+                <Upload className="mr-2 h-4 w-4" />
+                {t('import')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openModal('share')}>
+                <Share2 className="mr-2 h-4 w-4" />
+                {t('share')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openModal('jd-analysis')}>
+                <FileSearch className="mr-2 h-4 w-4" />
+                {t('jdAnalysis')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openModal('translate')}>
+                <Languages className="mr-2 h-4 w-4" />
+                {t('translate')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openModal('cover-letter')}>
+                <FileText className="mr-2 h-4 w-4" />
+                {t('coverLetter')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openModal('grammar-check')}>
+                <SpellCheck className="mr-2 h-4 w-4" />
+                {t('grammarCheck')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openModal('settings')}>
+                <Settings className="mr-2 h-4 w-4" />
+                {t('settings')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Primary: theme toggle — always visible */}
         <Separator orientation="vertical" className="h-6" />
         <Button
           data-tour="theme"
@@ -175,15 +243,6 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
           <span className="ml-1 text-xs hidden sm:inline">{t('theme')}</span>
         </Button>
         <Separator orientation="vertical" className="h-6" />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openModal('settings')}
-          className="cursor-pointer"
-          title={t('settings')}
-        >
-          <Settings className="h-4 w-4" />
-        </Button>
         <LocaleSwitcher />
       </div>
     </div>
