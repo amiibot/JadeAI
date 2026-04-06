@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { ResumePreview } from '@/components/preview/resume-preview';
 import { useResumeStore } from '@/stores/resume-store';
+import { useIsMobile } from "@/hooks/use-media-query";
 import type { Resume } from '@/types/resume';
 
 // A4 width in px (at 96 dpi)
@@ -15,6 +16,7 @@ export function EditorPreviewPanel() {
   const t = useTranslations('editor.toolbar');
   const { currentResume, sections } = useResumeStore();
   const [zoom, setZoom] = useState(80);
+  const isMobile = useIsMobile();
 
   const liveResume = useMemo<Resume | null>(() => {
     if (!currentResume) return null;
@@ -28,7 +30,7 @@ export function EditorPreviewPanel() {
   return (
     <div data-tour="preview" className="flex min-w-0 flex-[6] flex-col border-l bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800">
       {/* Header */}
-      <div className="flex shrink-0 items-center justify-between border-b bg-white px-4 py-2 dark:bg-background dark:border-zinc-800">
+      <div className="hidden shrink-0 items-center justify-between border-b bg-white px-4 py-2 md:flex dark:bg-background dark:border-zinc-800">
         <span className="text-xs font-medium text-zinc-500">{t('preview')}</span>
         <div className="flex items-center gap-1">
           <Button
@@ -54,13 +56,14 @@ export function EditorPreviewPanel() {
       </div>
 
       {/* Preview body */}
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <div className="flex justify-center p-4">
+      <div className="min-h-0 flex-1 overflow-auto">
+        <div className="flex justify-center p-2 md:p-4">
           <div
             className="bg-white shadow-md"
             style={{
-              width: A4_WIDTH,
-              zoom: scale,
+              width: isMobile ? "100%" : A4_WIDTH,
+              maxWidth: A4_WIDTH,
+              zoom: isMobile ? undefined : scale,
             }}
           >
             <ResumePreview resume={liveResume} />
