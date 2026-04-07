@@ -2,9 +2,10 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-export type Brand = 'boss' | 'jade';
+export type Brand = 'boss' | 'jade' | 'pink';
 
 const STORAGE_KEY = 'jadeai-brand';
+const VALID_BRANDS: Brand[] = ['boss', 'jade', 'pink'];
 
 interface BrandContextValue {
   brand: Brand;
@@ -28,7 +29,7 @@ export function BrandProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const stored = localStorage.getItem(STORAGE_KEY) as Brand | null;
-    if (stored === 'jade' || stored === 'boss') {
+    if (stored && VALID_BRANDS.includes(stored)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- canonical SSR hydration from localStorage
       setBrandState(stored);
       applyBrand(stored);

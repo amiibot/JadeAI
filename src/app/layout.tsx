@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var b=localStorage.getItem('jadeai-brand');if(b==='jade'){document.documentElement.setAttribute('data-brand','jade');}}catch(e){}})();`,
+            __html: `(function(){try{var b=localStorage.getItem('jadeai-brand');if(b==='jade'||b==='pink'){document.documentElement.setAttribute('data-brand',b);}}catch(e){}})();`,
           }}
         />
         {children}

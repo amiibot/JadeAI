@@ -149,6 +149,23 @@
   --brand-ring: oklch(0.78 0.15 162 / 40%);
 }
 
+[data-brand="pink"] {
+  --brand: oklch(0.65 0.22 350);
+  --brand-foreground: oklch(1 0 0);
+  --brand-hover: oklch(0.58 0.22 350);
+  --brand-muted: oklch(0.95 0.04 350);
+  --brand-ring: oklch(0.65 0.22 350 / 40%);
+}
+
+.dark[data-brand="pink"],
+[data-brand="pink"] .dark {
+  --brand: oklch(0.72 0.20 350);
+  --brand-foreground: oklch(0.18 0.05 350);
+  --brand-hover: oklch(0.65 0.22 350);
+  --brand-muted: oklch(0.32 0.10 350);
+  --brand-ring: oklch(0.72 0.20 350 / 40%);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

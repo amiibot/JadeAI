@@ -284,6 +284,14 @@
       "restartTourDescription": "重新开始编辑器引导教程"
     }
   },
+  "brand": {
+    "label": "主题色",
+    "options": {
+      "boss": "BOSS 直聘",
+      "jade": "Jade 翡翠",
+      "pink": "玫粉"
+    }
+  },
   "themeEditor": {
     "title": "主题编辑",
     "reset": "重置主题",

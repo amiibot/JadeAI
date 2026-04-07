@@ -1,47 +1,48 @@
 'use client';
 
-import { Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useBrand, type Brand } from './brand-provider';
-import { cn } from '@/lib/utils';
 
-const OPTIONS: { id: Brand; label: string; swatch: string }[] = [
-  { id: 'boss', label: 'BOSS', swatch: '#00A77F' },
-  { id: 'jade', label: 'Jade', swatch: '#059669' },
+const OPTIONS: { id: Brand; swatch: string }[] = [
+  { id: 'boss', swatch: '#00A77F' },
+  { id: 'jade', swatch: '#059669' },
+  { id: 'pink', swatch: '#ec4899' },
 ];
 
 export function BrandSwitcher() {
   const { brand, setBrand } = useBrand();
+  const t = useTranslations('brand');
 
   return (
     <div className="px-2 py-1.5">
       <div className="mb-1.5 px-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-        Brand
+        {t('label')}
       </div>
-      <div className="grid grid-cols-2 gap-1.5">
-        {OPTIONS.map((opt) => {
-          const active = brand === opt.id;
-          return (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => setBrand(opt.id)}
-              className={cn(
-                'flex cursor-pointer items-center gap-1.5 rounded-md border px-2 py-1.5 text-xs transition-colors',
-                active
-                  ? 'border-brand bg-brand-muted text-brand'
-                  : 'border-zinc-200 text-zinc-600 hover:border-zinc-300 dark:border-zinc-700 dark:text-zinc-300'
-              )}
-            >
-              <span
-                className="h-3 w-3 shrink-0 rounded-full border border-black/10"
-                style={{ backgroundColor: opt.swatch }}
-              />
-              <span className="truncate">{opt.label}</span>
-              {active && <Check className="ml-auto h-3 w-3" />}
-            </button>
-          );
-        })}
-      </div>
+      <Select value={brand} onValueChange={(v) => setBrand(v as Brand)}>
+        <SelectTrigger className="h-8 w-full cursor-pointer text-xs">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {OPTIONS.map((opt) => (
+            <SelectItem key={opt.id} value={opt.id} className="cursor-pointer text-xs">
+              <span className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 shrink-0 rounded-full border border-black/10"
+                  style={{ backgroundColor: opt.swatch }}
+                />
+                <span>{t(`options.${opt.id}`)}</span>
+              </span>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

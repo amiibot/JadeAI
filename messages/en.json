@@ -284,6 +284,14 @@
       "restartTourDescription": "Restart the editor guided tour"
     }
   },
+  "brand": {
+    "label": "Brand",
+    "options": {
+      "boss": "BOSS Style",
+      "jade": "Jade",
+      "pink": "Pink"
+    }
+  },
   "themeEditor": {
     "title": "Theme Editor",
     "reset": "Reset Theme",
