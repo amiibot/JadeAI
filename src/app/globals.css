@@ -132,21 +132,21 @@
   --brand-ring: oklch(0.83 0.16 168 / 40%);
 }
 
-[data-brand="jade"] {
-  --brand: oklch(0.62 0.17 162);
+[data-brand="blue"] {
+  --brand: oklch(0.55 0.22 258);
   --brand-foreground: oklch(1 0 0);
-  --brand-hover: oklch(0.55 0.17 162);
-  --brand-muted: oklch(0.95 0.05 162);
-  --brand-ring: oklch(0.62 0.17 162 / 40%);
+  --brand-hover: oklch(0.48 0.22 258);
+  --brand-muted: oklch(0.95 0.04 258);
+  --brand-ring: oklch(0.55 0.22 258 / 40%);
 }
 
-.dark[data-brand="jade"],
-[data-brand="jade"] .dark {
-  --brand: oklch(0.78 0.15 162);
-  --brand-foreground: oklch(0.18 0.04 162);
-  --brand-hover: oklch(0.696 0.17 162.5);
-  --brand-muted: oklch(0.32 0.08 162);
-  --brand-ring: oklch(0.78 0.15 162 / 40%);
+.dark[data-brand="blue"],
+[data-brand="blue"] .dark {
+  --brand: oklch(0.72 0.18 258);
+  --brand-foreground: oklch(0.18 0.05 258);
+  --brand-hover: oklch(0.62 0.20 258);
+  --brand-muted: oklch(0.32 0.10 258);
+  --brand-ring: oklch(0.72 0.18 258 / 40%);
 }
 
 [data-brand="pink"] {

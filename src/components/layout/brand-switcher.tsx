@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const OPTIONS: { id: Brand; swatch: string }[] = [
   { id: 'mint', swatch: '#00A77F' },
-  { id: 'jade', swatch: '#059669' },
+  { id: 'blue', swatch: '#2563eb' },
   { id: 'pink', swatch: '#ec4899' },
 ];
 

@@ -2,14 +2,15 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-export type Brand = 'mint' | 'jade' | 'pink';
+export type Brand = 'mint' | 'blue' | 'pink';
 
 const STORAGE_KEY = 'jadeai-brand';
-const VALID_BRANDS: Brand[] = ['mint', 'jade', 'pink'];
+const VALID_BRANDS: Brand[] = ['mint', 'blue', 'pink'];
 
-// Migrate legacy 'boss' value (pre-rename) to 'mint'.
+// Migrate legacy values (pre-rename) to current ids.
 function normalizeBrand(raw: string | null): Brand | null {
   if (raw === 'boss') return 'mint';
+  if (raw === 'jade') return 'blue';
   if (raw && (VALID_BRANDS as string[]).includes(raw)) return raw as Brand;
   return null;
 }
