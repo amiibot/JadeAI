@@ -45,6 +45,11 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-ring: var(--brand-ring);
 }
 
 :root {
@@ -80,6 +85,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Brand: BOSS green (default) */
+  --brand: oklch(0.64 0.15 168);
+  --brand-foreground: oklch(1 0 0);
+  --brand-hover: oklch(0.56 0.14 168);
+  --brand-muted: oklch(0.94 0.05 168);
+  --brand-ring: oklch(0.64 0.15 168 / 40%);
 }
 
 .dark {
@@ -114,6 +125,28 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --brand: oklch(0.83 0.16 168);
+  --brand-foreground: oklch(0.20 0.05 168);
+  --brand-hover: oklch(0.74 0.16 168);
+  --brand-muted: oklch(0.32 0.08 168);
+  --brand-ring: oklch(0.83 0.16 168 / 40%);
+}
+
+[data-brand="jade"] {
+  --brand: oklch(0.62 0.17 162);
+  --brand-foreground: oklch(1 0 0);
+  --brand-hover: oklch(0.55 0.17 162);
+  --brand-muted: oklch(0.95 0.05 162);
+  --brand-ring: oklch(0.62 0.17 162 / 40%);
+}
+
+.dark[data-brand="jade"],
+[data-brand="jade"] .dark {
+  --brand: oklch(0.78 0.15 162);
+  --brand-foreground: oklch(0.18 0.04 162);
+  --brand-hover: oklch(0.696 0.17 162.5);
+  --brand-muted: oklch(0.32 0.08 162);
+  --brand-ring: oklch(0.78 0.15 162 / 40%);
 }
 
 @layer base {
@@ -146,11 +179,7 @@
 }
 
 .landing-cta-bg {
-  background: linear-gradient(135deg, #ec4899, #f472b6, #fb7185);
-}
-
-.dark .landing-cta-bg {
-  background: linear-gradient(135deg, #9d174d, #be185d, #db2777);
+  background: linear-gradient(135deg, var(--brand), var(--brand-hover));
 }
 
 /* Landing feature demos */
@@ -238,7 +267,7 @@
   @apply mb-0.5;
 }
 .ai-markdown code {
-  @apply rounded bg-zinc-200/60 px-1 py-0.5 text-xs text-pink-600 dark:bg-zinc-700/60 dark:text-pink-400;
+  @apply rounded bg-zinc-200/60 px-1 py-0.5 text-xs text-brand dark:bg-zinc-700/60;
 }
 .ai-markdown pre {
   @apply mb-2 overflow-x-auto rounded-lg bg-zinc-800 p-2.5 text-xs last:mb-0;
@@ -255,7 +284,7 @@
 .ai-markdown h2 { @apply text-[13px]; }
 .ai-markdown h3 { @apply text-[13px]; }
 .ai-markdown blockquote {
-  @apply mb-2 border-l-2 border-pink-300 pl-2.5 text-zinc-500 dark:text-zinc-400 last:mb-0;
+  @apply mb-2 border-l-2 border-brand pl-2.5 text-zinc-500 dark:text-zinc-400 last:mb-0;
 }
 .ai-markdown hr {
   @apply my-2 border-zinc-200 dark:border-zinc-700;
