@@ -221,8 +221,8 @@ export function ShareDialog({ open, onOpenChange, resumeId }: ShareDialogProps) 
         <DialogContent className="sm:max-w-xl p-0 gap-0 overflow-hidden">
           <DialogHeader className="px-6 pt-6 pb-4">
             <DialogTitle className="flex items-center gap-2.5 text-base">
-              <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-pink-50 dark:bg-pink-950/50">
-                <Share2 className="h-4 w-4 text-pink-500" />
+              <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-brand-muted dark:bg-brand-muted">
+                <Share2 className="h-4 w-4 text-brand" />
               </div>
               {t('title')}
             </DialogTitle>
@@ -274,7 +274,7 @@ export function ShareDialog({ open, onOpenChange, resumeId }: ShareDialogProps) 
                 <Button
                   onClick={handleCreate}
                   disabled={creating}
-                  className="cursor-pointer bg-pink-500 hover:bg-pink-600 text-white shrink-0 h-9 px-4 text-sm font-medium transition-colors"
+                  className="cursor-pointer bg-brand hover:bg-brand-hover text-white shrink-0 h-9 px-4 text-sm font-medium transition-colors"
                 >
                   {creating ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

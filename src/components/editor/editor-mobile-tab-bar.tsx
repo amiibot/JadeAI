@@ -16,7 +16,7 @@ export function EditorMobileTabBar() {
         className={cn(
           "flex flex-1 items-center justify-center gap-2 py-2.5 text-sm font-medium transition-colors",
           mobileActiveTab === "edit"
-            ? "border-b-2 border-pink-500 text-pink-600 dark:text-pink-400"
+            ? "border-b-2 border-brand text-brand dark:text-brand"
             : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400"
         )}
       >
@@ -28,7 +28,7 @@ export function EditorMobileTabBar() {
         className={cn(
           "flex flex-1 items-center justify-center gap-2 py-2.5 text-sm font-medium transition-colors",
           mobileActiveTab === "preview"
-            ? "border-b-2 border-pink-500 text-pink-600 dark:text-pink-400"
+            ? "border-b-2 border-brand text-brand dark:text-brand"
             : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400"
         )}
       >

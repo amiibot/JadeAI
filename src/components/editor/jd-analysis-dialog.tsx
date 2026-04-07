@@ -236,7 +236,7 @@ function JdAnalysisResultView({ result, jobDescription, t }: { result: JdAnalysi
                     </p>
                   </div>
                   <div>
-                    <span className="text-xs font-medium text-pink-500">
+                    <span className="text-xs font-medium text-brand">
                       {t('suggestedChange')}
                     </span>
                     <p className="text-sm text-zinc-800 dark:text-zinc-200">
@@ -408,7 +408,7 @@ export function JdAnalysisDialog({ open, onOpenChange, resumeId }: JdAnalysisDia
               <TabsTrigger value="history" className="flex-1 cursor-pointer gap-1.5">
                 {t('historyTab')}
                 {history.length > 0 && (
-                  <Badge className="ml-1 h-5 min-w-5 px-1 text-xs bg-pink-500 text-white">
+                  <Badge className="ml-1 h-5 min-w-5 px-1 text-xs bg-brand text-white">
                     {history.length}
                   </Badge>
                 )}
@@ -443,7 +443,7 @@ export function JdAnalysisDialog({ open, onOpenChange, resumeId }: JdAnalysisDia
                   <Button
                     onClick={handleAnalyze}
                     disabled={isAnalyzing || !jobDescription.trim()}
-                    className="cursor-pointer bg-pink-500 hover:bg-pink-600"
+                    className="cursor-pointer bg-brand hover:bg-brand-hover"
                   >
                     {isAnalyzing ? (
                       <>
@@ -470,7 +470,7 @@ export function JdAnalysisDialog({ open, onOpenChange, resumeId }: JdAnalysisDia
                     {t('analyzeAgain')}
                   </Button>
                   {(result.suggestions.length > 0 || result.missingKeywords.length > 0) && (
-                    <Button onClick={handleOptimize} className="cursor-pointer gap-1.5 bg-pink-500 hover:bg-pink-600">
+                    <Button onClick={handleOptimize} className="cursor-pointer gap-1.5 bg-brand hover:bg-brand-hover">
                       <Wand2 className="h-3.5 w-3.5" />
                       {t('optimize')}
                     </Button>
@@ -507,7 +507,7 @@ export function JdAnalysisDialog({ open, onOpenChange, resumeId }: JdAnalysisDia
               </>
             ) : historyLoading ? (
               <div className="flex flex-col items-center justify-center py-12">
-                <Loader2 className="h-6 w-6 animate-spin text-pink-500 mb-2" />
+                <Loader2 className="h-6 w-6 animate-spin text-brand mb-2" />
                 <p className="text-sm text-zinc-500">{t('loadingHistory')}</p>
               </div>
             ) : history.length === 0 ? (
@@ -591,7 +591,7 @@ export function JdAnalysisDialog({ open, onOpenChange, resumeId }: JdAnalysisDia
             )}
             {historyDetailLoading && !historyDetail && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-zinc-950/50">
-                <Loader2 className="h-6 w-6 animate-spin text-pink-500" />
+                <Loader2 className="h-6 w-6 animate-spin text-brand" />
               </div>
             )}
           </TabsContent>

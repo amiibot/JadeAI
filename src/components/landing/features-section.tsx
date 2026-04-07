@@ -40,14 +40,14 @@ function DemoAiChat() {
     <div className="flex h-full flex-col justify-center gap-3 p-6">
       {/* User message */}
       <div className="flex justify-end" style={{ animation: 'demo-slide-up 0.5s ease-out both' }}>
-        <div className="max-w-[70%] rounded-2xl rounded-br-md bg-pink-500 px-4 py-2.5 text-sm text-white">
+        <div className="max-w-[70%] rounded-2xl rounded-br-md bg-brand px-4 py-2.5 text-sm text-white">
           Help me rewrite this bullet point to be more impactful
         </div>
       </div>
       {/* AI response */}
       <div className="flex justify-start" style={{ animation: 'demo-slide-up 0.5s ease-out 0.6s both' }}>
         <div className="max-w-[80%] rounded-2xl rounded-bl-md border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-          <span className="font-medium text-pink-500">&#10024;</span>{' '}
+          <span className="font-medium text-brand">&#10024;</span>{' '}
           &ldquo;Spearheaded migration to microservices, reducing latency by 40% and enabling 2M+ DAU scaling&rdquo;
         </div>
       </div>
@@ -114,7 +114,7 @@ function DemoDragDrop() {
           <GripVertical className="h-3.5 w-3.5 text-zinc-400" />
           <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">{item}</span>
           {i === 2 && (
-            <span className="ml-auto text-[10px] text-pink-500">dragging...</span>
+            <span className="ml-auto text-[10px] text-brand">dragging...</span>
           )}
         </div>
       ))}
@@ -125,7 +125,7 @@ function DemoDragDrop() {
 function DemoExport() {
   const exportFormats = [
     { label: 'PDF', color: 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400' },
-    { label: '1-Page', color: 'bg-pink-100 text-pink-600 dark:bg-pink-950 dark:text-pink-400' },
+    { label: '1-Page', color: 'bg-brand-muted text-brand dark:bg-brand-muted dark:text-brand' },
     { label: 'DOCX', color: 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400' },
     { label: 'HTML', color: 'bg-orange-100 text-orange-600 dark:bg-orange-950 dark:text-orange-400' },
     { label: 'JSON', color: 'bg-green-100 text-green-600 dark:bg-green-950 dark:text-green-400' },
@@ -143,7 +143,7 @@ function DemoExport() {
           </div>
         </div>
         <Download
-          className="h-4 w-4 text-pink-500"
+          className="h-4 w-4 text-brand"
           style={{ animation: 'demo-download-arrow 2s ease-in-out infinite' }}
         />
       </div>
@@ -243,7 +243,7 @@ function DemoJdMatch() {
             className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
             style={{ animation: `demo-slide-up 0.3s ease-out ${0.8 + i * 0.2}s both` }}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-pink-500" />
+            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             <span className="text-zinc-700 dark:text-zinc-300">{s}</span>
           </div>
         ))}
@@ -260,7 +260,7 @@ function DemoTranslate() {
         className="w-36 rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800"
         style={{ animation: 'demo-slide-up 0.4s ease-out both' }}
       >
-        <div className="mb-2 text-[10px] font-semibold text-pink-500">ZH</div>
+        <div className="mb-2 text-[10px] font-semibold text-brand">ZH</div>
         <div className="space-y-1.5">
           <div className="text-xs text-zinc-700 dark:text-zinc-300">高级软件工程师</div>
           <div className="h-1 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
@@ -268,7 +268,7 @@ function DemoTranslate() {
         </div>
       </div>
       {/* Arrow */}
-      <Languages className="h-5 w-5 shrink-0 text-pink-500" style={{ animation: 'demo-swap 2s ease-in-out infinite' }} />
+      <Languages className="h-5 w-5 shrink-0 text-brand" style={{ animation: 'demo-swap 2s ease-in-out infinite' }} />
       {/* English side */}
       <div
         className="w-36 rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800"
@@ -298,7 +298,7 @@ function DemoCoverLetter() {
     <div className="flex h-full items-center justify-center p-6">
       <div className="w-64 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
         <div className="mb-3 flex items-center gap-2">
-          <FileText className="h-4 w-4 text-pink-500" />
+          <FileText className="h-4 w-4 text-brand" />
           <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Cover Letter</span>
         </div>
         <div className="space-y-2">
@@ -372,10 +372,10 @@ function DemoMockInterview() {
     <div className="flex h-full flex-col justify-center gap-3 p-6">
       {/* Interviewer card */}
       <div
-        className="flex items-center gap-3 rounded-xl border border-pink-100 bg-pink-50/50 p-3 dark:border-pink-900 dark:bg-pink-950/20"
+        className="flex items-center gap-3 rounded-xl border border-brand-muted bg-brand-muted/50 p-3 dark:border-brand-muted dark:bg-brand-muted"
         style={{ animation: 'demo-slide-up 0.4s ease-out both' }}
       >
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-pink-400 text-sm font-bold text-white">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-hover text-sm font-bold text-white">
           李
         </div>
         <div>
@@ -385,7 +385,7 @@ function DemoMockInterview() {
       </div>
       {/* Interviewer question */}
       <div style={{ animation: 'demo-slide-up 0.4s ease-out 0.5s both' }}>
-        <div className="max-w-[85%] rounded-r-2xl border-l-[3px] border-pink-500 bg-white px-3 py-2 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        <div className="max-w-[85%] rounded-r-2xl border-l-[3px] border-brand bg-white px-3 py-2 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
           能分享一下是什么契机让你决定从前端转向 AI 方向？
         </div>
       </div>
@@ -397,14 +397,14 @@ function DemoMockInterview() {
       </div>
       {/* Wave thinking */}
       <div className="flex items-center gap-2" style={{ animation: 'demo-slide-up 0.4s ease-out 1.5s both' }}>
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-pink-400 text-[10px] font-bold text-white">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-hover text-[10px] font-bold text-white">
           李
         </div>
         <div className="flex items-end gap-[2px]">
           {[0, 0.15, 0.3, 0.45, 0.6].map((d, i) => (
             <span
               key={i}
-              className="inline-block w-[2.5px] rounded-sm bg-pink-500"
+              className="inline-block w-[2.5px] rounded-sm bg-brand"
               style={{ height: '10px', animation: `thinkingWave 1.2s ease-in-out ${d}s infinite`, opacity: i % 2 === 0 ? 1 : 0.5 }}
             />
           ))}
@@ -503,7 +503,7 @@ export function FeaturesSection() {
                 key={active}
                 style={{ animation: 'demo-slide-up 0.4s ease-out both' }}
               >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-pink-50 text-pink-500 dark:bg-pink-950/50 dark:text-pink-400">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-muted text-brand dark:bg-brand-muted/50 dark:text-brand">
                   {(() => { const Icon = FEATURES[active].icon; return <Icon className="h-5 w-5" />; })()}
                 </div>
                 <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
@@ -520,7 +520,7 @@ export function FeaturesSection() {
             {FEATURES.map((_, i) => (
               <div key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
                 <div
-                  className={`h-full rounded-full bg-pink-500 transition-all ${
+                  className={`h-full rounded-full bg-brand transition-all ${
                     i < active ? 'w-full' : i === active ? 'animate-progress' : 'w-0'
                   }`}
                   style={

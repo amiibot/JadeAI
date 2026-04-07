@@ -48,7 +48,7 @@ function ModernThumb() {
     <div className="flex h-full flex-col overflow-hidden">
       {/* Dark gradient header */}
       <div className="relative px-2 py-2" style={{ background: 'linear-gradient(135deg, #1a1a2e, #0f3460)' }}>
-        <div className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-pink-500/20" />
+        <div className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-brand/20" />
         <div className="h-1.5 w-10 rounded-full bg-white/90" />
         <div className="mt-0.5 h-1 w-7 rounded-full bg-white/50" />
         <div className="mt-0.5 flex gap-0.5">

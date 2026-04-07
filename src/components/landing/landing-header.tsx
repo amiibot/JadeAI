@@ -92,7 +92,7 @@ export function LandingHeader() {
             href={`https://github.com/${GITHUB_REPO}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-1.5 rounded-full bg-pink-50 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-pink-100 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 sm:flex"
+            className="hidden items-center gap-1.5 rounded-full bg-brand-muted px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-brand-muted dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 sm:flex"
           >
             <Star className="h-4 w-4 text-amber-400" fill="currentColor" />
             <span>Star on GitHub</span>
@@ -106,7 +106,7 @@ export function LandingHeader() {
           <LocaleSwitcher />
           <Button
             asChild
-            className="hidden cursor-pointer bg-pink-500 text-white hover:bg-pink-600 sm:inline-flex"
+            className="hidden cursor-pointer bg-brand text-white hover:bg-brand-hover sm:inline-flex"
           >
             <Link href="/dashboard">{ctaLabel}</Link>
           </Button>
@@ -132,7 +132,7 @@ export function LandingHeader() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-zinc-700 transition-colors hover:bg-pink-50 hover:text-pink-600 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-pink-400"
+                      className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-zinc-700 transition-colors hover:bg-brand-muted hover:text-brand dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-brand"
                     >
                       {item.label}
                     </a>
@@ -140,7 +140,7 @@ export function LandingHeader() {
                   <Link
                     href="/interview"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-zinc-700 transition-colors hover:bg-pink-50 hover:text-pink-600 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-pink-400"
+                    className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-zinc-700 transition-colors hover:bg-brand-muted hover:text-brand dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-brand"
                   >
                     {t('interview')}
                   </Link>
@@ -163,7 +163,7 @@ export function LandingHeader() {
                   </a>
                   <Button
                     asChild
-                    className="h-11 w-full cursor-pointer rounded-lg bg-pink-500 text-[15px] font-medium text-white shadow-sm shadow-pink-500/20 hover:bg-pink-600"
+                    className="h-11 w-full cursor-pointer rounded-lg bg-brand text-[15px] font-medium text-white shadow-sm shadow-brand/20 hover:bg-brand-hover"
                   >
                     <Link href="/dashboard" onClick={() => setOpen(false)}>{ctaLabel}</Link>
                   </Button>

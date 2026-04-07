@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import type { InterviewerConfig } from '@/types/interview';
 
 const AVATAR_GRADIENTS: Record<string, string> = {
-  hr: 'from-pink-500 to-pink-400',
+  hr: 'from-brand to-brand-hover',
   technical: 'from-blue-500 to-blue-400',
   scenario: 'from-amber-500 to-amber-400',
   behavioral: 'from-purple-500 to-purple-400',
@@ -14,7 +14,7 @@ const AVATAR_GRADIENTS: Record<string, string> = {
 };
 
 const SELECTED_BORDERS: Record<string, string> = {
-  hr: 'border-pink-500',
+  hr: 'border-brand',
   technical: 'border-blue-500',
   scenario: 'border-amber-500',
   behavioral: 'border-purple-500',
@@ -23,7 +23,7 @@ const SELECTED_BORDERS: Record<string, string> = {
 };
 
 const SELECTED_BGS: Record<string, string> = {
-  hr: 'bg-pink-50 dark:bg-pink-950/30',
+  hr: 'bg-brand-muted dark:bg-brand-muted',
   technical: 'bg-blue-50 dark:bg-blue-950/30',
   scenario: 'bg-amber-50 dark:bg-amber-950/30',
   behavioral: 'bg-purple-50 dark:bg-purple-950/30',
@@ -32,7 +32,7 @@ const SELECTED_BGS: Record<string, string> = {
 };
 
 const BADGE_COLORS: Record<string, string> = {
-  hr: 'bg-pink-500',
+  hr: 'bg-brand',
   technical: 'bg-blue-500',
   scenario: 'bg-amber-500',
   behavioral: 'bg-purple-500',

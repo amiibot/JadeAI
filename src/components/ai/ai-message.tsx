@@ -155,7 +155,7 @@ export function AIMessage({ message }: AIMessageProps) {
     <div className={`flex gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}>
       <div
         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-          isUser ? 'bg-zinc-700' : 'bg-gradient-to-br from-pink-400 to-pink-500'
+          isUser ? 'bg-zinc-700' : 'bg-gradient-to-br from-brand to-brand'
         }`}
       >
         {isUser ? (

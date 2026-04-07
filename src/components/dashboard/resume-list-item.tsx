@@ -98,7 +98,7 @@ export function ResumeListItem({ resume, onDelete, onDuplicate, onRename }: Resu
             }}
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
-            className="w-full truncate rounded border border-pink-300 bg-white px-1 text-sm font-semibold text-zinc-900 outline-none focus:ring-1 focus:ring-pink-400 dark:bg-zinc-800 dark:text-zinc-100"
+            className="w-full truncate rounded border border-brand bg-white px-1 text-sm font-semibold text-zinc-900 outline-none focus:ring-1 focus:ring-brand dark:bg-zinc-800 dark:text-zinc-100"
           />
         ) : (
           <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">

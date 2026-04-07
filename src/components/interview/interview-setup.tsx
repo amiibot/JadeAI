@@ -55,14 +55,14 @@ export function InterviewSetup() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6 rounded-xl bg-gradient-to-r from-pink-50 to-white px-6 py-5 dark:from-pink-950/30 dark:to-zinc-900">
+      <div className="mb-6 rounded-xl bg-gradient-to-r from-brand-muted to-white px-6 py-5 dark:from-brand-muted/30 dark:to-zinc-900">
         <h1 className="text-xl font-bold">🎙️ {t('title')}</h1>
       </div>
       <div className="space-y-6 px-1">
         {/* Title input */}
         <div>
           <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
-            <span className="flex h-5 w-5 items-center justify-center rounded-md bg-pink-500 text-[10px] font-bold text-white">0</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-md bg-brand text-[10px] font-bold text-white">0</span>
             {t('titleLabel')}
           </div>
           <Input
@@ -80,7 +80,7 @@ export function InterviewSetup() {
         <Button
           onClick={handleStart}
           disabled={!canStart || isCreating}
-          className="w-full rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 py-6 text-base font-semibold hover:from-pink-600 hover:to-pink-700"
+          className="w-full rounded-xl bg-gradient-to-r from-brand to-brand-hover py-6 text-base font-semibold hover:from-brand-hover hover:to-brand-hover"
           size="lg"
         >
           {isCreating ? '...' : t('startInterview')}

@@ -36,7 +36,7 @@ export function MessageInput({ input, isLoading, onChange, onSubmit }: MessageIn
           type="submit"
           disabled={!input.trim() || isLoading}
           size="icon"
-          className="absolute bottom-1.5 right-1.5 h-8 w-8 rounded-lg bg-pink-500 hover:bg-pink-600"
+          className="absolute bottom-1.5 right-1.5 h-8 w-8 rounded-lg bg-brand hover:bg-brand-hover"
         >
           <ArrowUp className="h-4 w-4" />
         </Button>

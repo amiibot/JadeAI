@@ -315,7 +315,7 @@ export default function TemplatesPage() {
                 <Button
                   {...(isFirst ? { 'data-tour': 'tpl-use' } : {})}
                   size="sm"
-                  className="flex-1 cursor-pointer gap-1.5 bg-pink-500 hover:bg-pink-600"
+                  className="flex-1 cursor-pointer gap-1.5 bg-brand hover:bg-brand-hover"
                   onClick={() => handleUseTemplate(template)}
                   disabled={isCreating}
                 >
@@ -356,7 +356,7 @@ export default function TemplatesPage() {
           </div>
           <div className="sticky bottom-0 border-t bg-white p-3 dark:bg-background sm:hidden">
             <Button
-              className="w-full cursor-pointer bg-pink-500 hover:bg-pink-600"
+              className="w-full cursor-pointer bg-brand hover:bg-brand-hover"
               disabled={creatingTemplate === previewTemplate}
               onClick={() => previewTemplate && handleUseTemplate(previewTemplate)}
             >

@@ -38,7 +38,7 @@ export function InterviewerPicker({ selected, onChange }: InterviewerPickerProps
   return (
     <div>
       <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
-        <span className={`flex h-5 w-5 items-center justify-center rounded-md text-[10px] font-bold text-white ${selected.length > 0 ? 'bg-pink-500' : 'bg-zinc-400 dark:bg-zinc-600'}`}>3</span>
+        <span className={`flex h-5 w-5 items-center justify-center rounded-md text-[10px] font-bold text-white ${selected.length > 0 ? 'bg-brand' : 'bg-zinc-400 dark:bg-zinc-600'}`}>3</span>
         {t('interviewerLabel')}
       </div>
       <div className="flex gap-2 overflow-x-auto pb-2">

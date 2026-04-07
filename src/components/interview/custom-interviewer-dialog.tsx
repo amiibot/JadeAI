@@ -87,7 +87,7 @@ export function CustomInterviewerDialog({ onAdd, trigger }: CustomInterviewerDia
             <Label>{t('personality')}</Label>
             <Input value={personality} onChange={(e) => setPersonality(e.target.value)} placeholder={t('personalityPlaceholder')} />
           </div>
-          <Button onClick={handleAdd} disabled={!name.trim() || !focusAreas.trim()} className="w-full bg-pink-500 hover:bg-pink-600">
+          <Button onClick={handleAdd} disabled={!name.trim() || !focusAreas.trim()} className="w-full bg-brand hover:bg-brand-hover">
             {t('add')}
           </Button>
         </div>

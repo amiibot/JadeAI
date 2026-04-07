@@ -65,7 +65,7 @@ export function AIInput({ input, onChange, onSubmit, isLoading, models, selected
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-zinc-200 text-zinc-500 transition-colors hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-40 [&:not(:disabled)]:bg-pink-500 [&:not(:disabled)]:text-white [&:not(:disabled)]:hover:bg-pink-600"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-zinc-200 text-zinc-500 transition-colors hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-40 [&:not(:disabled)]:bg-brand [&:not(:disabled)]:text-white [&:not(:disabled)]:hover:bg-brand-hover"
           >
             <SendHorizonal className="h-4 w-4" />
           </button>

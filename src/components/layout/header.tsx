@@ -46,7 +46,7 @@ export function Header() {
                 >
                   {t(item.i18nKey)}
                   {isActive && (
-                    <span className="absolute bottom-[-9px] left-1/2 h-[2px] w-4/5 -translate-x-1/2 rounded-full bg-pink-500" />
+                    <span className="absolute bottom-[-9px] left-1/2 h-[2px] w-4/5 -translate-x-1/2 rounded-full bg-brand" />
                   )}
                 </Link>
               );

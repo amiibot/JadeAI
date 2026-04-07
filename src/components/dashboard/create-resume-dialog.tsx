@@ -192,7 +192,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                           className={cn(
                             'group/tpl relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200',
                             isSelected
-                              ? 'border-pink-500 shadow-md shadow-pink-500/10'
+                              ? 'border-brand shadow-md shadow-brand/10'
                               : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
                           )}
                           onClick={() => setTemplate(tpl)}
@@ -205,7 +205,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                             />
                             {/* Selected check */}
                             {isSelected && (
-                              <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-pink-500 text-white shadow-sm">
+                              <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-white shadow-sm">
                                 <Check className="h-3 w-3" />
                               </div>
                             )}
@@ -214,7 +214,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                           <div className={cn(
                             'px-2 py-1.5 text-center text-xs font-medium transition-colors',
                             isSelected
-                              ? 'bg-pink-50 text-pink-700 dark:bg-pink-950/30 dark:text-pink-300'
+                              ? 'bg-brand-muted text-brand dark:bg-brand-muted dark:text-brand'
                               : 'text-zinc-600 dark:text-zinc-400'
                           )}>
                             {t(templateLabelsMap[tpl])}
@@ -233,7 +233,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                 className={cn(
                   'relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 transition-colors',
                   isDragging
-                    ? 'border-pink-400 bg-pink-50 dark:bg-pink-950/20'
+                    ? 'border-brand bg-brand-muted dark:bg-brand-muted'
                     : file
                       ? 'border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-950/20'
                       : 'border-zinc-300 hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500'
@@ -306,7 +306,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                           className={cn(
                             'group/tpl relative cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-200',
                             isSelected
-                              ? 'border-pink-500 shadow-md shadow-pink-500/10'
+                              ? 'border-brand shadow-md shadow-brand/10'
                               : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
                           )}
                           onClick={() => setTemplate(tpl)}
@@ -317,7 +317,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                               className="mx-auto h-[100px] w-[71px] shadow-sm ring-1 ring-zinc-200/50"
                             />
                             {isSelected && (
-                              <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-pink-500 text-white shadow-sm">
+                              <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-white shadow-sm">
                                 <Check className="h-3 w-3" />
                               </div>
                             )}
@@ -325,7 +325,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                           <div className={cn(
                             'px-2 py-1.5 text-center text-xs font-medium transition-colors',
                             isSelected
-                              ? 'bg-pink-50 text-pink-700 dark:bg-pink-950/30 dark:text-pink-300'
+                              ? 'bg-brand-muted text-brand dark:bg-brand-muted dark:text-brand'
                               : 'text-zinc-600 dark:text-zinc-400'
                           )}>
                             {t(templateLabelsMap[tpl])}
@@ -349,7 +349,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
             <Button
               onClick={handleCreate}
               disabled={isCreating}
-              className="cursor-pointer bg-pink-500 hover:bg-pink-600"
+              className="cursor-pointer bg-brand hover:bg-brand-hover"
             >
               {isCreating ? t('common.loading') : t('common.create')}
             </Button>
@@ -357,7 +357,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
             <Button
               onClick={handleUploadParse}
               disabled={!file || isParsing}
-              className="cursor-pointer bg-pink-500 hover:bg-pink-600"
+              className="cursor-pointer bg-brand hover:bg-brand-hover"
             >
               {isParsing ? (
                 <>

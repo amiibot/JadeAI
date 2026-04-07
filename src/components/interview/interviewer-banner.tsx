@@ -16,8 +16,8 @@ export function InterviewerBanner({ config, questionCount }: InterviewerBannerPr
   const currentRound = rounds[currentRoundIndex];
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-pink-100 bg-gradient-to-r from-pink-50/80 to-white p-3 dark:border-pink-900 dark:from-pink-950/30 dark:to-zinc-900">
-      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-pink-400 text-lg font-bold text-white">
+    <div className="flex items-center gap-3 rounded-xl border border-brand-muted bg-gradient-to-r from-brand-muted/80 to-white p-3 dark:border-brand-muted dark:from-brand-muted/30 dark:to-zinc-900">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-hover text-lg font-bold text-white">
         {config.name[0]}
       </div>
       <div className="min-w-0 flex-1">
@@ -30,7 +30,7 @@ export function InterviewerBanner({ config, questionCount }: InterviewerBannerPr
         <p className="truncate text-xs text-zinc-500">{config.style}</p>
       </div>
       <div className="text-center">
-        <div className="text-xl font-bold text-pink-500">{questionCount}</div>
+        <div className="text-xl font-bold text-brand">{questionCount}</div>
         <div className="text-[10px] text-zinc-400">{currentRound?.maxQuestions ?? 10} 题</div>
       </div>
     </div>

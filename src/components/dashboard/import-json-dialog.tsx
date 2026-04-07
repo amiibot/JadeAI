@@ -137,7 +137,7 @@ export function ImportJsonDialog({ open, onOpenChange }: ImportJsonDialogProps) 
       <DialogContent className="sm:max-w-lg p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-0">
           <DialogTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5 text-pink-500" />
+            <Upload className="h-5 w-5 text-brand" />
             {t('title')}
           </DialogTitle>
           <DialogDescription>{t('dashboardDescription')}</DialogDescription>
@@ -152,10 +152,10 @@ export function ImportJsonDialog({ open, onOpenChange }: ImportJsonDialogProps) 
               onClick={() => fileInputRef.current?.click()}
               className={`flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
                 isDragging
-                  ? 'border-pink-500 bg-pink-50 dark:bg-pink-950/20'
+                  ? 'border-brand bg-brand-muted dark:bg-brand-muted'
                   : selectedFile
                     ? 'border-green-300 bg-green-50/50 dark:border-green-700 dark:bg-green-950/20'
-                    : 'border-zinc-300 hover:border-pink-300 hover:bg-pink-50/30 dark:border-zinc-600 dark:hover:border-pink-700 dark:hover:bg-pink-950/10'
+                    : 'border-zinc-300 hover:border-brand hover:bg-brand-muted/30 dark:border-zinc-600 dark:hover:border-brand dark:hover:bg-brand-muted/10'
               }`}
             >
               <input
@@ -196,7 +196,7 @@ export function ImportJsonDialog({ open, onOpenChange }: ImportJsonDialogProps) 
 
           {state === 'importing' && (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Loader2 className="mb-3 h-8 w-8 animate-spin text-pink-500" />
+              <Loader2 className="mb-3 h-8 w-8 animate-spin text-brand" />
               <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {t('importing')}
               </p>
@@ -226,7 +226,7 @@ export function ImportJsonDialog({ open, onOpenChange }: ImportJsonDialogProps) 
               <Button
                 onClick={handleImport}
                 disabled={!selectedFile || isLoading}
-                className="cursor-pointer bg-pink-500 hover:bg-pink-600"
+                className="cursor-pointer bg-brand hover:bg-brand-hover"
               >
                 {t('importBtn')}
               </Button>

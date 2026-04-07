@@ -41,7 +41,7 @@ export default function PreviewPage({ params }: { params: Promise<{ id: string }
           size="sm"
           disabled={isExporting}
           onClick={() => exportPdf(id, resume.title)}
-          className="cursor-pointer gap-1 bg-pink-500 hover:bg-pink-600"
+          className="cursor-pointer gap-1 bg-brand hover:bg-brand-hover"
         >
           <Download className="h-4 w-4" />
           {isExporting ? t('pdf.exporting') : t('editor.toolbar.export')}
@@ -57,7 +57,7 @@ export default function PreviewPage({ params }: { params: Promise<{ id: string }
           {t('common.back')}
         </Button>
         <Button
-          className="flex-1 cursor-pointer bg-pink-500 hover:bg-pink-600"
+          className="flex-1 cursor-pointer bg-brand hover:bg-brand-hover"
           onClick={() => exportPdf(id, resume.title)}
           disabled={isExporting}
         >

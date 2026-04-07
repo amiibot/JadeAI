@@ -8,7 +8,7 @@ import { Link } from '@/i18n/routing';
 import type { InterviewSession } from '@/types/interview';
 
 const AVATAR_GRADIENTS: Record<string, string> = {
-  hr: 'from-pink-500 to-pink-400',
+  hr: 'from-brand to-brand-hover',
   technical: 'from-blue-500 to-blue-400',
   scenario: 'from-amber-500 to-amber-400',
   behavioral: 'from-purple-500 to-purple-400',
@@ -17,7 +17,7 @@ const AVATAR_GRADIENTS: Record<string, string> = {
 };
 
 const TAG_STYLES: Record<string, string> = {
-  hr: 'bg-pink-50 text-pink-700 dark:bg-pink-950/30 dark:text-pink-300',
+  hr: 'bg-brand-muted text-brand dark:bg-brand-muted dark:text-brand',
   technical: 'bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300',
   scenario: 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300',
   behavioral: 'bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-300',
@@ -26,17 +26,17 @@ const TAG_STYLES: Record<string, string> = {
 };
 
 const STATUS_DOT: Record<string, string> = {
-  preparing: 'bg-pink-300',
-  in_progress: 'bg-pink-500',
-  paused: 'bg-pink-400',
-  completed: 'bg-pink-500',
+  preparing: 'bg-brand',
+  in_progress: 'bg-brand',
+  paused: 'bg-brand',
+  completed: 'bg-brand',
 };
 
 const PROGRESS_BAR: Record<string, string> = {
-  preparing: 'bg-pink-300',
-  in_progress: 'bg-pink-500',
-  paused: 'bg-pink-400',
-  completed: 'bg-pink-500',
+  preparing: 'bg-brand',
+  in_progress: 'bg-brand',
+  paused: 'bg-brand',
+  completed: 'bg-brand',
 };
 
 function getGradeColor(score: number): string {
@@ -135,13 +135,13 @@ export function InterviewCard({ session, onDelete }: InterviewCardProps) {
       <div className="flex items-center gap-2">
         {isCompleted ? (
           <Link href={`/interview/${session.id}/report`} className="flex-1">
-            <Button variant="outline" size="sm" className="w-full rounded-lg border-pink-200 text-xs text-pink-600 hover:bg-pink-50 dark:border-pink-800 dark:text-pink-400 dark:hover:bg-pink-950">
+            <Button variant="outline" size="sm" className="w-full rounded-lg border-brand-muted text-xs text-brand hover:bg-brand-muted dark:border-brand-muted dark:text-brand dark:hover:bg-brand-muted">
               {t('lobby.viewReport')}
             </Button>
           </Link>
         ) : (
           <Link href={`/interview/${session.id}`} className="flex-1">
-            <Button size="sm" className="w-full rounded-lg bg-pink-500 text-xs hover:bg-pink-600">
+            <Button size="sm" className="w-full rounded-lg bg-brand text-xs hover:bg-brand-hover">
               {session.status === 'preparing' ? t('lobby.start') : t('lobby.continue')}
             </Button>
           </Link>

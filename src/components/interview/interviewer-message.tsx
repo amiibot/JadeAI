@@ -14,7 +14,7 @@ export function InterviewerMessage({ content, config }: InterviewerMessageProps)
 
   return (
     <div className="max-w-[85%]">
-      <div className="rounded-r-2xl border-l-[3px] border-pink-500 bg-zinc-50 px-4 py-3 dark:bg-zinc-800/50">
+      <div className="rounded-r-2xl border-l-[3px] border-brand bg-zinc-50 px-4 py-3 dark:bg-zinc-800/50">
         <div className="prose prose-sm dark:prose-invert max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
         </div>

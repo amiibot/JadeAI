@@ -15,8 +15,8 @@ export function AISuggestion({ suggestion, onApply, onDismiss }: AISuggestionPro
   const t = useTranslations('ai');
 
   return (
-    <Card className="border-pink-200 bg-pink-50 p-3">
-      <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-pink-600">
+    <Card className="border-brand-muted bg-brand-muted p-3">
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-brand">
         <Sparkles className="h-3 w-3" />
         {t('suggestion')}
       </div>
@@ -25,7 +25,7 @@ export function AISuggestion({ suggestion, onApply, onDismiss }: AISuggestionPro
         <Button
           size="sm"
           onClick={onApply}
-          className="h-7 cursor-pointer gap-1 bg-pink-500 text-xs hover:bg-pink-600"
+          className="h-7 cursor-pointer gap-1 bg-brand text-xs hover:bg-brand-hover"
         >
           <Check className="h-3 w-3" />
           {t('applySuggestion')}

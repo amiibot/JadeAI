@@ -527,7 +527,7 @@ export default function LinkedInPhotoPage() {
                     <Button
                       size="sm"
                       onClick={confirmCapture}
-                      className="cursor-pointer gap-1.5 bg-pink-500 hover:bg-pink-600"
+                      className="cursor-pointer gap-1.5 bg-brand hover:bg-brand-hover"
                     >
                       <Check className="h-3.5 w-3.5" />
                       {t('useSelfie')}
@@ -538,7 +538,7 @@ export default function LinkedInPhotoPage() {
                     size="sm"
                     onClick={capturePhoto}
                     disabled={!cameraReady}
-                    className="cursor-pointer gap-1.5 bg-pink-500 hover:bg-pink-600 disabled:opacity-50"
+                    className="cursor-pointer gap-1.5 bg-brand hover:bg-brand-hover disabled:opacity-50"
                   >
                     <Camera className="h-3.5 w-3.5" />
                     {t('capture')}
@@ -585,7 +585,7 @@ export default function LinkedInPhotoPage() {
                   className={cn(
                     'flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 transition-colors',
                     isDragging
-                      ? 'border-pink-400 bg-pink-50 dark:border-pink-500 dark:bg-pink-950/20'
+                      ? 'border-brand bg-brand-muted dark:border-brand dark:bg-brand-muted'
                       : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
                   )}
                 >
@@ -630,7 +630,7 @@ export default function LinkedInPhotoPage() {
                   className={cn(
                     'flex flex-1 cursor-pointer flex-col items-center gap-1 rounded-lg border px-3 py-2.5 transition-colors',
                     aspectRatio === r.value
-                      ? 'border-pink-500 bg-pink-50 text-pink-600 dark:bg-pink-950/20 dark:text-pink-400'
+                      ? 'border-brand bg-brand-muted text-brand dark:bg-brand-muted dark:text-brand'
                       : 'border-zinc-200 text-zinc-500 hover:border-zinc-300 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600'
                   )}
                 >
@@ -686,7 +686,7 @@ export default function LinkedInPhotoPage() {
           <Button
             onClick={handleGenerate}
             disabled={isGenerating || !apiKey.trim() || !uploadedImage}
-            className="w-full cursor-pointer gap-2 bg-pink-500 py-6 text-base font-medium hover:bg-pink-600 disabled:opacity-50"
+            className="w-full cursor-pointer gap-2 bg-brand py-6 text-base font-medium hover:bg-brand-hover disabled:opacity-50"
           >
             {isGenerating ? (
               <>
@@ -715,7 +715,7 @@ export default function LinkedInPhotoPage() {
               {isGenerating ? (
                 <div className="flex flex-col items-center justify-center py-24">
                   <div className="relative mb-6">
-                    <div className="h-16 w-16 animate-spin rounded-full border-4 border-zinc-200 border-t-pink-500" />
+                    <div className="h-16 w-16 animate-spin rounded-full border-4 border-zinc-200 border-t-brand" />
                   </div>
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                     {t('generating')}
@@ -784,7 +784,7 @@ export default function LinkedInPhotoPage() {
                         </Select>
                         <Button
                           onClick={handleSetAsAvatar}
-                          className="cursor-pointer gap-1.5 bg-pink-500 hover:bg-pink-600"
+                          className="cursor-pointer gap-1.5 bg-brand hover:bg-brand-hover"
                         >
                           <UserCircle className="h-4 w-4" />
                           {t('setAsAvatar')}

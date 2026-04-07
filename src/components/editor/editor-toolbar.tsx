@@ -66,7 +66,7 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
             variant="ghost"
             size="sm"
             onClick={() => save()}
-            className="cursor-pointer gap-1 text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+            className="cursor-pointer gap-1 text-brand hover:text-brand hover:bg-brand-muted"
           >
             <Save className="h-3.5 w-3.5" />
             <span className="text-xs">{t('save')}</span>
