@@ -29,6 +29,7 @@ export function BrandProvider({ children }: { children: ReactNode }) {
     if (typeof window === 'undefined') return;
     const stored = localStorage.getItem(STORAGE_KEY) as Brand | null;
     if (stored === 'jade' || stored === 'boss') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- canonical SSR hydration from localStorage
       setBrandState(stored);
       applyBrand(stored);
     }
