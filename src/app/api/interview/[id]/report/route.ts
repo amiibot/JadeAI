@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateObject } from 'ai';
-import { getModel, extractAIConfig, AIConfigError } from '@/lib/ai/provider';
+import { generateText } from 'ai';
+import { getModel, extractAIConfig, AIConfigError, getJsonProviderOptions } from '@/lib/ai/provider';
 import { resolveUser, getUserIdFromRequest } from '@/lib/auth/helpers';
 import { interviewRepository } from '@/lib/db/repositories/interview.repository';
 import { interviewReportSchema } from '@/lib/ai/interview-report-schema';
+import { extractJson } from '@/lib/ai/extract-json';
 import { dbReady } from '@/lib/db';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -143,11 +144,24 @@ List areas for improvement ranked by priority (high/medium/low), each with: desc
 
 Output the report in English.`;
 
-    const { object: report } = await generateObject({
+    const { text } = await generateText({
       model,
-      schema: interviewReportSchema,
+      maxOutputTokens: 16384,
+      system: `You are a professional interview evaluator. Output your evaluation as a single valid JSON object. Do NOT wrap the JSON in markdown code fences. Do NOT wrap the result in an array.
+
+The JSON MUST use EXACTLY these top-level keys (camelCase, English, no translation, no synonyms):
+- "overallScore" (number 0-100)
+- "dimensionScores" (array of { "dimension": string, "score": number 0-100, "maxScore": number })
+- "roundEvaluations" (array of { "roundId": string, "interviewerType": string, "interviewerName": string, "score": number 0-100, "feedback": string, "questions": array of { "question": string, "answerSummary": string, "score": number 1-5, "highlights": string[], "weaknesses": string[], "referenceTips": string, "marked": boolean, "hinted": boolean, "skipped": boolean } })
+- "overallFeedback" (string, 3-5 paragraphs)
+- "improvementPlan" (array of { "priority": "high"|"medium"|"low", "area": string, "description": string, "resources": string[] })
+
+DO NOT use alternative names like "comprehensiveScore", "capabilityScores", "direction", "feedback" instead of "overallFeedback", etc. Field names must match EXACTLY. All fields are REQUIRED.`,
       prompt: reportPrompt,
+      providerOptions: getJsonProviderOptions(aiConfig),
     });
+
+    const report = extractJson(text, interviewReportSchema);
 
     const saved = await interviewRepository.createReport({
       sessionId,

@@ -44,21 +44,21 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
   };
 
   return (
-    <div className="flex h-12 items-center justify-between border-b bg-white px-3 overflow-x-auto dark:bg-background dark:border-zinc-800">
-      <div className="flex items-center gap-2">
+    <div className="flex h-12 items-center justify-between gap-2 border-b bg-white px-2 sm:px-3 dark:bg-background dark:border-zinc-800">
+      <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-2">
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={() => router.push('/dashboard')}
-          className="cursor-pointer gap-1 text-zinc-600"
+          className="h-8 w-8 shrink-0 cursor-pointer text-zinc-600"
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <Separator orientation="vertical" className="h-6" />
-        <span className="max-w-48 truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+        <Separator orientation="vertical" className="hidden h-6 sm:block" />
+        <span className="min-w-0 max-w-[8rem] truncate text-sm font-medium text-zinc-900 sm:max-w-48 dark:text-zinc-100">
           {currentResume?.title || ''}
         </span>
-        <span className="text-xs text-zinc-400">
+        <span className="hidden text-xs text-zinc-400 sm:inline">
           {isSaving ? t('saving') : isDirty ? (autoSave ? '' : t('unsaved')) : t('autoSaved')}
         </span>
         {!autoSave && isDirty && !isSaving && (
@@ -74,29 +74,29 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
         )}
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
         {/* Primary: undo/redo — always visible */}
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={handleUndo}
           disabled={undoStack.length === 0}
-          className="cursor-pointer"
+          className="h-8 w-8 cursor-pointer"
           title={t('undo')}
         >
           <Undo2 className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={handleRedo}
           disabled={redoStack.length === 0}
-          className="cursor-pointer"
+          className="h-8 w-8 cursor-pointer"
           title={t('redo')}
         >
           <Redo2 className="h-4 w-4" />
         </Button>
-        <Separator orientation="vertical" className="h-6" />
+        <Separator orientation="vertical" className="hidden h-6 sm:block" />
 
         {/* Desktop: show all secondary buttons */}
         <div className="hidden items-center gap-1 md:flex">
@@ -230,19 +230,19 @@ export function EditorToolbar({ resumeId }: EditorToolbarProps) {
         </div>
 
         {/* Primary: theme toggle — always visible */}
-        <Separator orientation="vertical" className="h-6" />
+        <Separator orientation="vertical" className="hidden h-6 sm:block" />
         <Button
           data-tour="theme"
           variant={showThemeEditor ? 'secondary' : 'ghost'}
-          size="sm"
+          size="icon"
           onClick={toggleThemeEditor}
-          className="cursor-pointer"
+          className="h-8 w-8 cursor-pointer sm:w-auto sm:px-3"
           title={t('theme')}
         >
           <Palette className="h-4 w-4" />
-          <span className="ml-1 text-xs hidden sm:inline">{t('theme')}</span>
+          <span className="ml-1 hidden text-xs sm:inline">{t('theme')}</span>
         </Button>
-        <Separator orientation="vertical" className="h-6" />
+        <Separator orientation="vertical" className="hidden h-6 sm:block" />
         <LocaleSwitcher />
       </div>
     </div>

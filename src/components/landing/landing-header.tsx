@@ -32,8 +32,7 @@ function useGitHubStars() {
 }
 
 function formatStars(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-  return String(n);
+  return n.toLocaleString('en-US');
 }
 
 export function LandingHeader() {
@@ -118,36 +117,58 @@ export function LandingHeader() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-64">
+            <SheetContent side="right" className="w-72 border-l border-zinc-200 bg-white p-0 dark:border-zinc-800 dark:bg-zinc-950">
               <SheetTitle className="sr-only">Navigation</SheetTitle>
-              <nav className="mt-8 flex flex-col gap-4">
-                {[
-                  { href: '#features', label: t('features') },
-                  { href: '#templates', label: t('templates') },
-                ].map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
+              <div className="flex h-full flex-col">
+                <div className="flex h-14 items-center border-b border-zinc-100 px-5 dark:border-zinc-900">
+                  <Image src="/logo.svg" alt="JadeAI" width={104} height={32} />
+                </div>
+                <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
+                  {[
+                    { href: '#features', label: t('features') },
+                    { href: '#templates', label: t('templates') },
+                  ].map((item) => (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-zinc-700 transition-colors hover:bg-pink-50 hover:text-pink-600 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-pink-400"
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                  <Link
+                    href="/interview"
                     onClick={() => setOpen(false)}
-                    className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                    className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-zinc-700 transition-colors hover:bg-pink-50 hover:text-pink-600 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-pink-400"
                   >
-                    {item.label}
+                    {t('interview')}
+                  </Link>
+                </nav>
+                <div className="border-t border-zinc-100 p-4 dark:border-zinc-900">
+                  <a
+                    href={`https://github.com/${GITHUB_REPO}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mb-3 flex items-center justify-center gap-1.5 rounded-lg bg-zinc-50 px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                  >
+                    <Star className="h-4 w-4 text-amber-400" fill="currentColor" />
+                    <span>Star on GitHub</span>
+                    {stars !== null && (
+                      <>
+                        <span className="mx-0.5 text-zinc-300 dark:text-zinc-600">|</span>
+                        <span>{formatStars(stars)}</span>
+                      </>
+                    )}
                   </a>
-                ))}
-                <Link
-                  href="/interview"
-                  onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                >
-                  {t('interview')}
-                </Link>
-                <Button
-                  asChild
-                  className="mt-4 cursor-pointer bg-pink-500 text-white hover:bg-pink-600"
-                >
-                  <Link href="/dashboard">{ctaLabel}</Link>
-                </Button>
-              </nav>
+                  <Button
+                    asChild
+                    className="h-11 w-full cursor-pointer rounded-lg bg-pink-500 text-[15px] font-medium text-white shadow-sm shadow-pink-500/20 hover:bg-pink-600"
+                  >
+                    <Link href="/dashboard" onClick={() => setOpen(false)}>{ctaLabel}</Link>
+                  </Button>
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
         </div>

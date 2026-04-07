@@ -59,6 +59,11 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
           actualField = 'categories';
         }
 
+        // Reject null/undefined values — these would corrupt the DB and cause persistent page crashes
+        if (parsedValue === null || parsedValue === undefined) {
+          return { success: false, error: `Invalid value: ${actualField} cannot be null or undefined` };
+        }
+
         // Ensure items/categories always have id fields
         if (Array.isArray(parsedValue)) {
           parsedValue = (parsedValue as any[]).map((item) =>

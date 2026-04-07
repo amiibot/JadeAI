@@ -63,16 +63,60 @@ function repairUnescapedQuotes(text: string): string {
   return out.join('');
 }
 
+/** Strip <think>...</think> reasoning blocks (qwen3, deepseek-r1, etc.) */
+function stripThinkBlocks(text: string): string {
+  // Remove complete <think>...</think> pairs
+  let out = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+  // Remove dangling unclosed <think>... at start (reasoning that wasn't closed)
+  out = out.replace(/^[\s\S]*?<\/think>/i, '');
+  // Some models emit `<|thinking|>...<|/thinking|>` or similar
+  out = out.replace(/<\|?thinking\|?>[\s\S]*?<\|?\/?thinking\|?>/gi, '');
+  return out.trim();
+}
+
 /** Strip markdown code fences from text */
 function stripFences(text: string): string {
   const m = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
   return m ? m[1].trim() : text;
 }
 
+/** Common key aliases AI models invent instead of the canonical schema keys */
+const KEY_ALIASES: Record<string, string> = {
+  comprehensiveScore: 'overallScore',
+  totalScore: 'overallScore',
+  finalScore: 'overallScore',
+  capabilityScores: 'dimensionScores',
+  competencyScores: 'dimensionScores',
+  abilityScores: 'dimensionScores',
+  rounds: 'roundEvaluations',
+  evaluations: 'roundEvaluations',
+  summary: 'overallFeedback',
+  feedback: 'overallFeedback',
+  overallSummary: 'overallFeedback',
+  improvements: 'improvementPlan',
+  improvementSuggestions: 'improvementPlan',
+  improvementAreas: 'improvementPlan',
+  direction: 'description',
+};
+
+function normalizeKeys(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(normalizeKeys);
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      const nk = KEY_ALIASES[k] ?? k;
+      out[nk] = normalizeKeys(v);
+    }
+    return out;
+  }
+  return value;
+}
+
 /** Try to parse text as JSON, return null on failure */
 function tryParse<T>(text: string, schema: ZodType<T>): T | null {
   try {
-    return schema.parse(JSON.parse(text));
+    const parsed = JSON.parse(text);
+    return schema.parse(normalizeKeys(parsed));
   } catch {
     return null;
   }
@@ -85,8 +129,11 @@ function tryParse<T>(text: string, schema: ZodType<T>): T | null {
 export function extractJson<T>(text: string, schema: ZodType<T>): T {
   const trimmed = text.trim();
 
+  // Step 0: Strip reasoning blocks (qwen3, deepseek-r1)
+  const noThink = stripThinkBlocks(trimmed);
+
   // Step 1: Strip code fences if present
-  const cleaned = stripFences(trimmed);
+  const cleaned = stripFences(noThink);
 
   // Step 2: Try direct parse
   const direct = tryParse(cleaned, schema);
@@ -119,5 +166,29 @@ export function extractJson<T>(text: string, schema: ZodType<T>): T {
     } catch {}
   }
 
+  // Step 6: Handle array-wrapped response — some models return [{...}] instead of {...}
+  // Try to unwrap single-element arrays
+  const bracketStart = cleaned.indexOf('[');
+  const bracketEnd = cleaned.lastIndexOf(']');
+  if (bracketStart !== -1 && bracketEnd > bracketStart) {
+    const arrSlice = cleaned.slice(bracketStart, bracketEnd + 1);
+    try {
+      const parsed = JSON.parse(arrSlice);
+      if (Array.isArray(parsed) && parsed.length === 1 && typeof parsed[0] === 'object') {
+        const r = tryParse(JSON.stringify(parsed[0]), schema);
+        if (r !== null) return r;
+      }
+    } catch {}
+    try {
+      const jr = jsonrepair(arrSlice);
+      const parsed = JSON.parse(jr);
+      if (Array.isArray(parsed) && parsed.length === 1 && typeof parsed[0] === 'object') {
+        const r = tryParse(JSON.stringify(parsed[0]), schema);
+        if (r !== null) return r;
+      }
+    } catch {}
+  }
+
+  console.error('[extractJson] FULL failed text:\n', cleaned);
   throw new Error(`Failed to extract valid JSON from AI response (length=${text.length})`);
 }

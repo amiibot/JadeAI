@@ -182,7 +182,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                   {t('editor.toolbar.template')}
                 </p>
                 <div className="max-h-[400px] overflow-y-auto pr-1">
-                  <div className="grid grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                     {TEMPLATES.map((tpl) => {
                       const isSelected = template === tpl;
                       return (
@@ -296,7 +296,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
                   {t('editor.toolbar.template')}
                 </p>
                 <div className="max-h-[400px] overflow-y-auto pr-1">
-                  <div className="grid grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                     {TEMPLATES.map((tpl) => {
                       const isSelected = template === tpl;
                       return (

@@ -1,50 +1,50 @@
 'use client';
 
-import { useRef, useCallback, useState, useMemo } from 'react';
+import { useRef, useCallback, useState, useMemo, useEffect } from 'react';
 import { MessageSquare, Minus, AlertTriangle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEditorStore } from '@/stores/editor-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { AIChatContent } from './ai-chat-panel';
 
-const WIN_W = 440;
-const WIN_H = 620;
+const WIN_W_DESKTOP = 440;
+const WIN_H_DESKTOP = 620;
 const BUBBLE_SIZE = 56; // h-14 = 56px
 const GAP = 12;
 const MARGIN = 8;
+const MOBILE_BREAKPOINT = 640;
+
+function getWinSize(): { w: number; h: number } {
+  if (typeof window === 'undefined') return { w: WIN_W_DESKTOP, h: WIN_H_DESKTOP };
+  if (window.innerWidth < MOBILE_BREAKPOINT) {
+    return {
+      w: Math.min(window.innerWidth - MARGIN * 2, 360),
+      h: Math.min(window.innerHeight - 120, 480),
+    };
+  }
+  return { w: WIN_W_DESKTOP, h: WIN_H_DESKTOP };
+}
 
 interface AIChatBubbleProps {
   resumeId: string;
 }
 
 /** Compute the best left/top for the chat window given the bubble position. */
-function calcWindowPos(bubbleRight: number, bubbleBottom: number): { left: number; top: number } {
+function calcWindowPos(bubbleRight: number, bubbleBottom: number, winW: number, winH: number): { left: number; top: number } {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
-  // Bubble's center in absolute coords
   const bubbleLeft = vw - bubbleRight - BUBBLE_SIZE;
   const bubbleTop = vh - bubbleBottom - BUBBLE_SIZE;
 
-  // Prefer: window above bubble, right-aligned with bubble
-  let left = bubbleLeft + BUBBLE_SIZE - WIN_W;
-  let top = bubbleTop - GAP - WIN_H;
+  let left = bubbleLeft + BUBBLE_SIZE - winW;
+  let top = bubbleTop - GAP - winH;
 
-  // If not enough space above → place below
-  if (top < MARGIN) {
-    top = bubbleTop + BUBBLE_SIZE + GAP;
-  }
-  // If still overflows bottom → clamp
-  if (top + WIN_H > vh - MARGIN) {
-    top = vh - MARGIN - WIN_H;
-  }
-  // Clamp top minimum
+  if (top < MARGIN) top = bubbleTop + BUBBLE_SIZE + GAP;
+  if (top + winH > vh - MARGIN) top = vh - MARGIN - winH;
   if (top < MARGIN) top = MARGIN;
-
-  // If overflows left → shift right
   if (left < MARGIN) left = MARGIN;
-  // If overflows right → shift left
-  if (left + WIN_W > vw - MARGIN) left = vw - MARGIN - WIN_W;
+  if (left + winW > vw - MARGIN) left = vw - MARGIN - winW;
 
   return { left, top };
 }
@@ -67,11 +67,18 @@ export function AIChatBubble({ resumeId }: AIChatBubbleProps) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   // Auto-calculated window position (recalculated when bubble moves and window hasn't been manually dragged)
+  const [winSize, setWinSize] = useState(getWinSize);
+  useEffect(() => {
+    const onResize = () => setWinSize(getWinSize());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   const autoWindowPos = useMemo(() => {
     if (typeof window === 'undefined') return { left: 100, top: 100 };
-    return calcWindowPos(bubblePos.x, bubblePos.y);
+    return calcWindowPos(bubblePos.x, bubblePos.y, winSize.w, winSize.h);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bubblePos.x, bubblePos.y]);
+  }, [bubblePos.x, bubblePos.y, winSize.w, winSize.h]);
 
   const winPos = windowPos ?? autoWindowPos;
 
@@ -149,8 +156,8 @@ export function AIChatBubble({ resumeId }: AIChatBubbleProps) {
       <div
         className="fixed z-50 flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl transition-opacity duration-200"
         style={{
-          width: WIN_W,
-          height: WIN_H,
+          width: winSize.w,
+          height: winSize.h,
           left: winPos.left,
           top: winPos.top,
           opacity: showAiChat ? 1 : 0,
