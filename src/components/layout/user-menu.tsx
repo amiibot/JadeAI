@@ -8,8 +8,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { BrandSwitcher } from '@/components/layout/brand-switcher';
 import { useRuntimeConfig } from '@/components/providers/runtime-config-provider';
 
 export function UserMenu() {
@@ -36,11 +38,16 @@ export function UserMenu() {
             <p className="text-xs text-zinc-500">{user.email}</p>
           )}
         </div>
+        <DropdownMenuSeparator />
+        <BrandSwitcher />
         {authEnabled && (
-          <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600">
-            <LogOut className="mr-2 h-4 w-4" />
-            {t('logout')}
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600">
+              <LogOut className="mr-2 h-4 w-4" />
+              {t('logout')}
+            </DropdownMenuItem>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
