@@ -31,20 +31,23 @@ Lark Group
 
 ## Recent Updates
 
-### 2026-04-08 · Brand Color System & Theme Switching
+### v0.3.4 · Brand Color System & Theme Switching
 - Introduced semantic `--brand-*` CSS tokens; replaced hardcoded `pink-*` across 60+ files
 - New brand switcher in the user menu with three presets: **Mint** (default), **Blue**, **Pink**
 - SSR-safe anti-flicker hydration; legacy values auto-migrated via `localStorage`
 - Added a Mint resume preset to the theme editor
 - Export pipelines (PDF / HTML / DOCX) now read from `src/lib/brand-constants.ts`
 
-### 2026-04-06 · Mobile Experience & Interview Report Stability
+### v0.3.3 · Mobile Experience & Interview Report Stability
 - Mobile-friendly template preview and bottom action bars for preview/share pages
 - Fixed mobile scroll: canvas/preview roots use `h-full` instead of `flex-1`
 - Improved stability of interview report generation
 
-### 2026-03-27 · Mock Interview Simulation
-- Interactive mock interview flow with interviewer personas and report export
+### v0.3.2 · Runtime Environment Variables
+- Removed all `NEXT_PUBLIC_*` build-time variables in favor of runtime env
+
+### v0.3.1 · Auth Runtime Flag
+- Changed `NEXT_PUBLIC_AUTH_ENABLED` to runtime `AUTH_ENABLED`
 
 ## Screenshots
 
