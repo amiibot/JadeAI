@@ -10,7 +10,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://www.typescriptlang.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)](https://hub.docker.com/r/twwch/jadeai)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)](https://hub.docker.com/r/csania/jadeai)
 
 [English](./README.md)
 
@@ -195,7 +195,7 @@ docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
   -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
-  twwch/jadeai:latest
+  csania/jadeai:latest
 ```
 
 打开 [http://localhost:3000](http://localhost:3000)。首次启动自动完成数据库迁移和数据初始化。
@@ -216,7 +216,7 @@ docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
-  twwch/jadeai:latest
+  csania/jadeai:latest
 ```
 
 </details>

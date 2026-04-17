@@ -10,7 +10,7 @@ Build professional resumes with drag-and-drop editing, real-time AI optimization
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://www.typescriptlang.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)](https://hub.docker.com/r/twwch/jadeai)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)](https://hub.docker.com/r/csania/jadeai)
 
 [中文文档](./README.zh-CN.md)
 
@@ -193,7 +193,7 @@ docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
   -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
-  twwch/jadeai:latest
+  csania/jadeai:latest
 ```
 
 Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and seeds on first start.
@@ -214,7 +214,7 @@ docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
-  twwch/jadeai:latest
+  csania/jadeai:latest
 ```
 
 </details>
