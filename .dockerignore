@@ -6,3 +6,11 @@ data
 *.db
 .env*
 !.env.example
+
+.claude
+.cursor
+.trellis
+AGENTS.md
+
+coverage
+*.log

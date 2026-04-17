@@ -1,9 +1,14 @@
-FROM node:20-alpine AS base
+FROM node:20-bookworm-slim AS base
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # --- Dependencies ---
 FROM base AS deps
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    make \
+    g++ \
+  && rm -rf /var/lib/apt/lists/*
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
@@ -21,12 +26,15 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install Chromium, dependencies, and CJK fonts for PDF export
-RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates ttf-freefont \
-    font-noto-cjk
+# Install Chromium and CJK fonts for PDF export
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    chromium \
+    fonts-noto-cjk \
+  && rm -rf /var/lib/apt/lists/*
 
 # Tell puppeteer / generate-pdf to use the system Chromium
-ENV CHROME_PATH=/usr/bin/chromium-browser
+ENV CHROME_PATH=/usr/bin/chromium
 
 # Copy build output and necessary files
 COPY --from=builder /app/public ./public
