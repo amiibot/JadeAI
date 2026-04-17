@@ -203,6 +203,7 @@ docker run -d -p 3000:3000 \
 > **`AUTH_SECRET`** 为必填项，用于会话加密。通过 `openssl rand -base64 32` 生成。
 
 > 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_JSON`。
+> 如果需要连续录入多个账号，运行 `pnpm auth:add-user`，把结果追加到 `add_user/LOCAL_AUTH_USERS_JSON.json`。
 
 > **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。
 
@@ -305,6 +306,7 @@ pnpm dev
 | `pnpm db:studio` | 打开 Drizzle Studio（数据库 GUI） |
 | `pnpm db:seed` | 填充示例数据 |
 | `pnpm auth:hash -- "明文密码"` | 生成家庭本地登录可用的 `passwordHash` |
+| `pnpm auth:add-user` | 交互式追加用户到 `add_user/LOCAL_AUTH_USERS_JSON.json` |
 
 ## 项目结构
 

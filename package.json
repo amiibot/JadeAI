@@ -11,6 +11,7 @@
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "auth:hash": "tsx scripts/hash-local-password.ts",
+    "auth:add-user": "tsx add_user/add-user.ts",
     "db:generate": "drizzle-kit generate",
     "db:generate:pg": "drizzle-kit generate --config drizzle-pg.config.ts",
     "db:migrate": "drizzle-kit migrate",
