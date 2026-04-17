@@ -18,10 +18,14 @@
   "auth": {
     "login": "Log in",
     "logout": "Log out",
-    "loginWithGoogle": "Sign in with Google",
     "welcomeBack": "Welcome back",
-    "loginDescription": "Sign in to manage your resumes",
-    "agreeTerms": "By signing in, you agree to our Terms of Service and Privacy Policy"
+    "loginDescription": "Sign in with your family account to manage resumes",
+    "username": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "loggingIn": "Logging in...",
+    "invalidCredentials": "Invalid username or password"
   },
   "dashboard": {
     "nav": "Dashboard",

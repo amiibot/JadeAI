@@ -14,7 +14,6 @@ import {
   SheetTrigger,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { useRuntimeConfig } from '@/components/providers/runtime-config-provider';
 
 const GITHUB_REPO = 'twwch/JadeAI';
 
@@ -41,9 +40,8 @@ export function LandingHeader() {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
   const stars = useGitHubStars();
-  const { authEnabled } = useRuntimeConfig();
 
-  const isLoggedIn = authEnabled && !!session?.user;
+  const isLoggedIn = !!session?.user;
   const ctaLabel = isLoggedIn ? t('dashboard') : t('getStarted');
 
   useEffect(() => {

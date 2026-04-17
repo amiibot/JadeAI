@@ -243,10 +243,8 @@ export function GrammarCheckDialog({ open, onOpenChange, resumeId }: GrammarChec
   const [deleteToConfirm, setDeleteToConfirm] = useState<string | null>(null);
 
   const getAuthHeaders = () => {
-    const fingerprint = typeof window !== 'undefined' ? localStorage.getItem('jade_fingerprint') : null;
-    return {
+      return {
       'Content-Type': 'application/json',
-      ...(fingerprint ? { 'x-fingerprint': fingerprint } : {}),
       ...getAIHeaders(),
     };
   };

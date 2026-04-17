@@ -18,10 +18,14 @@
   "auth": {
     "login": "登录",
     "logout": "退出登录",
-    "loginWithGoogle": "使用 Google 登录",
     "welcomeBack": "欢迎回来",
-    "loginDescription": "登录以管理你的简历",
-    "agreeTerms": "登录即表示你同意我们的服务条款和隐私政策"
+    "loginDescription": "使用家庭账户登录以管理你的简历",
+    "username": "用户名",
+    "usernamePlaceholder": "输入用户名",
+    "password": "密码",
+    "passwordPlaceholder": "输入密码",
+    "loggingIn": "登录中...",
+    "invalidCredentials": "用户名或密码错误"
   },
   "dashboard": {
     "nav": "工作台",

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resumeRepository } from '@/lib/db/repositories/resume.repository';
-import { resolveUser, getUserIdFromRequest } from '@/lib/auth/helpers';
+import { resolveUser } from '@/lib/auth/helpers';
 import { DEFAULT_SECTIONS } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   try {
-    const fingerprint = getUserIdFromRequest(request);
-    const user = await resolveUser(fingerprint);
+    const user = await resolveUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -21,8 +20,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const fingerprint = getUserIdFromRequest(request);
-    const user = await resolveUser(fingerprint);
+    const user = await resolveUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

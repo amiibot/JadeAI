@@ -77,14 +77,13 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
     setParseError('');
 
     try {
-      const fingerprint = typeof window !== 'undefined' ? localStorage.getItem('jade_fingerprint') : null;
       const formData = new FormData();
       formData.append('file', file);
       formData.append('template', template);
 
       const res = await fetch('/api/resume/parse', {
         method: 'POST',
-        headers: { ...(fingerprint ? { 'x-fingerprint': fingerprint } : {}), ...getAIHeaders() },
+        headers: { ...getAIHeaders() },
         body: formData,
       });
 

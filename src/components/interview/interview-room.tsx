@@ -98,11 +98,9 @@ export function InterviewRoom({ sessionId, initialMessages }: InterviewRoomProps
     setCurrentRoundIndex(index);
 
     // Fetch messages for this round
-    const fp = localStorage.getItem('jade_fingerprint');
-    try {
+      try {
       const res = await fetch(`/api/interview/${sessionId}`, {
-        headers: fp ? { 'x-fingerprint': fp } : {},
-      });
+        });
       const { rounds: roundsWithMessages } = await res.json();
       const roundData = roundsWithMessages.find((r: any) => r.id === targetRound.id);
 

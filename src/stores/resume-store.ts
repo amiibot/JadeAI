@@ -166,15 +166,10 @@ export const useResumeStore = create<ResumeStore>((set, get) => ({
 
     set({ isSaving: true });
     try {
-      const fingerprint = typeof window !== 'undefined'
-        ? localStorage.getItem('jade_fingerprint')
-        : null;
-
       await fetch(`/api/resume/${currentResume.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          ...(fingerprint ? { 'x-fingerprint': fingerprint } : {}),
         },
         body: JSON.stringify({
           title: currentResume.title,

@@ -3,20 +3,18 @@
 import { createContext, useContext } from 'react';
 
 interface RuntimeConfig {
-  authEnabled: boolean;
+  authEnabled: true;
 }
 
-const RuntimeConfigContext = createContext<RuntimeConfig>({ authEnabled: false });
+const RuntimeConfigContext = createContext<RuntimeConfig>({ authEnabled: true });
 
 export function RuntimeConfigProvider({
   children,
-  authEnabled,
 }: {
   children: React.ReactNode;
-  authEnabled: boolean;
 }) {
   return (
-    <RuntimeConfigContext.Provider value={{ authEnabled }}>
+    <RuntimeConfigContext.Provider value={{ authEnabled: true }}>
       {children}
     </RuntimeConfigContext.Provider>
   );

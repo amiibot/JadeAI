@@ -4,10 +4,8 @@ import { useState, useCallback } from 'react';
 import type { Resume } from '@/types/resume';
 
 function getHeaders() {
-  const fingerprint = typeof window !== 'undefined' ? localStorage.getItem('jade_fingerprint') : null;
   return {
     'Content-Type': 'application/json',
-    ...(fingerprint ? { 'x-fingerprint': fingerprint } : {}),
   };
 }
 

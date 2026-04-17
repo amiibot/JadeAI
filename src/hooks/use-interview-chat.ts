@@ -31,10 +31,7 @@ export function useInterviewChat({ sessionId, roundId, selectedModel }: UseInter
           model: modelRef.current,
           locale,
         }),
-        headers: () => {
-          const fp = typeof window !== 'undefined' ? localStorage.getItem('jade_fingerprint') : null;
-          return { ...(fp ? { 'x-fingerprint': fp } : {}), ...getAIHeaders() };
-        },
+        headers: () => ({ ...getAIHeaders() }),
       }),
     [sessionId, locale]
   );

@@ -62,11 +62,12 @@ CREATE TABLE `users` (
 	`email` text,
 	`name` text,
 	`avatar_url` text,
-	`fingerprint` text,
+	`username` text,
 	`auth_type` text NOT NULL,
+	`settings` text DEFAULT '{}',
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
 	`updated_at` integer DEFAULT (unixepoch()) NOT NULL
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);--> statement-breakpoint
-CREATE UNIQUE INDEX `users_fingerprint_unique` ON `users` (`fingerprint`);
+CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);

@@ -1,67 +1,75 @@
 import NextAuth from 'next-auth';
-import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
-import { config } from '@/lib/config';
+import type { User } from 'next-auth';
+import { z } from 'zod';
 import { userRepository } from '@/lib/db/repositories/user.repository';
-import { createSampleResume } from '@/lib/db/sample-resume';
+import { dbReady } from '@/lib/db';
+import { findFamilyUserByUsername } from '@/lib/auth/family-users';
+import { verifyLocalPassword } from '@/lib/auth/password';
+
+interface LocalAuthUser extends User {
+  id: string;
+  username?: string;
+  authType: 'local';
+}
+
+const localSignInSchema = z.object({
+  username: z.string().trim().min(1),
+  password: z.string().min(1),
+});
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  providers: config.auth.enabled
-    ? [
-        Google({
-          clientId: process.env.GOOGLE_CLIENT_ID!,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        }),
-      ]
-    : [
-        Credentials({
-          name: 'Fingerprint',
-          credentials: {
-            fingerprint: { label: 'Fingerprint', type: 'text' },
-          },
-          async authorize(credentials) {
-            const fingerprint = credentials?.fingerprint as string;
-            if (!fingerprint) return null;
-            return {
-              id: `fp_${fingerprint}`,
-              name: 'Anonymous User',
-            };
-          },
-        }),
-      ],
+  session: {
+    strategy: 'jwt',
+  },
+  providers: [
+    Credentials({
+      name: 'Local',
+      credentials: {
+        username: { label: 'Username', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        await dbReady;
+
+        const parsed = localSignInSchema.safeParse(credentials);
+        if (!parsed.success) return null;
+
+        const username = parsed.data.username.trim().toLowerCase();
+        const configuredUser = findFamilyUserByUsername(username);
+        if (!configuredUser) return null;
+
+        const isPasswordValid = verifyLocalPassword(parsed.data.password, configuredUser.passwordHash);
+        if (!isPasswordValid) return null;
+
+        const dbUser = await userRepository.findOrCreateByLocalUsername({
+          username: configuredUser.username,
+          name: configuredUser.name,
+        });
+
+        if (!dbUser) return null;
+
+        const authUser: LocalAuthUser = {
+          id: dbUser.id,
+          name: dbUser.name,
+          email: dbUser.email,
+          image: dbUser.avatarUrl,
+          username: dbUser.username,
+          authType: 'local',
+        };
+
+        return authUser;
+      },
+    }),
+  ],
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      // First sign-in via Google: create DB user immediately
-      if (user && account?.provider === 'google') {
-        const email = (profile?.email || user.email) as string;
-        const name = (profile?.name || user.name) as string | undefined;
-        const avatar = ((profile as any)?.picture || user.image) as string | undefined;
-
-        let dbUser = email ? await userRepository.findByEmail(email) : null;
-        if (!dbUser) {
-          dbUser = await userRepository.create({
-            email: email || undefined,
-            name,
-            avatarUrl: avatar,
-            authType: 'oauth',
-          });
-          if (dbUser) {
-            await createSampleResume(dbUser.id);
-          }
-        }
-        // Use stable DB user ID in the token
-        if (dbUser) {
-          token.userId = dbUser.id;
-        }
-        token.name = name;
-        token.email = email;
-        token.picture = avatar;
-      }
-
-      // Credentials (fingerprint) mode
-      if (user && !account?.provider) {
-        token.userId = user.id;
+    async jwt({ token, user }) {
+      if (user) {
+        const localUser = user as LocalAuthUser;
+        token.userId = localUser.id;
+        token.username = localUser.username ?? undefined;
+        token.authType = localUser.authType;
       }
 
       return token;
@@ -69,6 +77,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = (token.userId || token.sub) as string;
+        session.user.username = token.username as string | undefined;
+        session.user.authType = 'local';
         if (token.name) session.user.name = token.name as string;
         if (token.email) session.user.email = token.email as string;
         if (token.picture) session.user.image = token.picture as string;

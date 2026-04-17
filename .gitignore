@@ -38,7 +38,10 @@ next-env.d.ts
 # database
 /data/
 
-.claude
+/.claude/
+/.cursor/
+/.trellis/
+AGENTS.md
 
 jadeai-data/*
 

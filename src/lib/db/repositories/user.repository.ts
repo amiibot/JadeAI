@@ -1,8 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../index';
-import { users, resumes } from '../schema';
-import { resumeRepository } from './resume.repository';
+import { users } from '../schema';
 import { createSampleResume } from '../sample-resume';
+
+function normalizeUsername(username: string) {
+  return username.trim().toLowerCase();
+}
 
 export const userRepository = {
   async findById(id: string) {
@@ -15,38 +18,30 @@ export const userRepository = {
     return result[0] || null;
   },
 
-  async findByFingerprint(fingerprint: string) {
-    const result = await db.select().from(users).where(eq(users.fingerprint, fingerprint)).limit(1);
+  async findByUsername(username: string) {
+    const normalizedUsername = normalizeUsername(username);
+    const result = await db.select().from(users).where(eq(users.username, normalizedUsername)).limit(1);
     return result[0] || null;
   },
 
-  async upsertByFingerprint(fingerprint: string) {
-    const existing = await this.findByFingerprint(fingerprint);
+  async findOrCreateByLocalUsername(data: { username: string; name?: string }) {
+    const normalizedUsername = normalizeUsername(data.username);
+    const existing = await this.findByUsername(normalizedUsername);
     if (existing) return existing;
 
     const id = crypto.randomUUID();
     await db.insert(users).values({
       id,
-      fingerprint,
-      authType: 'fingerprint',
-      name: 'Anonymous User',
+      username: normalizedUsername,
+      name: data.name,
+      authType: 'local',
     });
 
-    // Clone demo user's resumes, or create a sample if seed hasn't run
-    const demoUser = await this.findByFingerprint('demo-fingerprint');
-    if (demoUser) {
-      const demoResumes = await db.select().from(resumes).where(eq(resumes.userId, demoUser.id));
-      for (const r of demoResumes) {
-        await resumeRepository.duplicate(r.id, id, r.title);
-      }
-    } else {
-      await createSampleResume(id);
-    }
-
+    await createSampleResume(id);
     return this.findById(id);
   },
 
-  async create(data: { id?: string; email?: string; name?: string; avatarUrl?: string; authType: 'oauth' | 'fingerprint'; fingerprint?: string }) {
+  async create(data: { id?: string; email?: string; name?: string; avatarUrl?: string; username?: string; authType: 'local' }) {
     const id = data.id || crypto.randomUUID();
     await db.insert(users).values({ ...data, id });
     return this.findById(id);

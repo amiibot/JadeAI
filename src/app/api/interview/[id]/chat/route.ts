@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { streamText, convertToModelMessages } from 'ai';
 import { getModel, extractAIConfig, AIConfigError } from '@/lib/ai/provider';
-import { resolveUser, getUserIdFromRequest } from '@/lib/auth/helpers';
+import { resolveUser } from '@/lib/auth/helpers';
 import { interviewRepository } from '@/lib/db/repositories/interview.repository';
 import { resumeRepository } from '@/lib/db/repositories/resume.repository';
 import { buildInterviewSystemPrompt } from '@/lib/ai/interview-prompts';
@@ -11,8 +11,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   try {
     await dbReady;
     const { id: sessionId } = await params;
-    const fingerprint = getUserIdFromRequest(request);
-    const user = await resolveUser(fingerprint);
+      const user = await resolveUser();
     if (!user) return new Response('Unauthorized', { status: 401 });
 
     const session = await interviewRepository.findSession(sessionId);

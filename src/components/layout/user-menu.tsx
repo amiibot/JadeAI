@@ -12,12 +12,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { BrandSwitcher } from '@/components/layout/brand-switcher';
-import { useRuntimeConfig } from '@/components/providers/runtime-config-provider';
 
 export function UserMenu() {
   const { user, signOut } = useAuth();
   const t = useTranslations('auth');
-  const { authEnabled } = useRuntimeConfig();
 
   if (!user) return null;
 
@@ -40,15 +38,13 @@ export function UserMenu() {
         </div>
         <DropdownMenuSeparator />
         <BrandSwitcher />
-        {authEnabled && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600">
-              <LogOut className="mr-2 h-4 w-4" />
-              {t('logout')}
-            </DropdownMenuItem>
-          </>
-        )}
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600">
+            <LogOut className="mr-2 h-4 w-4" />
+            {t('logout')}
+          </DropdownMenuItem>
+        </>
       </DropdownMenuContent>
     </DropdownMenu>
   );

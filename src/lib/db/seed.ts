@@ -18,13 +18,13 @@ async function seed() {
 
   const avatar = loadAvatarBase64();
 
-  // Create a demo user
+  // Create a demo local user
   const userId = crypto.randomUUID();
   await db.insert(users).values({
     id: userId,
     name: '陈思远',
-    authType: 'fingerprint',
-    fingerprint: 'demo-fingerprint',
+    username: 'demo',
+    authType: 'local',
   });
 
   // Create a sample resume

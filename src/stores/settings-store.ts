@@ -54,16 +54,9 @@ function saveProviderConfigs(configs: Partial<Record<AIProvider, ProviderConfig>
   try { localStorage.setItem(PROVIDER_CONFIGS_KEY, JSON.stringify(configs)); } catch { /* ignore */ }
 }
 
-function getFingerprint(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('jade_fingerprint');
-}
-
 function getHeaders(): Record<string, string> {
-  const fp = getFingerprint();
   return {
     'Content-Type': 'application/json',
-    ...(fp ? { 'x-fingerprint': fp } : {}),
   };
 }
 

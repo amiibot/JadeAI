@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { resolveUser, getUserIdFromRequest } from '@/lib/auth/helpers';
+import { resolveUser } from '@/lib/auth/helpers';
 import { chatRepository } from '@/lib/db/repositories/chat.repository';
 
 export async function GET(
@@ -7,8 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const fingerprint = getUserIdFromRequest(request);
-    const user = await resolveUser(fingerprint);
+      const user = await resolveUser();
     if (!user) return new Response('Unauthorized', { status: 401 });
 
     const { sessionId } = await params;
@@ -34,8 +33,7 @@ export async function DELETE(
   { params }: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const fingerprint = getUserIdFromRequest(request);
-    const user = await resolveUser(fingerprint);
+      const user = await resolveUser();
     if (!user) return new Response('Unauthorized', { status: 401 });
 
     const { sessionId } = await params;

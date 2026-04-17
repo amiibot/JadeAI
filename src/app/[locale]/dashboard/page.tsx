@@ -15,8 +15,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useResume } from '@/hooks/use-resume';
 import { useUIStore } from '@/stores/ui-store';
-import { useFingerprint } from '@/hooks/use-fingerprint';
-import { useRuntimeConfig } from '@/components/providers/runtime-config-provider';
 import { ResumeGrid } from '@/components/dashboard/resume-grid';
 import { ResumeListItem } from '@/components/dashboard/resume-list-item';
 import { CreateResumeDialog } from '@/components/dashboard/create-resume-dialog';
@@ -72,8 +70,6 @@ export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const { resumes, isLoading, fetchResumes, createResume, deleteResume, renameResume, duplicateResume } = useResume();
   const { openModal, activeModal, closeModal } = useUIStore();
-  const { fingerprint, isLoading: fpLoading } = useFingerprint();
-  const { authEnabled } = useRuntimeConfig();
 
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,12 +80,12 @@ export default function DashboardPage() {
 
   // Auto-start dashboard tour for first-time users
   useEffect(() => {
-    if (isLoading || fpLoading) return;
+    if (isLoading) return;
     if (hasCompletedTour('dashboard')) return;
     if (window.innerWidth < 768) return;
     const timer = setTimeout(() => startTour('dashboard', DASHBOARD_TOUR_STEPS.length), 800);
     return () => clearTimeout(timer);
-  }, [isLoading, fpLoading, startTour]);
+  }, [isLoading, startTour]);
 
   // Hydrate view preference from localStorage on mount
   useEffect(() => {
@@ -103,13 +99,8 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    if (fpLoading) return;
-    // OAuth mode: fingerprint is null, but we still need to fetch
-    // Fingerprint mode: wait until fingerprint is resolved
-    if (authEnabled || fingerprint) {
-      fetchResumes();
-    }
-  }, [fpLoading, fingerprint, fetchResumes]);
+    fetchResumes();
+  }, [fetchResumes]);
 
   // Filter and sort resumes
   const filteredResumes = useMemo(() => {
@@ -249,7 +240,7 @@ export default function DashboardPage() {
       )}
 
       {/* Content */}
-      {isLoading || fpLoading ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-48 rounded-xl" />

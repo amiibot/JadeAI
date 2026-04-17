@@ -90,10 +90,8 @@ export function ShareDialog({ open, onOpenChange, resumeId }: ShareDialogProps) 
   const [editLabelValue, setEditLabelValue] = useState('');
 
   const getHeaders = () => {
-    const fingerprint = localStorage.getItem('jade_fingerprint');
-    return {
+      return {
       'Content-Type': 'application/json',
-      ...(fingerprint ? { 'x-fingerprint': fingerprint } : {}),
     };
   };
 

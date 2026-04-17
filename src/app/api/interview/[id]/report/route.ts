@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateText } from 'ai';
 import { getModel, extractAIConfig, AIConfigError, getJsonProviderOptions } from '@/lib/ai/provider';
-import { resolveUser, getUserIdFromRequest } from '@/lib/auth/helpers';
+import { resolveUser } from '@/lib/auth/helpers';
 import { interviewRepository } from '@/lib/db/repositories/interview.repository';
 import { interviewReportSchema } from '@/lib/ai/interview-report-schema';
 import { extractJson } from '@/lib/ai/extract-json';
@@ -10,8 +10,7 @@ import { dbReady } from '@/lib/db';
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbReady;
   const { id: sessionId } = await params;
-  const fingerprint = getUserIdFromRequest(request);
-  const user = await resolveUser(fingerprint);
+  const user = await resolveUser();
   if (!user) return new Response('Unauthorized', { status: 401 });
 
   const report = await interviewRepository.findReportBySessionId(sessionId);
@@ -24,8 +23,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   try {
     await dbReady;
     const { id: sessionId } = await params;
-    const fingerprint = getUserIdFromRequest(request);
-    const user = await resolveUser(fingerprint);
+      const user = await resolveUser();
     if (!user) return new Response('Unauthorized', { status: 401 });
 
     const session = await interviewRepository.findSession(sessionId);

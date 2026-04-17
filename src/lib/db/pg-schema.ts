@@ -13,7 +13,7 @@ export const users = pgTable('users', {
   email: text('email').unique(),
   name: text('name'),
   avatarUrl: text('avatar_url'),
-  fingerprint: text('fingerprint').unique(),
+  username: text('username').unique(),
   authType: text('auth_type').notNull(),
   settings: text('settings').default('{}'),
   createdAt: integer('created_at').notNull().default(epochNow),

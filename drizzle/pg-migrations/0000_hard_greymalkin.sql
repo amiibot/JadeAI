@@ -61,11 +61,11 @@ CREATE TABLE "users" (
 	"email" text,
 	"name" text,
 	"avatar_url" text,
-	"fingerprint" text,
+	"username" text,
 	"auth_type" text NOT NULL,
 	"settings" text DEFAULT '{}',
 	"created_at" integer DEFAULT extract(epoch from now())::integer NOT NULL,
 	"updated_at" integer DEFAULT extract(epoch from now())::integer NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email"),
-	CONSTRAINT "users_fingerprint_unique" UNIQUE("fingerprint")
+	CONSTRAINT "users_username_unique" UNIQUE("username")
 );

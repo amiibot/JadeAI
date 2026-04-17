@@ -3,8 +3,8 @@ export interface AppUser {
   email?: string | null;
   name?: string | null;
   avatarUrl?: string | null;
-  fingerprint?: string | null;
-  authType: 'oauth' | 'fingerprint';
+  username?: string | null;
+  authType: 'local';
 }
 
 export interface AuthState {

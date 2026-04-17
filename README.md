@@ -47,7 +47,7 @@ Lark Group
 - Removed all `NEXT_PUBLIC_*` build-time variables in favor of runtime env
 
 ### v0.3.1 · Auth Runtime Flag
-- Changed `NEXT_PUBLIC_AUTH_ENABLED` to runtime `AUTH_ENABLED`
+- Historical version moved `NEXT_PUBLIC_AUTH_ENABLED` to runtime `AUTH_ENABLED`
 
 ## Screenshots
 
@@ -171,7 +171,7 @@ The following resume sections support Markdown syntax:
 
 - **Bilingual UI** — Full Chinese (zh) and English (en) interface
 - **Dark Mode** — Light, dark, and system theme support
-- **Flexible Auth** — Google OAuth or browser fingerprint (zero-config)
+- **Local Family Login** — Sign in with locally configured family accounts and reuse the same data across devices
 - **Dual Database** — SQLite (default, zero-config) or PostgreSQL
 
 ## Tech Stack
@@ -183,7 +183,7 @@ The following resume sections support Markdown syntax:
 | Drag & Drop | @dnd-kit |
 | State | Zustand |
 | Database | Drizzle ORM (SQLite / PostgreSQL) |
-| Auth | NextAuth.js v5 + FingerprintJS |
+| Auth | NextAuth.js v5 + Credentials |
 | AI | Vercel AI SDK v6 + OpenAI / Anthropic |
 | PDF | Puppeteer Core + @sparticuz/chromium |
 | i18n | next-intl |
@@ -223,17 +223,17 @@ docker run -d -p 3000:3000 \
 </details>
 
 <details>
-<summary>With Google OAuth</summary>
+<summary>With local family login</summary>
 
 ```bash
 docker run -d -p 3000:3000 \
-  -e AUTH_ENABLED=true \
-  -e AUTH_SECRET=your-secret \
-  -e GOOGLE_CLIENT_ID=xxx \
-  -e GOOGLE_CLIENT_SECRET=xxx \
+  -e AUTH_SECRET=<your-generated-secret> \
+  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
   twwch/jadeai:latest
 ```
+
+> Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then paste it into `LOCAL_AUTH_USERS_JSON`.
 
 </details>
 
@@ -262,13 +262,18 @@ Edit `.env.local`:
 # Database (defaults to SQLite, no config needed)
 DB_TYPE=sqlite
 
-# Auth (defaults to fingerprint mode, no config needed)
-AUTH_ENABLED=false
+# Auth
+AUTH_SECRET=your-auth-secret-key-change-me
+LOCAL_AUTH_USERS_JSON=[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
 ```
+
+> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `LOCAL_AUTH_USERS_JSON`. The same username always maps to the same local user data.
+
+> **Password hash:** Run `pnpm auth:hash -- "your-password"` first, then paste the output into `passwordHash`.
 
 > **AI Configuration:** No server-side env vars needed. Each user configures their own API Key, Base URL, and Model in **Settings > AI** within the app.
 
-See `.env.example` for all available options (Google OAuth, PostgreSQL, etc.).
+See `.env.example` for all available options (local family login, PostgreSQL, etc.).
 
 #### Initialize Database & Run
 
@@ -291,12 +296,10 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `AUTH_SECRET` | Yes | — | Secret key for session encryption |
+| `LOCAL_AUTH_USERS_JSON` | Yes | — | JSON array of local family users with `username`, `name`, and `passwordHash` |
 | `DB_TYPE` | No | `sqlite` | Database type: `sqlite` or `postgresql` |
 | `DATABASE_URL` | When PostgreSQL | — | PostgreSQL connection string |
 | `SQLITE_PATH` | No | `./data/jade.db` | SQLite database file path |
-| `AUTH_ENABLED` | No | `false` | Enable Google OAuth (`true`) or use fingerprint mode (`false`) |
-| `GOOGLE_CLIENT_ID` | When OAuth | — | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | When OAuth | — | Google OAuth client secret |
 | `APP_NAME` | No | `JadeAI` | Application display name |
 | `DEFAULT_LOCALE` | No | `zh` | Default language: `zh` or `en` |
 
@@ -314,6 +317,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm db:migrate` | Execute database migrations |
 | `pnpm db:studio` | Open Drizzle Studio (database GUI) |
 | `pnpm db:seed` | Seed database with sample data |
+| `pnpm auth:hash -- "plain-password"` | Generate a `passwordHash` for local family login |
 
 ## Project Structure
 
@@ -465,9 +469,9 @@ Yes. Set the `DB_TYPE` environment variable to `sqlite` or `postgresql`. SQLite 
 </details>
 
 <details>
-<summary><b>How does authentication work without OAuth?</b></summary>
+<summary><b>How does local family login work?</b></summary>
 
-When `AUTH_ENABLED=false` (default), JadeAI uses browser fingerprinting via FingerprintJS. A unique fingerprint ID is generated for each browser and used as the user identifier. No login screen is shown — users can start building resumes immediately.
+JadeAI reads family account configuration from `LOCAL_AUTH_USERS_JSON`. The login page validates username and password, while passwords are stored only as `scrypt` hashes. The first successful sign-in for a username creates a stable local user, and later sign-ins on other browsers or devices reuse the same data.
 
 </details>
 

@@ -50,7 +50,7 @@
 - 移除所有 `NEXT_PUBLIC_*` 构建时变量，改为运行时读取
 
 ### v0.3.1 · 认证运行时开关
-- `NEXT_PUBLIC_AUTH_ENABLED` 改为运行时变量 `AUTH_ENABLED`
+- 历史版本曾将 `NEXT_PUBLIC_AUTH_ENABLED` 改为运行时变量 `AUTH_ENABLED`
 
 ---
 
@@ -176,7 +176,7 @@
 
 - **双语界面** — 完整的中文（zh）和英文（en）界面
 - **暗色模式** — 浅色、深色、跟随系统三种主题
-- **灵活认证** — Google OAuth 或浏览器指纹（零配置即用）
+- **家庭本地登录** — 使用本地配置的家庭账号登录，同一用户名跨设备复用同一份数据
 - **双数据库** — SQLite（默认，零配置）或 PostgreSQL
 
 ## 技术栈
@@ -188,7 +188,7 @@
 | 拖拽 | @dnd-kit |
 | 状态管理 | Zustand |
 | 数据库 | Drizzle ORM (SQLite / PostgreSQL) |
-| 认证 | NextAuth.js v5 + FingerprintJS |
+| 认证 | NextAuth.js v5 + Credentials |
 | AI | Vercel AI SDK v6 + OpenAI / Anthropic |
 | PDF | Puppeteer Core + @sparticuz/chromium |
 | 国际化 | next-intl |
@@ -228,17 +228,17 @@ docker run -d -p 3000:3000 \
 </details>
 
 <details>
-<summary>使用 Google OAuth 登录</summary>
+<summary>使用家庭本地登录</summary>
 
 ```bash
 docker run -d -p 3000:3000 \
-  -e AUTH_ENABLED=true \
-  -e AUTH_SECRET=your-secret \
-  -e GOOGLE_CLIENT_ID=xxx \
-  -e GOOGLE_CLIENT_SECRET=xxx \
+  -e AUTH_SECRET=<你生成的密钥> \
+  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
   twwch/jadeai:latest
 ```
+
+> 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_JSON`。
 
 </details>
 
@@ -267,13 +267,18 @@ cp .env.example .env.local
 # 数据库（默认 SQLite，无需额外配置）
 DB_TYPE=sqlite
 
-# 认证（默认指纹模式，无需额外配置）
-AUTH_ENABLED=false
+# 认证
+AUTH_SECRET=your-auth-secret-key-change-me
+LOCAL_AUTH_USERS_JSON=[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
 ```
+
+> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。同一用户名会绑定同一个本地用户数据。
+
+> **密码 hash：** 先执行 `pnpm auth:hash -- "你的密码"`，把输出结果填进 `passwordHash`。
 
 > **AI 配置：** 无需服务端环境变量。每位用户在应用内的 **设置 > AI** 中自行配置 API Key、Base URL 和模型。
 
-查看 `.env.example` 了解所有可用选项（Google OAuth、PostgreSQL 等）。
+查看 `.env.example` 了解所有可用选项（家庭本地登录、PostgreSQL 等）。
 
 #### 初始化数据库并启动
 
@@ -296,12 +301,10 @@ pnpm dev
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `AUTH_SECRET` | 是 | — | 会话加密密钥 |
+| `LOCAL_AUTH_USERS_JSON` | 是 | — | 家庭本地登录账号 JSON 数组，字段为 `username`、`name`、`passwordHash` |
 | `DB_TYPE` | 否 | `sqlite` | 数据库类型：`sqlite` 或 `postgresql` |
 | `DATABASE_URL` | PostgreSQL 时 | — | PostgreSQL 连接字符串 |
 | `SQLITE_PATH` | 否 | `./data/jade.db` | SQLite 数据库文件路径 |
-| `AUTH_ENABLED` | 否 | `false` | 启用 Google OAuth（`true`）或使用指纹模式（`false`） |
-| `GOOGLE_CLIENT_ID` | OAuth 时 | — | Google OAuth 客户端 ID |
-| `GOOGLE_CLIENT_SECRET` | OAuth 时 | — | Google OAuth 客户端密钥 |
 | `APP_NAME` | 否 | `JadeAI` | 应用显示名称 |
 | `DEFAULT_LOCALE` | 否 | `zh` | 默认语言：`zh` 或 `en` |
 
@@ -319,6 +322,7 @@ pnpm dev
 | `pnpm db:migrate` | 执行数据库迁移 |
 | `pnpm db:studio` | 打开 Drizzle Studio（数据库 GUI） |
 | `pnpm db:seed` | 填充示例数据 |
+| `pnpm auth:hash -- "明文密码"` | 生成家庭本地登录可用的 `passwordHash` |
 
 ## 项目结构
 
@@ -470,9 +474,9 @@ JadeAI 不需要在服务端配置 AI API 密钥。每位用户在应用内的 *
 </details>
 
 <details>
-<summary><b>不使用 OAuth 时认证如何工作？</b></summary>
+<summary><b>家庭本地登录如何工作？</b></summary>
 
-当 `AUTH_ENABLED=false`（默认）时，JadeAI 使用 FingerprintJS 进行浏览器指纹识别。系统为每个浏览器生成唯一的指纹 ID 作为用户标识。无需登录界面 — 用户可以直接开始创建简历。
+JadeAI 通过 `LOCAL_AUTH_USERS_JSON` 读取家庭账号配置。登录页使用用户名和密码校验，密码只存 `scrypt` hash，不存明文。同一用户名首次登录会创建固定本地用户，之后在不同浏览器和不同设备上都会复用同一份数据。
 
 </details>
 

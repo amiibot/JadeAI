@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { resolveUser, getUserIdFromRequest } from '@/lib/auth/helpers';
+import { resolveUser } from '@/lib/auth/helpers';
 import { interviewRepository } from '@/lib/db/repositories/interview.repository';
 import { generatePdf } from '@/lib/pdf/generate-pdf';
 import { generateInterviewReportHtml } from './html';
@@ -11,8 +11,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   try {
     await dbReady;
     const { id: sessionId } = await params;
-    const fingerprint = getUserIdFromRequest(request);
-    const user = await resolveUser(fingerprint);
+      const user = await resolveUser();
     if (!user) return new Response('Unauthorized', { status: 401 });
 
     const session = await interviewRepository.findSession(sessionId);

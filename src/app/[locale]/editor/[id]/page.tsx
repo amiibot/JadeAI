@@ -3,7 +3,6 @@
 import { use, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useEditor } from '@/hooks/use-editor';
-import { useFingerprint } from '@/hooks/use-fingerprint';
 import { useIsMobile } from '@/hooks/use-media-query';
 import { EditorToolbar } from '@/components/editor/editor-toolbar';
 import { EditorSidebar } from '@/components/editor/editor-sidebar';
@@ -40,7 +39,6 @@ const EDITOR_TOUR_STEPS: TourStepConfig[] = [
 
 export default function EditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { isLoading: fpLoading } = useFingerprint();
   const { resume, sections, updateSection, addSection, removeSection, reorderSections } = useEditor(id);
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -79,7 +77,7 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
     return () => clearTimeout(timer);
   }, [resume, startTour]);
 
-  if (fpLoading || !resume) {
+  if (!resume) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="space-y-4 w-64">

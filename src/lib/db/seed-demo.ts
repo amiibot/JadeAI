@@ -1,7 +1,7 @@
 import { users, resumes, resumeSections } from './schema';
 
 /**
- * Seed a demo-fingerprint user with a sample resume.
+ * Seed a demo local user with a sample resume.
  * Called automatically when the database is empty.
  */
 export async function seedDemoUser(db: any) {
@@ -9,8 +9,8 @@ export async function seedDemoUser(db: any) {
   await db.insert(users).values({
     id: userId,
     name: '陈思远',
-    authType: 'fingerprint',
-    fingerprint: 'demo-fingerprint',
+    username: 'demo',
+    authType: 'local',
   });
 
   const resumeId = crypto.randomUUID();

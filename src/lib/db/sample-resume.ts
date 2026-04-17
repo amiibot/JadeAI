@@ -3,7 +3,7 @@ import { resumes, resumeSections } from './schema';
 
 /**
  * Create a sample resume for a new user so the dashboard isn't empty.
- * Uses inline data — does not depend on seed or demo-fingerprint user.
+ * Uses inline data and does not depend on demo seed identities.
  */
 export async function createSampleResume(userId: string) {
   const resumeId = crypto.randomUUID();

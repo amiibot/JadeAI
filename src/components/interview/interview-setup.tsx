@@ -27,12 +27,10 @@ export function InterviewSetup() {
     setIsCreating(true);
 
     try {
-      const fp = localStorage.getItem('jade_fingerprint');
-      const res = await fetch('/api/interview', {
+          const res = await fetch('/api/interview', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(fp ? { 'x-fingerprint': fp } : {}),
           ...getAIHeaders(),
         },
         body: JSON.stringify({

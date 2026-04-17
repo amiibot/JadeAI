@@ -6,10 +6,8 @@ import { useEditorStore } from '@/stores/editor-store';
 import type { ResumeSection } from '@/types/resume';
 
 function getHeaders() {
-  const fingerprint = typeof window !== 'undefined' ? localStorage.getItem('jade_fingerprint') : null;
   return {
     'Content-Type': 'application/json',
-    ...(fingerprint ? { 'x-fingerprint': fingerprint } : {}),
   };
 }
 

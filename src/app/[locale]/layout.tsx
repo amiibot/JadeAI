@@ -16,7 +16,6 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const authEnabled = process.env.AUTH_ENABLED === 'true';
 
   if (!routing.locales.includes(locale as any)) {
     notFound();
@@ -26,7 +25,7 @@ export default async function LocaleLayout({
 
   return (
     <SessionProvider>
-      <RuntimeConfigProvider authEnabled={authEnabled}>
+      <RuntimeConfigProvider>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <ThemeProvider
           attribute="class"

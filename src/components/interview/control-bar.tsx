@@ -22,12 +22,10 @@ export function useInterviewControls({ sessionId, roundId, lastAssistantMessageI
   const isMarked = lastAssistantMessageId ? markedMessages.has(lastAssistantMessageId) : false;
 
   const sendControl = async (action: string) => {
-    const fp = localStorage.getItem('jade_fingerprint');
     await fetch(`/api/interview/${sessionId}/control`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(fp ? { 'x-fingerprint': fp } : {}),
         ...getAIHeaders(),
       },
       body: JSON.stringify({ action, roundId, locale }),
@@ -58,12 +56,10 @@ export function useInterviewControls({ sessionId, roundId, lastAssistantMessageI
   const handleMark = () => {
     if (!lastAssistantMessageId) return;
     toggleMark(lastAssistantMessageId);
-    const fp = localStorage.getItem('jade_fingerprint');
     fetch(`/api/interview/${sessionId}/mark`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(fp ? { 'x-fingerprint': fp } : {}),
       },
       body: JSON.stringify({ messageId: lastAssistantMessageId, marked: !isMarked }),
     });
