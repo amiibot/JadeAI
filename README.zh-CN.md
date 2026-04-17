@@ -18,20 +18,6 @@
 
 ---
 
-## 交流群
-
-扫码加入交流群，获取使用帮助与最新动态：
-
-[![Linux.do](https://img.shields.io/badge/Linux.do-社区-blue)](https://linux.do/)
-
-
-加入飞书群
-
-![lark-chat](images/lark.png)
-
-
----
-
 ## 最近更新
 
 ### v0.3.4 · 主题色系统与配色切换
@@ -198,6 +184,9 @@
 
 ### Docker 部署（推荐）
 
+> 说明：这是一个基于原始 JadeAI 的个人修改版。当前默认登录方式为家庭本地登录，部署时需提供 `AUTH_SECRET` 和 `LOCAL_AUTH_USERS_JSON`。
+
+
 ```bash
 # 先生成一个密钥
 openssl rand -base64 32
@@ -260,6 +249,9 @@ cp .env.example .env.local
 ```
 
 #### 配置环境变量
+
+> 修改版核心差异：默认认证已改为家庭本地登录；家庭账号通过 `.env.local` / `LOCAL_AUTH_USERS_JSON` 配置；可用 `pnpm auth:hash -- "明文密码"` 生成 `passwordHash`。
+
 
 编辑 `.env.local`：
 

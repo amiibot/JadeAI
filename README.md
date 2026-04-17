@@ -18,17 +18,6 @@ Build professional resumes with drag-and-drop editing, real-time AI optimization
 
 ---
 
-## Community
-
-Join our groups for discussion and support:
-
-[![Linux.do](https://img.shields.io/badge/Linux.do-Community-blue)](https://linux.do/)
-
-
-Lark Group
-
-![lark-chat](images/lark.png)
-
 ## Recent Updates
 
 ### v0.3.4 · Brand Color System & Theme Switching
@@ -193,6 +182,9 @@ The following resume sections support Markdown syntax:
 
 ### Docker (Recommended)
 
+> Note: This repository is a personal modified fork of the original JadeAI project. The default login flow is now local family login, so deployment should provide both `AUTH_SECRET` and `LOCAL_AUTH_USERS_JSON`.
+
+
 ```bash
 # Generate a secret key first
 openssl rand -base64 32
@@ -255,6 +247,9 @@ cp .env.example .env.local
 ```
 
 #### Configure Environment
+
+> Fork-specific change: the default auth flow is now local family login; family accounts are configured through `.env.local` / `LOCAL_AUTH_USERS_JSON`; use `pnpm auth:hash -- "plain-password"` to generate `passwordHash` values.
+
 
 Edit `.env.local`:
 
