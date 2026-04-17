@@ -193,6 +193,7 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
+  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
   twwch/jadeai:latest
 ```
@@ -200,6 +201,10 @@ docker run -d -p 3000:3000 \
 打开 [http://localhost:3000](http://localhost:3000)。首次启动自动完成数据库迁移和数据初始化。
 
 > **`AUTH_SECRET`** 为必填项，用于会话加密。通过 `openssl rand -base64 32` 生成。
+
+> 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_JSON`。
+
+> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。
 
 > **AI 配置：** 无需服务端 AI 环境变量。每位用户在应用内的 **设置 > AI** 中自行配置 API Key、Base URL 和模型。
 
@@ -213,21 +218,6 @@ docker run -d -p 3000:3000 \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
   twwch/jadeai:latest
 ```
-
-</details>
-
-<details>
-<summary>使用家庭本地登录</summary>
-
-```bash
-docker run -d -p 3000:3000 \
-  -e AUTH_SECRET=<你生成的密钥> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
-  -v jadeai-data:/app/data \
-  twwch/jadeai:latest
-```
-
-> 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_JSON`。
 
 </details>
 

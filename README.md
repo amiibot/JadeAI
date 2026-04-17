@@ -191,6 +191,7 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
+  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
   twwch/jadeai:latest
 ```
@@ -198,6 +199,10 @@ docker run -d -p 3000:3000 \
 Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and seeds on first start.
 
 > **`AUTH_SECRET`** is required for session encryption. Generate one with `openssl rand -base64 32`.
+
+> Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then paste it into `LOCAL_AUTH_USERS_JSON`.
+
+> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `LOCAL_AUTH_USERS_JSON`.
 
 > **AI Configuration:** No server-side AI env vars needed. Each user configures their own API Key, Base URL, and Model in **Settings > AI** within the app.
 
@@ -211,21 +216,6 @@ docker run -d -p 3000:3000 \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
   twwch/jadeai:latest
 ```
-
-</details>
-
-<details>
-<summary>With local family login</summary>
-
-```bash
-docker run -d -p 3000:3000 \
-  -e AUTH_SECRET=<your-generated-secret> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
-  -v jadeai-data:/app/data \
-  twwch/jadeai:latest
-```
-
-> Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then paste it into `LOCAL_AUTH_USERS_JSON`.
 
 </details>
 
