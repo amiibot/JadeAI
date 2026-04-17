@@ -43,7 +43,10 @@ next-env.d.ts
 /.trellis/
 AGENTS.md
 
-jadeai-data/*
+jadeai-data/
+jadeai-data;C/
+.tmp-jadeai*.env
+docker_run_local.sh
 
 .superpowers
 
