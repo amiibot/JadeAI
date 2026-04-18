@@ -70,24 +70,14 @@ function loadFamilyUsers() {
   }
 
   const usersPath = process.env.LOCAL_AUTH_USERS_PATH?.trim();
-  if (usersPath) {
-    const rawUsersFromPath = loadUsersFromPath(usersPath);
-    if (rawUsersFromPath) {
-      const parsedUsers = parseFamilyUsers(rawUsersFromPath);
-      if (parsedUsers) {
-        cachedFamilyUsers = parsedUsers;
-        return cachedFamilyUsers;
-      }
-    }
-
-    if (process.env.LOCAL_AUTH_USERS_JSON?.trim()) {
-      console.warn('[auth] Falling back to deprecated LOCAL_AUTH_USERS_JSON because LOCAL_AUTH_USERS_PATH could not be used.');
-    }
+  if (!usersPath) {
+    console.error('[auth] Missing LOCAL_AUTH_USERS_PATH configuration.');
+    cachedFamilyUsers = [];
+    return cachedFamilyUsers;
   }
 
-  const rawUsers = process.env.LOCAL_AUTH_USERS_JSON?.trim();
+  const rawUsers = loadUsersFromPath(usersPath);
   if (!rawUsers) {
-    console.error('[auth] Missing local auth user configuration. Set LOCAL_AUTH_USERS_PATH or LOCAL_AUTH_USERS_JSON.');
     cachedFamilyUsers = [];
     return cachedFamilyUsers;
   }

@@ -271,8 +271,6 @@ LOCAL_AUTH_USERS_PATH=./data/local-auth-users.json
 
 > **密码 hash：** 先执行 `pnpm auth:hash -- "你的密码"`，把输出结果填进 `local-auth-users.json` 的 `passwordHash`。
 
-> **兼容性：** `LOCAL_AUTH_USERS_JSON` 仍可作为已废弃的兼容回退方式使用，但推荐改用 `LOCAL_AUTH_USERS_PATH`。
-
 > **AI 配置：** 无需服务端环境变量。每位用户在应用内的 **设置 > AI** 中自行配置 API Key、Base URL 和模型。
 
 查看 `.env.example` 了解所有可用选项（家庭本地登录、PostgreSQL 等）。
@@ -298,8 +296,7 @@ pnpm dev
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `AUTH_SECRET` | 是 | — | 会话加密密钥 |
-| `LOCAL_AUTH_USERS_PATH` | 推荐 | `./data/local-auth-users.json` | 家庭本地登录账号 JSON 文件路径 |
-| `LOCAL_AUTH_USERS_JSON` | 已废弃兼容 | — | 旧版家庭本地登录账号 JSON 数组，字段为 `username`、`name`、`passwordHash` |
+| `LOCAL_AUTH_USERS_PATH` | 是 | `./data/local-auth-users.json` | 家庭本地登录账号 JSON 文件路径 |
 | `DB_TYPE` | 否 | `sqlite` | 数据库类型：`sqlite` 或 `postgresql` |
 | `DATABASE_URL` | PostgreSQL 时 | — | PostgreSQL 连接字符串 |
 | `SQLITE_PATH` | 否 | `./data/jade.db` | SQLite 数据库文件路径 |
@@ -474,7 +471,7 @@ JadeAI 不需要在服务端配置 AI API 密钥。每位用户在应用内的 *
 <details>
 <summary><b>家庭本地登录如何工作？</b></summary>
 
-JadeAI 通过 `LOCAL_AUTH_USERS_JSON` 读取家庭账号配置。登录页使用用户名和密码校验，密码只存 `scrypt` hash，不存明文。同一用户名首次登录会创建固定本地用户，之后在不同浏览器和不同设备上都会复用同一份数据。
+JadeAI 通过 `LOCAL_AUTH_USERS_PATH` 指向的 JSON 文件读取家庭账号配置。登录页使用用户名和密码校验，密码只存 `scrypt` hash，不存明文。同一用户名首次登录会创建固定本地用户，之后在不同浏览器和不同设备上都会复用同一份数据。
 
 </details>
 

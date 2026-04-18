@@ -269,8 +269,6 @@ Create `data/local-auth-users.json`:
 
 > **Password hash:** Run `pnpm auth:hash -- "your-password"` first, then paste the output into `passwordHash` in `local-auth-users.json`.
 
-> **Compatibility:** `LOCAL_AUTH_USERS_JSON` still works as a deprecated fallback, but `LOCAL_AUTH_USERS_PATH` is the recommended setup.
-
 > **AI Configuration:** No server-side env vars needed. Each user configures their own API Key, Base URL, and Model in **Settings > AI** within the app.
 
 See `.env.example` for all available options (local family login, PostgreSQL, etc.).
@@ -296,8 +294,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `AUTH_SECRET` | Yes | — | Secret key for session encryption |
-| `LOCAL_AUTH_USERS_PATH` | Recommended | `./data/local-auth-users.json` | Path to the JSON file containing local family users |
-| `LOCAL_AUTH_USERS_JSON` | Deprecated fallback | — | Legacy JSON array of local family users with `username`, `name`, and `passwordHash` |
+| `LOCAL_AUTH_USERS_PATH` | Yes | `./data/local-auth-users.json` | Path to the JSON file containing local family users |
 | `DB_TYPE` | No | `sqlite` | Database type: `sqlite` or `postgresql` |
 | `DATABASE_URL` | When PostgreSQL | — | PostgreSQL connection string |
 | `SQLITE_PATH` | No | `./data/jade.db` | SQLite database file path |
@@ -472,7 +469,7 @@ Yes. Set the `DB_TYPE` environment variable to `sqlite` or `postgresql`. SQLite 
 <details>
 <summary><b>How does local family login work?</b></summary>
 
-JadeAI reads family account configuration from `LOCAL_AUTH_USERS_JSON`. The login page validates username and password, while passwords are stored only as `scrypt` hashes. The first successful sign-in for a username creates a stable local user, and later sign-ins on other browsers or devices reuse the same data.
+JadeAI reads family account configuration from the JSON file pointed to by `LOCAL_AUTH_USERS_PATH`. The login page validates username and password, while passwords are stored only as `scrypt` hashes. The first successful sign-in for a username creates a stable local user, and later sign-ins on other browsers or devices reuse the same data.
 
 </details>
 
