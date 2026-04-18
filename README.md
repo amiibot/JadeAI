@@ -182,7 +182,7 @@ The following resume sections support Markdown syntax:
 
 ### Docker (Recommended)
 
-> Note: This repository is a personal modified fork of the original JadeAI project. The default login flow is now local family login, so deployment should provide both `AUTH_SECRET` and `LOCAL_AUTH_USERS_JSON`.
+> Note: This repository is a personal modified fork of the original JadeAI project. The default login flow is now local family login. Deployment should provide `AUTH_SECRET` and a local auth user file via `LOCAL_AUTH_USERS_PATH`.
 
 
 ```bash
@@ -191,7 +191,7 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
+  -e LOCAL_AUTH_USERS_PATH=/app/data/local-auth-users.json \
   -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
@@ -200,9 +200,14 @@ Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and 
 
 > **`AUTH_SECRET`** is required for session encryption. Generate one with `openssl rand -base64 32`.
 
-> Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then paste it into `LOCAL_AUTH_USERS_JSON`.
+> Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then write it into the JSON file pointed to by `LOCAL_AUTH_USERS_PATH`.
 
-> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `LOCAL_AUTH_USERS_JSON`.
+> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from the JSON file referenced by `LOCAL_AUTH_USERS_PATH`.
+
+> Example `local-auth-users.json`:
+> ```json
+> [{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+> ```
 
 > **AI Configuration:** No server-side AI env vars needed. Each user configures their own API Key, Base URL, and Model in **Settings > AI** within the app.
 
@@ -212,9 +217,10 @@ Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and 
 ```bash
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
+  -e LOCAL_AUTH_USERS_PATH=/app/data/local-auth-users.json \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
+  -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
 
@@ -239,7 +245,7 @@ cp .env.example .env
 
 #### Configure Environment
 
-> Fork-specific change: the default auth flow is now local family login; family accounts are configured through `.env` / `LOCAL_AUTH_USERS_JSON`; use `pnpm auth:hash -- "plain-password"` to generate `passwordHash` values.
+> Fork-specific change: the default auth flow is now local family login; family accounts are configured through `.env` / `LOCAL_AUTH_USERS_PATH`; use `pnpm auth:hash -- "plain-password"` to generate `passwordHash` values.
 
 
 Edit `.env`:
@@ -250,12 +256,20 @@ DB_TYPE=sqlite
 
 # Auth
 AUTH_SECRET=your-auth-secret-key-change-me
-LOCAL_AUTH_USERS_JSON=[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+LOCAL_AUTH_USERS_PATH=./data/local-auth-users.json
 ```
 
-> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `LOCAL_AUTH_USERS_JSON`. The same username always maps to the same local user data.
+Create `data/local-auth-users.json`:
 
-> **Password hash:** Run `pnpm auth:hash -- "your-password"` first, then paste the output into `passwordHash`.
+```json
+[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+```
+
+> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from the JSON file referenced by `LOCAL_AUTH_USERS_PATH`. The same username always maps to the same local user data.
+
+> **Password hash:** Run `pnpm auth:hash -- "your-password"` first, then paste the output into `passwordHash` in `local-auth-users.json`.
+
+> **Compatibility:** `LOCAL_AUTH_USERS_JSON` still works as a deprecated fallback, but `LOCAL_AUTH_USERS_PATH` is the recommended setup.
 
 > **AI Configuration:** No server-side env vars needed. Each user configures their own API Key, Base URL, and Model in **Settings > AI** within the app.
 
@@ -282,7 +296,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `AUTH_SECRET` | Yes | — | Secret key for session encryption |
-| `LOCAL_AUTH_USERS_JSON` | Yes | — | JSON array of local family users with `username`, `name`, and `passwordHash` |
+| `LOCAL_AUTH_USERS_PATH` | Recommended | `./data/local-auth-users.json` | Path to the JSON file containing local family users |
+| `LOCAL_AUTH_USERS_JSON` | Deprecated fallback | — | Legacy JSON array of local family users with `username`, `name`, and `passwordHash` |
 | `DB_TYPE` | No | `sqlite` | Database type: `sqlite` or `postgresql` |
 | `DATABASE_URL` | When PostgreSQL | — | PostgreSQL connection string |
 | `SQLITE_PATH` | No | `./data/jade.db` | SQLite database file path |

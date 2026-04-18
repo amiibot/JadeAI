@@ -184,7 +184,7 @@
 
 ### Docker 部署（推荐）
 
-> 说明：这是一个基于原始 JadeAI 的个人修改版。当前默认登录方式为家庭本地登录，部署时需提供 `AUTH_SECRET` 和 `LOCAL_AUTH_USERS_JSON`。
+> 说明：这是一个基于原始 JadeAI 的个人修改版。当前默认登录方式为家庭本地登录，部署时需提供 `AUTH_SECRET`，并通过 `LOCAL_AUTH_USERS_PATH` 指向本地账号 JSON 文件。
 
 
 ```bash
@@ -193,7 +193,7 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
+  -e LOCAL_AUTH_USERS_PATH=/app/data/local-auth-users.json \
   -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
@@ -202,9 +202,14 @@ docker run -d -p 3000:3000 \
 
 > **`AUTH_SECRET`** 为必填项，用于会话加密。通过 `openssl rand -base64 32` 生成。
 
-> 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_JSON`。
+> 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_PATH` 指向的 JSON 文件。
 
-> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。
+> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_PATH` 指向的 JSON 文件中的用户名和密码登录。
+
+> `local-auth-users.json` 示例：
+> ```json
+> [{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+> ```
 
 > **AI 配置：** 无需服务端 AI 环境变量。每位用户在应用内的 **设置 > AI** 中自行配置 API Key、Base URL 和模型。
 
@@ -214,9 +219,10 @@ docker run -d -p 3000:3000 \
 ```bash
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
+  -e LOCAL_AUTH_USERS_PATH=/app/data/local-auth-users.json \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
+  -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
 
@@ -241,7 +247,7 @@ cp .env.example .env
 
 #### 配置环境变量
 
-> 修改版核心差异：默认认证已改为家庭本地登录；家庭账号通过 `.env` / `LOCAL_AUTH_USERS_JSON` 配置；可用 `pnpm auth:hash -- "明文密码"` 生成 `passwordHash`。
+> 修改版核心差异：默认认证已改为家庭本地登录；家庭账号通过 `.env` / `LOCAL_AUTH_USERS_PATH` 配置；可用 `pnpm auth:hash -- "明文密码"` 生成 `passwordHash`。
 
 
 编辑 `.env`：
@@ -252,12 +258,20 @@ DB_TYPE=sqlite
 
 # 认证
 AUTH_SECRET=your-auth-secret-key-change-me
-LOCAL_AUTH_USERS_JSON=[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+LOCAL_AUTH_USERS_PATH=./data/local-auth-users.json
 ```
 
-> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。同一用户名会绑定同一个本地用户数据。
+创建 `data/local-auth-users.json`：
 
-> **密码 hash：** 先执行 `pnpm auth:hash -- "你的密码"`，把输出结果填进 `passwordHash`。
+```json
+[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+```
+
+> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_PATH` 指向的 JSON 文件中的用户名和密码登录。同一用户名会绑定同一个本地用户数据。
+
+> **密码 hash：** 先执行 `pnpm auth:hash -- "你的密码"`，把输出结果填进 `local-auth-users.json` 的 `passwordHash`。
+
+> **兼容性：** `LOCAL_AUTH_USERS_JSON` 仍可作为已废弃的兼容回退方式使用，但推荐改用 `LOCAL_AUTH_USERS_PATH`。
 
 > **AI 配置：** 无需服务端环境变量。每位用户在应用内的 **设置 > AI** 中自行配置 API Key、Base URL 和模型。
 
@@ -284,7 +298,8 @@ pnpm dev
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `AUTH_SECRET` | 是 | — | 会话加密密钥 |
-| `LOCAL_AUTH_USERS_JSON` | 是 | — | 家庭本地登录账号 JSON 数组，字段为 `username`、`name`、`passwordHash` |
+| `LOCAL_AUTH_USERS_PATH` | 推荐 | `./data/local-auth-users.json` | 家庭本地登录账号 JSON 文件路径 |
+| `LOCAL_AUTH_USERS_JSON` | 已废弃兼容 | — | 旧版家庭本地登录账号 JSON 数组，字段为 `username`、`name`、`passwordHash` |
 | `DB_TYPE` | 否 | `sqlite` | 数据库类型：`sqlite` 或 `postgresql` |
 | `DATABASE_URL` | PostgreSQL 时 | — | PostgreSQL 连接字符串 |
 | `SQLITE_PATH` | 否 | `./data/jade.db` | SQLite 数据库文件路径 |
