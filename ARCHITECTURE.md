@@ -40,7 +40,7 @@
 
 ```
 jade-ai/
-├── .env.local                          # 环境变量（本地）
+├── .env                                # 环境变量（本地）
 ├── .env.example                        # 环境变量模板
 ├── next.config.ts                      # Next.js 配置
 ├── drizzle.config.ts                   # Drizzle ORM 配置
@@ -438,7 +438,7 @@ AI 可以调用工具直接修改简历内容：
 ```
 ┌─────────────────────────────────────────────┐
 │              认证配置                         │
-│ AUTH_SECRET + LOCAL_AUTH_USERS_JSON          │
+│ AUTH_SECRET + ./data/local-auth-users.json  │
 └──────────────────┬──────────────────────────┘
                    │
                    ▼
@@ -447,7 +447,7 @@ AI 可以调用工具直接修改简历内容：
 │                                             │
 │  输入: username + password                  │
 │  校验:                                      │
-│  - 从 LOCAL_AUTH_USERS_JSON 读取家庭账号     │
+│  - 从 ./data/local-auth-users.json 读取家庭账号 │
 │  - 使用 scrypt hash 校验密码                │
 │  - 首次登录创建本地 users 记录               │
 └──────────────────┬──────────────────────────┘
@@ -1695,7 +1695,7 @@ APP_NAME=JadeAI
 
 # ===== 认证 =====
 AUTH_SECRET=your-auth-secret-key        # NextAuth 密钥
-LOCAL_AUTH_USERS_JSON=[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+# 本地账号固定从 ./data/local-auth-users.json 读取
 
 # ===== 数据库 =====
 DB_TYPE=postgresql                       # 'postgresql' 或 'sqlite'
@@ -1775,8 +1775,8 @@ Drizzle 允许在 TypeScript 中一次定义 Schema，跨 PostgreSQL 和 SQLite 
 pnpm install
 
 # 2. 配置环境变量
-cp .env.example .env.local
-# 编辑 .env.local 填入实际值
+cp .env.example .env
+# 编辑 .env 填入实际值
 
 # 3. 初始化数据库
 pnpm db:generate   # 从 schema 生成迁移文件

@@ -1,6 +1,6 @@
 # 开源了一个 AI 简历生成器 JadeAI：50 套模板、拖拽编辑、AI 对话优化、职业照生成、多格式导出，Docker 一键部署
 
-> GitHub: https://github.com/twwch/JadeAI
+> GitHub: https://github.com/amiibot/JadeAI
 
 大家好，分享一个我最近开源的项目 —— **JadeAI**，一个 AI 驱动的智能简历生成器。
 
@@ -198,30 +198,26 @@ src/
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=$(openssl rand -base64 32) \
   -v jadeai-data:/app/data \
-  twwch/jadeai:latest
+  csania/jadeai:latest
 ```
 
 打开 `http://localhost:3000`，首次启动自动完成数据库迁移和初始化。
 
-只需要一个 `AUTH_SECRET` 环境变量（用于会话加密），其他全部零配置。AI 功能在应用内的 **设置 > AI** 里自己配置 API Key 和模型。
+当前部署至少需要 `AUTH_SECRET`，并确保 `/app/data/local-auth-users.json` 存在。AI 功能在应用内的 **设置 > AI** 里自己配置 API Key 和模型。
 
-需要 PostgreSQL 或 Google OAuth？只需加几个环境变量：
+需要 PostgreSQL？继续补充数据库环境变量：
 
 ```bash
-# PostgreSQL
 -e DB_TYPE=postgresql -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai
-
-# Google OAuth
--e AUTH_ENABLED=true -e GOOGLE_CLIENT_ID=xxx -e GOOGLE_CLIENT_SECRET=xxx
 ```
 
 ### 本地开发
 
 ```bash
-git clone https://github.com/twwch/JadeAI.git
+git clone https://github.com/amiibot/JadeAI.git
 cd JadeAI
 pnpm install
-cp .env.example .env.local
+cp .env.example .env
 pnpm db:generate && pnpm db:migrate
 pnpm dev
 ```
@@ -283,7 +279,7 @@ pnpm dev
 
 项目完全开源，Apache 2.0 协议。如果觉得有用，欢迎 Star 支持一下：
 
-**GitHub: https://github.com/twwch/JadeAI**
+**GitHub: https://github.com/amiibot/JadeAI**
 
 有问题或建议欢迎提 Issue，也欢迎 PR 贡献代码。
 

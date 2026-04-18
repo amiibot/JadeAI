@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { z } from 'zod';
 
 export interface FamilyUserConfig {
@@ -16,35 +18,23 @@ const familyUserSchema = z.object({
 });
 
 const familyUsersSchema = z.array(familyUserSchema);
+const LOCAL_AUTH_USERS_FILE = './data/local-auth-users.json';
 
 let cachedFamilyUsers: readonly FamilyUserConfig[] | null = null;
 
-function loadFamilyUsers() {
-  if (cachedFamilyUsers) {
-    return cachedFamilyUsers;
-  }
-
-  const rawUsers = process.env.LOCAL_AUTH_USERS_JSON?.trim();
-  if (!rawUsers) {
-    console.error('[auth] Missing LOCAL_AUTH_USERS_JSON configuration.');
-    cachedFamilyUsers = [];
-    return cachedFamilyUsers;
-  }
-
+function parseFamilyUsers(rawUsers: string) {
   let parsedJson: unknown;
   try {
     parsedJson = JSON.parse(rawUsers);
   } catch (error) {
-    console.error('[auth] LOCAL_AUTH_USERS_JSON must be valid JSON.', error);
-    cachedFamilyUsers = [];
-    return cachedFamilyUsers;
+    console.error('[auth] Local auth users must be valid JSON.', error);
+    return null;
   }
 
   const parsedUsers = familyUsersSchema.safeParse(parsedJson);
   if (!parsedUsers.success) {
-    console.error('[auth] LOCAL_AUTH_USERS_JSON contains invalid users.', parsedUsers.error.flatten());
-    cachedFamilyUsers = [];
-    return cachedFamilyUsers;
+    console.error('[auth] Local auth users contain invalid entries.', parsedUsers.error.flatten());
+    return null;
   }
 
   const normalizedUsers = parsedUsers.data.map((user) => ({
@@ -57,13 +47,42 @@ function loadFamilyUsers() {
   for (const user of normalizedUsers) {
     if (seenUsernames.has(user.username)) {
       console.error(`[auth] Duplicate local auth username: ${user.username}`);
-      cachedFamilyUsers = [];
-      return cachedFamilyUsers;
+      return null;
     }
     seenUsernames.add(user.username);
   }
 
-  cachedFamilyUsers = normalizedUsers;
+  return normalizedUsers;
+}
+
+function loadUsersFromPath(pathValue: string) {
+  try {
+    const filePath = resolve(process.cwd(), pathValue);
+    return readFileSync(filePath, 'utf8').trim();
+  } catch (error) {
+    console.error(`[auth] Failed to read local auth user file: ${pathValue}`, error);
+    return null;
+  }
+}
+
+function loadFamilyUsers() {
+  if (cachedFamilyUsers) {
+    return cachedFamilyUsers;
+  }
+
+  const rawUsers = loadUsersFromPath(LOCAL_AUTH_USERS_FILE);
+  if (!rawUsers) {
+    cachedFamilyUsers = [];
+    return cachedFamilyUsers;
+  }
+
+  const parsedUsers = parseFamilyUsers(rawUsers);
+  if (!parsedUsers) {
+    cachedFamilyUsers = [];
+    return cachedFamilyUsers;
+  }
+
+  cachedFamilyUsers = parsedUsers;
   return cachedFamilyUsers;
 }
 

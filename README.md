@@ -182,8 +182,7 @@ The following resume sections support Markdown syntax:
 
 ### Docker (Recommended)
 
-> Note: This repository is a personal modified fork of the original JadeAI project. The default login flow is now local family login, so deployment should provide both `AUTH_SECRET` and `LOCAL_AUTH_USERS_JSON`.
-
+> Note: This repository is a personal modified fork of the original JadeAI project. The default login flow is now local family login. Deployment should provide `AUTH_SECRET` and ensure the local auth user file exists at `/app/data/local-auth-users.json`.
 
 ```bash
 # Generate a secret key first
@@ -191,7 +190,6 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
@@ -200,10 +198,14 @@ Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and 
 
 > **`AUTH_SECRET`** is required for session encryption. Generate one with `openssl rand -base64 32`.
 
-> Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then paste it into `LOCAL_AUTH_USERS_JSON`.
-> For repeated user entry, run `pnpm auth:add-user` and append users into `add_user/LOCAL_AUTH_USERS_JSON.json`.
+> Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then write it into `data/local-auth-users.json`.
 
-> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `LOCAL_AUTH_USERS_JSON`.
+> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `data/local-auth-users.json`.
+
+> Example `local-auth-users.json`:
+> ```json
+> [{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+> ```
 
 > **AI Configuration:** No server-side AI env vars needed. Each user configures their own API Key, Base URL, and Model in **Settings > AI** within the app.
 
@@ -215,6 +217,7 @@ docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
+  -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
 
@@ -230,19 +233,19 @@ docker run -d -p 3000:3000 \
 #### Installation
 
 ```bash
-git clone https://github.com/twwch/JadeAI.git
+git clone https://github.com/amiibot/JadeAI.git
 cd JadeAI
 
 pnpm install
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 #### Configure Environment
 
-> Fork-specific change: the default auth flow is now local family login; family accounts are configured through `.env.local` / `LOCAL_AUTH_USERS_JSON`; use `pnpm auth:hash -- "plain-password"` to generate `passwordHash` values.
+> Fork-specific change: the default auth flow is now local family login; family accounts are read from `data/local-auth-users.json`; use `pnpm auth:hash -- "plain-password"` to generate `passwordHash` values.
 
 
-Edit `.env.local`:
+Edit `.env`:
 
 ```bash
 # Database (defaults to SQLite, no config needed)
@@ -250,12 +253,17 @@ DB_TYPE=sqlite
 
 # Auth
 AUTH_SECRET=your-auth-secret-key-change-me
-LOCAL_AUTH_USERS_JSON=[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
 ```
 
-> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `LOCAL_AUTH_USERS_JSON`. The same username always maps to the same local user data.
+Create `data/local-auth-users.json`:
 
-> **Password hash:** Run `pnpm auth:hash -- "your-password"` first, then paste the output into `passwordHash`.
+```json
+[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+```
+
+> **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `data/local-auth-users.json`. The same username always maps to the same local user data.
+
+> **Password hash:** Run `pnpm auth:hash -- "your-password"` first, then paste the output into `passwordHash` in `local-auth-users.json`.
 
 > **AI Configuration:** No server-side env vars needed. Each user configures their own API Key, Base URL, and Model in **Settings > AI** within the app.
 
@@ -282,12 +290,13 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `AUTH_SECRET` | Yes | — | Secret key for session encryption |
-| `LOCAL_AUTH_USERS_JSON` | Yes | — | JSON array of local family users with `username`, `name`, and `passwordHash` |
 | `DB_TYPE` | No | `sqlite` | Database type: `sqlite` or `postgresql` |
 | `DATABASE_URL` | When PostgreSQL | — | PostgreSQL connection string |
 | `SQLITE_PATH` | No | `./data/jade.db` | SQLite database file path |
 | `APP_NAME` | No | `JadeAI` | Application display name |
 | `DEFAULT_LOCALE` | No | `zh` | Default language: `zh` or `en` |
+
+Local family users are always loaded from `./data/local-auth-users.json`.
 
 ## Scripts
 
@@ -304,7 +313,6 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm db:studio` | Open Drizzle Studio (database GUI) |
 | `pnpm db:seed` | Seed database with sample data |
 | `pnpm auth:hash -- "plain-password"` | Generate a `passwordHash` for local family login |
-| `pnpm auth:add-user` | Interactively append users into `add_user/LOCAL_AUTH_USERS_JSON.json` |
 
 ## Project Structure
 
@@ -458,7 +466,7 @@ Yes. Set the `DB_TYPE` environment variable to `sqlite` or `postgresql`. SQLite 
 <details>
 <summary><b>How does local family login work?</b></summary>
 
-JadeAI reads family account configuration from `LOCAL_AUTH_USERS_JSON`. The login page validates username and password, while passwords are stored only as `scrypt` hashes. The first successful sign-in for a username creates a stable local user, and later sign-ins on other browsers or devices reuse the same data.
+JadeAI reads family account configuration from `./data/local-auth-users.json`. The login page validates username and password, while passwords are stored only as `scrypt` hashes. The first successful sign-in for a username creates a stable local user, and later sign-ins on other browsers or devices reuse the same data.
 
 </details>
 

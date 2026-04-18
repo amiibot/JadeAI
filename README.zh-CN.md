@@ -184,8 +184,7 @@
 
 ### Docker 部署（推荐）
 
-> 说明：这是一个基于原始 JadeAI 的个人修改版。当前默认登录方式为家庭本地登录，部署时需提供 `AUTH_SECRET` 和 `LOCAL_AUTH_USERS_JSON`。
-
+> 说明：这是一个基于原始 JadeAI 的个人修改版。当前默认登录方式为家庭本地登录，部署时需提供 `AUTH_SECRET`，并确保本地账号 JSON 文件位于 `/app/data/local-auth-users.json`。
 
 ```bash
 # 先生成一个密钥
@@ -193,7 +192,6 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
-  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
@@ -202,10 +200,14 @@ docker run -d -p 3000:3000 \
 
 > **`AUTH_SECRET`** 为必填项，用于会话加密。通过 `openssl rand -base64 32` 生成。
 
-> 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_JSON`。
-> 如果需要连续录入多个账号，运行 `pnpm auth:add-user`，把结果追加到 `add_user/LOCAL_AUTH_USERS_JSON.json`。
+> 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `data/local-auth-users.json`。
 
-> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。
+> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `data/local-auth-users.json` 中的用户名和密码登录。
+
+> `local-auth-users.json` 示例：
+> ```json
+> [{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+> ```
 
 > **AI 配置：** 无需服务端 AI 环境变量。每位用户在应用内的 **设置 > AI** 中自行配置 API Key、Base URL 和模型。
 
@@ -217,6 +219,7 @@ docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
+  -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
 
@@ -232,19 +235,19 @@ docker run -d -p 3000:3000 \
 #### 安装
 
 ```bash
-git clone https://github.com/twwch/JadeAI.git
+git clone https://github.com/amiibot/JadeAI.git
 cd JadeAI
 
 pnpm install
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 #### 配置环境变量
 
-> 修改版核心差异：默认认证已改为家庭本地登录；家庭账号通过 `.env.local` / `LOCAL_AUTH_USERS_JSON` 配置；可用 `pnpm auth:hash -- "明文密码"` 生成 `passwordHash`。
+> 修改版核心差异：默认认证已改为家庭本地登录；家庭账号固定从 `data/local-auth-users.json` 读取；可用 `pnpm auth:hash -- "明文密码"` 生成 `passwordHash`。
 
 
-编辑 `.env.local`：
+编辑 `.env`：
 
 ```bash
 # 数据库（默认 SQLite，无需额外配置）
@@ -252,12 +255,17 @@ DB_TYPE=sqlite
 
 # 认证
 AUTH_SECRET=your-auth-secret-key-change-me
-LOCAL_AUTH_USERS_JSON=[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
 ```
 
-> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。同一用户名会绑定同一个本地用户数据。
+创建 `data/local-auth-users.json`：
 
-> **密码 hash：** 先执行 `pnpm auth:hash -- "你的密码"`，把输出结果填进 `passwordHash`。
+```json
+[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]
+```
+
+> **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `data/local-auth-users.json` 中的用户名和密码登录。同一用户名会绑定同一个本地用户数据。
+
+> **密码 hash：** 先执行 `pnpm auth:hash -- "你的密码"`，把输出结果填进 `local-auth-users.json` 的 `passwordHash`。
 
 > **AI 配置：** 无需服务端环境变量。每位用户在应用内的 **设置 > AI** 中自行配置 API Key、Base URL 和模型。
 
@@ -284,12 +292,13 @@ pnpm dev
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `AUTH_SECRET` | 是 | — | 会话加密密钥 |
-| `LOCAL_AUTH_USERS_JSON` | 是 | — | 家庭本地登录账号 JSON 数组，字段为 `username`、`name`、`passwordHash` |
 | `DB_TYPE` | 否 | `sqlite` | 数据库类型：`sqlite` 或 `postgresql` |
 | `DATABASE_URL` | PostgreSQL 时 | — | PostgreSQL 连接字符串 |
 | `SQLITE_PATH` | 否 | `./data/jade.db` | SQLite 数据库文件路径 |
 | `APP_NAME` | 否 | `JadeAI` | 应用显示名称 |
 | `DEFAULT_LOCALE` | 否 | `zh` | 默认语言：`zh` 或 `en` |
+
+家庭本地登录账号固定从 `./data/local-auth-users.json` 读取。
 
 ## 常用命令
 
@@ -306,7 +315,6 @@ pnpm dev
 | `pnpm db:studio` | 打开 Drizzle Studio（数据库 GUI） |
 | `pnpm db:seed` | 填充示例数据 |
 | `pnpm auth:hash -- "明文密码"` | 生成家庭本地登录可用的 `passwordHash` |
-| `pnpm auth:add-user` | 交互式追加用户到 `add_user/LOCAL_AUTH_USERS_JSON.json` |
 
 ## 项目结构
 
@@ -460,7 +468,7 @@ JadeAI 不需要在服务端配置 AI API 密钥。每位用户在应用内的 *
 <details>
 <summary><b>家庭本地登录如何工作？</b></summary>
 
-JadeAI 通过 `LOCAL_AUTH_USERS_JSON` 读取家庭账号配置。登录页使用用户名和密码校验，密码只存 `scrypt` hash，不存明文。同一用户名首次登录会创建固定本地用户，之后在不同浏览器和不同设备上都会复用同一份数据。
+JadeAI 固定从 `./data/local-auth-users.json` 读取家庭账号配置。登录页使用用户名和密码校验，密码只存 `scrypt` hash，不存明文。同一用户名首次登录会创建固定本地用户，之后在不同浏览器和不同设备上都会复用同一份数据。
 
 </details>
 

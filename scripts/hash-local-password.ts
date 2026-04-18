@@ -1,5 +1,5 @@
 /**
- * Generate a local auth password hash for LOCAL_AUTH_USERS_JSON.
+ * Generate a local auth password hash for local auth user JSON files.
  *
  * Usage: pnpm auth:hash -- "plain-password"
  */
