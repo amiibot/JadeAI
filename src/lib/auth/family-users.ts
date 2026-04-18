@@ -18,6 +18,7 @@ const familyUserSchema = z.object({
 });
 
 const familyUsersSchema = z.array(familyUserSchema);
+const LOCAL_AUTH_USERS_FILE = './data/local-auth-users.json';
 
 let cachedFamilyUsers: readonly FamilyUserConfig[] | null = null;
 
@@ -59,7 +60,7 @@ function loadUsersFromPath(pathValue: string) {
     const filePath = resolve(process.cwd(), pathValue);
     return readFileSync(filePath, 'utf8').trim();
   } catch (error) {
-    console.error(`[auth] Failed to read LOCAL_AUTH_USERS_PATH: ${pathValue}`, error);
+    console.error(`[auth] Failed to read local auth user file: ${pathValue}`, error);
     return null;
   }
 }
@@ -69,14 +70,7 @@ function loadFamilyUsers() {
     return cachedFamilyUsers;
   }
 
-  const usersPath = process.env.LOCAL_AUTH_USERS_PATH?.trim();
-  if (!usersPath) {
-    console.error('[auth] Missing LOCAL_AUTH_USERS_PATH configuration.');
-    cachedFamilyUsers = [];
-    return cachedFamilyUsers;
-  }
-
-  const rawUsers = loadUsersFromPath(usersPath);
+  const rawUsers = loadUsersFromPath(LOCAL_AUTH_USERS_FILE);
   if (!rawUsers) {
     cachedFamilyUsers = [];
     return cachedFamilyUsers;

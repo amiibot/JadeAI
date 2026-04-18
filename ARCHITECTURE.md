@@ -438,7 +438,7 @@ AI 可以调用工具直接修改简历内容：
 ```
 ┌─────────────────────────────────────────────┐
 │              认证配置                         │
-│ AUTH_SECRET + LOCAL_AUTH_USERS_PATH          │
+│ AUTH_SECRET + ./data/local-auth-users.json  │
 └──────────────────┬──────────────────────────┘
                    │
                    ▼
@@ -447,7 +447,7 @@ AI 可以调用工具直接修改简历内容：
 │                                             │
 │  输入: username + password                  │
 │  校验:                                      │
-│  - 从 LOCAL_AUTH_USERS_PATH 读取家庭账号     │
+│  - 从 ./data/local-auth-users.json 读取家庭账号 │
 │  - 使用 scrypt hash 校验密码                │
 │  - 首次登录创建本地 users 记录               │
 └──────────────────┬──────────────────────────┘
@@ -1695,7 +1695,7 @@ APP_NAME=JadeAI
 
 # ===== 认证 =====
 AUTH_SECRET=your-auth-secret-key        # NextAuth 密钥
-LOCAL_AUTH_USERS_PATH=./data/local-auth-users.json
+# 本地账号固定从 ./data/local-auth-users.json 读取
 
 # ===== 数据库 =====
 DB_TYPE=postgresql                       # 'postgresql' 或 'sqlite'

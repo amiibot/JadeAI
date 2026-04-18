@@ -197,14 +197,13 @@ src/
 ```bash
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=$(openssl rand -base64 32) \
-  -e LOCAL_AUTH_USERS_PATH=/app/data/local-auth-users.json \
   -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
 
 打开 `http://localhost:3000`，首次启动自动完成数据库迁移和初始化。
 
-当前部署至少需要 `AUTH_SECRET` 和 `LOCAL_AUTH_USERS_PATH` 两个环境变量。AI 功能在应用内的 **设置 > AI** 里自己配置 API Key 和模型。
+当前部署至少需要 `AUTH_SECRET`，并确保 `/app/data/local-auth-users.json` 存在。AI 功能在应用内的 **设置 > AI** 里自己配置 API Key 和模型。
 
 需要 PostgreSQL？继续补充数据库环境变量：
 
