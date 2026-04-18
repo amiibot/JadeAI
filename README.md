@@ -201,7 +201,6 @@ Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and 
 > **`AUTH_SECRET`** is required for session encryption. Generate one with `openssl rand -base64 32`.
 
 > Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then paste it into `LOCAL_AUTH_USERS_JSON`.
-> For repeated user entry, run `pnpm auth:add-user` and append users into `add_user/LOCAL_AUTH_USERS_JSON.json`.
 
 > **Local family login:** Visit `/zh/login` or `/en/login` and sign in with a username and password from `LOCAL_AUTH_USERS_JSON`.
 
@@ -213,6 +212,7 @@ Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and 
 ```bash
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
+  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
   csania/jadeai:latest
@@ -230,19 +230,19 @@ docker run -d -p 3000:3000 \
 #### Installation
 
 ```bash
-git clone https://github.com/twwch/JadeAI.git
+git clone https://github.com/amiibot/JadeAI.git
 cd JadeAI
 
 pnpm install
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 #### Configure Environment
 
-> Fork-specific change: the default auth flow is now local family login; family accounts are configured through `.env.local` / `LOCAL_AUTH_USERS_JSON`; use `pnpm auth:hash -- "plain-password"` to generate `passwordHash` values.
+> Fork-specific change: the default auth flow is now local family login; family accounts are configured through `.env` / `LOCAL_AUTH_USERS_JSON`; use `pnpm auth:hash -- "plain-password"` to generate `passwordHash` values.
 
 
-Edit `.env.local`:
+Edit `.env`:
 
 ```bash
 # Database (defaults to SQLite, no config needed)
@@ -304,7 +304,6 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm db:studio` | Open Drizzle Studio (database GUI) |
 | `pnpm db:seed` | Seed database with sample data |
 | `pnpm auth:hash -- "plain-password"` | Generate a `passwordHash` for local family login |
-| `pnpm auth:add-user` | Interactively append users into `add_user/LOCAL_AUTH_USERS_JSON.json` |
 
 ## Project Structure
 

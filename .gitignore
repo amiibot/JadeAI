@@ -44,11 +44,5 @@ next-env.d.ts
 AGENTS.md
 
 jadeai-data/
-jadeai-data;C/
-.tmp-jadeai*.env
-docker_run_local.sh
-add_user/LOCAL_AUTH_USERS_JSON.json
 
 .superpowers
-
-test

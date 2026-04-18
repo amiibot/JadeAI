@@ -203,7 +203,6 @@ docker run -d -p 3000:3000 \
 > **`AUTH_SECRET`** 为必填项，用于会话加密。通过 `openssl rand -base64 32` 生成。
 
 > 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `LOCAL_AUTH_USERS_JSON`。
-> 如果需要连续录入多个账号，运行 `pnpm auth:add-user`，把结果追加到 `add_user/LOCAL_AUTH_USERS_JSON.json`。
 
 > **家庭本地登录：** 访问 `/zh/login` 或 `/en/login`，使用 `LOCAL_AUTH_USERS_JSON` 中配置的用户名和密码登录。
 
@@ -215,6 +214,7 @@ docker run -d -p 3000:3000 \
 ```bash
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
+  -e LOCAL_AUTH_USERS_JSON='[{"username":"jade","name":"Jade Family","passwordHash":"scrypt$16384$8$1$replace-salt$replace-derived-key"}]' \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
   csania/jadeai:latest
@@ -232,19 +232,19 @@ docker run -d -p 3000:3000 \
 #### 安装
 
 ```bash
-git clone https://github.com/twwch/JadeAI.git
+git clone https://github.com/amiibot/JadeAI.git
 cd JadeAI
 
 pnpm install
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 #### 配置环境变量
 
-> 修改版核心差异：默认认证已改为家庭本地登录；家庭账号通过 `.env.local` / `LOCAL_AUTH_USERS_JSON` 配置；可用 `pnpm auth:hash -- "明文密码"` 生成 `passwordHash`。
+> 修改版核心差异：默认认证已改为家庭本地登录；家庭账号通过 `.env` / `LOCAL_AUTH_USERS_JSON` 配置；可用 `pnpm auth:hash -- "明文密码"` 生成 `passwordHash`。
 
 
-编辑 `.env.local`：
+编辑 `.env`：
 
 ```bash
 # 数据库（默认 SQLite，无需额外配置）
@@ -306,7 +306,6 @@ pnpm dev
 | `pnpm db:studio` | 打开 Drizzle Studio（数据库 GUI） |
 | `pnpm db:seed` | 填充示例数据 |
 | `pnpm auth:hash -- "明文密码"` | 生成家庭本地登录可用的 `passwordHash` |
-| `pnpm auth:add-user` | 交互式追加用户到 `add_user/LOCAL_AUTH_USERS_JSON.json` |
 
 ## 项目结构
 

@@ -40,7 +40,7 @@
 
 ```
 jade-ai/
-├── .env.local                          # 环境变量（本地）
+├── .env                                # 环境变量（本地）
 ├── .env.example                        # 环境变量模板
 ├── next.config.ts                      # Next.js 配置
 ├── drizzle.config.ts                   # Drizzle ORM 配置
@@ -1775,8 +1775,8 @@ Drizzle 允许在 TypeScript 中一次定义 Schema，跨 PostgreSQL 和 SQLite 
 pnpm install
 
 # 2. 配置环境变量
-cp .env.example .env.local
-# 编辑 .env.local 填入实际值
+cp .env.example .env
+# 编辑 .env 填入实际值
 
 # 3. 初始化数据库
 pnpm db:generate   # 从 schema 生成迁移文件
