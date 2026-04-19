@@ -25,7 +25,7 @@ import { SettingsDialog } from '@/components/settings/settings-dialog';
 import { TourOverlay, type TourStepConfig } from '@/components/tour/tour-overlay';
 import { useTourStore, hasCompletedTour } from '@/stores/tour-store';
 import { cn } from '@/lib/utils';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import type { Resume } from '@/types/resume';
 
 type SortOption = 'lastEdited' | 'created' | 'nameAsc' | 'nameDesc';

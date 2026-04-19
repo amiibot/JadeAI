@@ -2,6 +2,7 @@ import { eq, desc, sql } from 'drizzle-orm';
 import { db } from '../index';
 import { resumes, resumeSections } from '../schema';
 import { normalizeThemeConfig } from '../json-normalize';
+import type { ResumeSection } from '@/types/resume';
 
 export const resumeRepository = {
   async findAllByUserId(userId: string) {
@@ -83,11 +84,11 @@ export const resumeRepository = {
   },
 
   async incrementViewCount(id: string) {
-    await db.update(resumes).set({ viewCount: sql`${resumes.viewCount} + 1` } as any).where(eq(resumes.id, id));
+    await db.update(resumes).set({ viewCount: sql`${resumes.viewCount} + 1` }).where(eq(resumes.id, id));
   },
 
   async updateShareSettings(id: string, settings: { isPublic?: boolean; shareToken?: string | null; sharePassword?: string | null }) {
-    await db.update(resumes).set({ ...settings, updatedAt: new Date() } as any).where(eq(resumes.id, id));
+    await db.update(resumes).set({ ...settings, updatedAt: new Date() }).where(eq(resumes.id, id));
   },
 
   // Section operations
@@ -101,12 +102,13 @@ export const resumeRepository = {
       sortOrder: data.sortOrder,
       visible: data.visible ?? true,
       content: data.content || {},
-    } as any);
-    return db.select().from(resumeSections).where(eq(resumeSections.id, id)).limit(1).then((r: any[]) => r[0]);
+    });
+    const rows = await db.select().from(resumeSections).where(eq(resumeSections.id, id)).limit(1);
+    return rows[0] as ResumeSection | undefined;
   },
 
   async updateSection(id: string, data: Partial<{ title: string; sortOrder: number; visible: boolean; content: unknown }>) {
-    await db.update(resumeSections).set({ ...data, updatedAt: new Date() } as any).where(eq(resumeSections.id, id));
+    await db.update(resumeSections).set({ ...data, updatedAt: new Date() }).where(eq(resumeSections.id, id));
   },
 
   async deleteSection(id: string) {

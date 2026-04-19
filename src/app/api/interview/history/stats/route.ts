@@ -10,7 +10,7 @@ export async function GET() {
 
   const reportsWithSessions = await interviewRepository.findReportsByUserId(user.id);
 
-  const sessions = reportsWithSessions.map(({ report, session }) => ({
+  const sessions = reportsWithSessions.map(({ report, session }: (typeof reportsWithSessions)[number]) => ({
     id: session.id,
     jobTitle: session.jobTitle,
     overallScore: report.overallScore,

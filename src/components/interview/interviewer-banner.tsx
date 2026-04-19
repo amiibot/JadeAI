@@ -24,7 +24,7 @@ export function InterviewerBanner({ config, questionCount }: InterviewerBannerPr
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold">{config.name}</span>
           <Badge variant="secondary" className="text-[10px]">
-            {t(config.type.startsWith('custom_') ? 'custom' : (config.type as any))}
+            {t(config.type.startsWith('custom_') ? 'custom' : (config.type ))}
           </Badge>
         </div>
         <p className="truncate text-xs text-zinc-500">{config.style}</p>

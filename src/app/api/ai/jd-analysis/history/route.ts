@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     // List all
     const analyses = await analysisRepository.findJdAnalysesByResumeId(resumeId);
 
-    const list = analyses.map((a: any) => ({
+    const list = analyses.map((a: (typeof analyses)[number]) => ({
       id: a.id,
       overallScore: a.overallScore,
       atsScore: a.atsScore,

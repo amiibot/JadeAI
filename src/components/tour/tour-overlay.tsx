@@ -94,7 +94,7 @@ function calcTooltipStyle(
 export function TourOverlay({ tourId, steps }: TourOverlayProps) {
   const t = useTranslations('tour');
   const { isActive, activeTourId, currentStep, totalSteps, nextStep, prevStep, dismiss } = useTourStore();
-  const [rect, setRect] = useState<Rect | null>(null);
+  const [rectState, setRectState] = useState<Rect | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltipSize, setTooltipSize] = useState({ w: 320, h: 160 });
 
@@ -105,12 +105,11 @@ export function TourOverlay({ tourId, steps }: TourOverlayProps) {
     const step = steps[currentStep];
     if (!step) return;
     const r = getTargetRect(step.target);
-    setRect(r);
+    setRectState(r);
   }, [isMyTour, currentStep, steps]);
 
   useEffect(() => {
     if (!isMyTour) {
-      setRect(null);
       return;
     }
     // If target element doesn't exist, skip to next step
@@ -134,7 +133,7 @@ export function TourOverlay({ tourId, steps }: TourOverlayProps) {
       const r = tooltipRef.current.getBoundingClientRect();
       setTooltipSize({ w: r.width, h: r.height });
     }
-  }, [currentStep, isMyTour, rect]);
+  }, [currentStep, isMyTour, rectState]);
 
   // Skip on mobile
   const [isMobile, setIsMobile] = useState(() => {
@@ -149,6 +148,7 @@ export function TourOverlay({ tourId, steps }: TourOverlayProps) {
 
   if (typeof document === 'undefined' || !isMyTour || isMobile) return null;
 
+  const rect = isMyTour ? rectState : null;
   const step = steps[currentStep];
   const isLast = currentStep === totalSteps - 1;
   const isFirst = currentStep === 0;

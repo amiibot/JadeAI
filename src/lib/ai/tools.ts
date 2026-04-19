@@ -4,6 +4,7 @@ import { resumeRepository } from '@/lib/db/repositories/resume.repository';
 import { getModel, getJsonProviderOptions, type AIConfig } from '@/lib/ai/provider';
 import { jdAnalysisOutputSchema } from '@/lib/ai/jd-analysis-schema';
 import { extractJson } from '@/lib/ai/extract-json';
+import type { GitHubContent } from '@/types/resume';
 
 export function createExecutableTools(resumeId: string, aiConfig: AIConfig) {
   return {
@@ -29,7 +30,7 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
         const resume = await resumeRepository.findById(resumeId);
         if (!resume) return { success: false, error: 'Resume not found' };
 
-        const section = resume.sections.find((s: any) => s.id === sectionId);
+        const section = resume.sections.find((s) => s.id === sectionId);
         if (!section) return { success: false, error: 'Section not found' };
 
         let parsedValue: unknown = value;
@@ -48,9 +49,9 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
             // Convert plain text to a single custom item
             parsedValue = [{ id: crypto.randomUUID(), title: '', description: parsedValue }];
           } else if (!Array.isArray(parsedValue)) {
-            // If it's an object with items inside, extract them
-            if (Array.isArray((parsedValue as any)?.items)) {
-              parsedValue = (parsedValue as any).items;
+            const items = (parsedValue as { items?: unknown[] } | null)?.items;
+            if (Array.isArray(items)) {
+              parsedValue = items;
             }
           }
           actualField = section.type === 'skills' ? 'categories' : 'items';
@@ -66,34 +67,39 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
 
         // Ensure items/categories always have id fields
         if (Array.isArray(parsedValue)) {
-          parsedValue = (parsedValue as any[]).map((item) =>
-            typeof item === 'object' && item !== null && !item.id
-              ? { ...item, id: crypto.randomUUID() }
-              : item
-          );
+          parsedValue = (parsedValue as unknown[]).map((item) => {
+            if (typeof item === 'object' && item !== null && !('id' in item)) {
+              return { ...item, id: crypto.randomUUID() };
+            }
+            return item;
+          });
         }
 
         // GitHub sections: protect read-only fields for existing items, auto-fetch for new items
         if (section.type === 'github' && actualField === 'items' && Array.isArray(parsedValue)) {
-          const existingItems = ((section.content as any)?.items || []) as any[];
-          const readonlyMap = new Map(existingItems.map((it: any) => [it.id, { stars: it.stars, name: it.name, repoUrl: it.repoUrl, language: it.language }]));
-          parsedValue = await Promise.all((parsedValue as any[]).map(async (item: any) => {
+          const existingItems = ((section.content as GitHubContent | undefined)?.items || []);
+          const readonlyMap = new Map(existingItems.map((it) => [it.id, { stars: it.stars, name: it.name, repoUrl: it.repoUrl, language: it.language }]));
+          parsedValue = await Promise.all((parsedValue as Array<Record<string, unknown>>).map(async (item) => {
+            const id = typeof item.id === 'string' ? item.id : undefined;
+            const repoUrl = typeof item.repoUrl === 'string' ? item.repoUrl : '';
+            const description = typeof item.description === 'string' ? item.description : undefined;
+
             // Existing item: restore read-only fields
-            if (item.id && readonlyMap.has(item.id)) {
-              return { ...item, ...readonlyMap.get(item.id) };
+            if (id && readonlyMap.has(id)) {
+              return { ...item, ...readonlyMap.get(id) };
             }
             // New item with repoUrl: fetch real data from GitHub API
-            if (item.repoUrl && /github\.com\/[^/]+\/[^/]+/.test(item.repoUrl)) {
+            if (repoUrl && /github\.com\/[^/]+\/[^/]+/.test(repoUrl)) {
               try {
-                const match = item.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
+                const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
                 if (match) {
                   const repoName = match[2].replace(/\.git$/, '');
                   const ghRes = await fetch(`https://api.github.com/repos/${match[1]}/${repoName}`, {
                     headers: { Accept: 'application/vnd.github.v3+json' },
                   });
                   if (ghRes.ok) {
-                    const gh = await ghRes.json();
-                    return { ...item, name: gh.full_name, stars: gh.stargazers_count, language: gh.language || '', description: item.description || gh.description || '' };
+                    const gh = await ghRes.json() as { full_name?: string; stargazers_count?: number; language?: string | null; description?: string | null };
+                    return { ...item, name: gh.full_name, stars: gh.stargazers_count, language: gh.language || '', description: description || gh.description || '' };
                   }
                 }
               } catch { /* fallback to AI-provided data */ }
@@ -120,7 +126,7 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
         const resume = await resumeRepository.findById(resumeId);
         if (!resume) return { success: false, error: 'Resume not found' };
 
-        const maxOrder = resume.sections.reduce((max: number, s: any) => Math.max(max, s.sortOrder), -1);
+        const maxOrder = resume.sections.reduce((max: number, s) => Math.max(max, s.sortOrder), -1);
 
         let parsedContent: unknown = {};
         if (content) {
@@ -156,7 +162,7 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
         const resume = await resumeRepository.findById(resumeId);
         if (!resume) return { success: false, error: 'Resume not found' };
 
-        const section = resume.sections.find((s: any) => s.id === sectionId);
+        const section = resume.sections.find((s) => s.id === sectionId);
         if (!section) return { success: false, error: 'Section not found' };
 
         const updatedContent = { ...(section.content as Record<string, unknown>), [field]: improvedText };
@@ -176,7 +182,7 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
         const resume = await resumeRepository.findById(resumeId);
         if (!resume) return { success: false, error: 'Resume not found' };
 
-        const skillsSection = resume.sections.find((s: any) => s.type === 'skills');
+        const skillsSection = resume.sections.find((s) => s.type === 'skills');
         if (!skillsSection) return { success: false, error: 'Skills section not found' };
 
         const content = skillsSection.content as { categories?: { id: string; name: string; skills: string[] }[] };
@@ -237,11 +243,11 @@ CRITICAL: You are a JSON API. Your entire response must be a single valid JSON o
         const singleSectionSchema = z.object({
           sectionId: z.string(),
           title: z.string(),
-          content: z.any(),
+          content: z.unknown(),
         });
 
         // Translate each section concurrently (max 4 at a time)
-        const sections = resume.sections.map((s: any) => ({
+        const sections = resume.sections.map((s) => ({
           sectionId: s.id,
           type: s.type,
           title: s.title,

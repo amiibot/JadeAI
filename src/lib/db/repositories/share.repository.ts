@@ -42,7 +42,7 @@ export const shareRepository = {
       token: data.token,
       label: data.label || '',
       password: data.password ?? null,
-    } as any);
+    } );
     const rows = await db.select().from(resumeShares).where(eq(resumeShares.id, id)).limit(1);
     return rows[0];
   },
@@ -57,7 +57,7 @@ export const shareRepository = {
     if (data.password !== undefined) setClause.password = data.password;
     if (data.isActive !== undefined) setClause.isActive = data.isActive;
 
-    await db.update(resumeShares).set(setClause as any).where(eq(resumeShares.id, id));
+    await db.update(resumeShares).set(setClause ).where(eq(resumeShares.id, id));
     const rows = await db.select().from(resumeShares).where(eq(resumeShares.id, id)).limit(1);
     return rows[0] ?? null;
   },

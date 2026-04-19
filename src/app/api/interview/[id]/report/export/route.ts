@@ -24,11 +24,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'No report found' }, { status: 404 });
     }
 
-    const html = generateInterviewReportHtml(report, session);
+    const html = generateInterviewReportHtml(report, { createdAt: session.createdAt, jobTitle: session.jobTitle });
     const pdfBuffer = await generatePdf(html);
 
     const title = session.jobTitle || 'interview-report';
-    const date = new Date(session.createdAt as any).toISOString().slice(0, 10);
+    const date = new Date(session.createdAt ).toISOString().slice(0, 10);
     const filename = `${title}-${date}`;
 
     return new NextResponse(new Uint8Array(pdfBuffer), {

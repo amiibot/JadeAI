@@ -171,6 +171,6 @@ export async function createSampleResume(userId: string) {
       id: crypto.randomUUID(),
       resumeId,
       ...section,
-    } as any);
+    } );
   }
 }

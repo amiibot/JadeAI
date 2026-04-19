@@ -1,5 +1,5 @@
-export interface DatabaseAdapter {
-  db: any;
+export interface DatabaseAdapter<TDb> {
+  db: TDb;
   initialize(): Promise<void>;
   close(): Promise<void>;
 }

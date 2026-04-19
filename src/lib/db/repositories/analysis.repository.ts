@@ -20,7 +20,7 @@ export const analysisRepository = {
       result: data.result,
       overallScore: data.overallScore,
       atsScore: data.atsScore,
-    } as any);
+    } );
     const rows = await db.select().from(jdAnalyses).where(eq(jdAnalyses.id, id)).limit(1);
     return rows[0];
   },
@@ -58,7 +58,7 @@ export const analysisRepository = {
       result: data.result,
       score: data.score,
       issueCount: data.issueCount,
-    } as any);
+    } );
     const rows = await db.select().from(grammarChecks).where(eq(grammarChecks.id, id)).limit(1);
     return rows[0];
   },

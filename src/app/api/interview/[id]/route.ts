@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   // Include messages for each round (needed for resume/history)
   const roundsWithMessages = await Promise.all(
-    rounds.map(async (round: any) => {
+    rounds.map(async (round) => {
       const messages = await interviewRepository.findMessagesByRoundId(round.id);
       return { ...round, messages };
     })

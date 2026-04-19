@@ -80,9 +80,9 @@ export async function POST(request: NextRequest) {
           for (let i = 0; i < tcs.length; i++) {
             orderedParts.push({
               type: 'tool',
-              toolName: (tcs[i] as any).toolName,
-              args: (tcs[i] as any).input,
-              result: (trs[i] as any)?.output,
+              toolName: (tcs[i] ).toolName,
+              args: (tcs[i] ).input,
+              result: (trs[i] )?.output,
             });
           }
         }

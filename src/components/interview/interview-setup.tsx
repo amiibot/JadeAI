@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { JDInput } from './jd-input';
 import { ResumeSelector } from './resume-selector';
 import { InterviewerPicker } from './interviewer-picker';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import { getAIHeaders } from '@/stores/settings-store';
 import type { InterviewerConfig } from '@/types/interview';
 

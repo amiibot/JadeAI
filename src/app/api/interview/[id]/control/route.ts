@@ -32,7 +32,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       }
       // Advance to next round or complete session
       const rounds = await interviewRepository.findRoundsBySessionId(sessionId);
-      const currentIndex = rounds.findIndex((r: any) => r.id === roundId);
+      const currentIndex = rounds.findIndex((r: (typeof rounds)[number]) => r.id === roundId);
       const nextRound = currentIndex >= 0 ? rounds[currentIndex + 1] : undefined;
       if (nextRound) {
         await interviewRepository.updateSessionRound(sessionId, currentIndex + 1);

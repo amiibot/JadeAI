@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // Filter sections if specific IDs are provided
     const sectionsToCheck = sectionIds
-      ? resume.sections.filter((s: any) => sectionIds.includes(s.id))
+      ? resume.sections.filter((s: (typeof resume.sections)[number]) => sectionIds.includes(s.id))
       : resume.sections;
 
     if (sectionsToCheck.length === 0) {
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare sections data for AI analysis
-    const sectionsData = sectionsToCheck.map((s: any) => ({
+    const sectionsData = sectionsToCheck.map((s: (typeof sectionsToCheck)[number]) => ({
       sectionId: s.id,
       sectionTitle: s.title,
       type: s.type,

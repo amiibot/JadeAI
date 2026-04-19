@@ -62,8 +62,8 @@ export async function PUT(
     // Sync sections: create new, update existing, delete removed
     if (sections && Array.isArray(sections)) {
       const existingSections = resume.sections || [];
-      const existingIds = new Set(existingSections.map((s: any) => s.id));
-      const incomingIds = new Set(sections.map((s: any) => s.id));
+      const existingIds = new Set(existingSections.map((s: (typeof existingSections)[number]) => s.id));
+      const incomingIds = new Set(sections.map((s: (typeof sections)[number]) => s.id));
 
       // Delete sections that were removed by the user
       for (const existing of existingSections) {
@@ -72,7 +72,7 @@ export async function PUT(
         }
       }
 
-      for (const section of sections) {
+      for (const section of sections as typeof existingSections) {
         if (existingIds.has(section.id)) {
           // Update existing section
           await resumeRepository.updateSection(section.id, {

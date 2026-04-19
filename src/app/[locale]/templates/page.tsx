@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { TEMPLATES } from '@/lib/constants';
 import { useResume } from '@/hooks/use-resume';
-import { Link, useRouter } from '@/i18n/routing';
+import { Link, useRouter } from '@/i18n/navigation';
 import { ResumePreview } from '@/components/preview/resume-preview';
 import { TourOverlay, type TourStepConfig } from '@/components/tour/tour-overlay';
 import { useTourStore, hasCompletedTour } from '@/stores/tour-store';

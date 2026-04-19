@@ -72,9 +72,10 @@ export const chatRepository = {
       role: data.role,
       content: data.content,
       metadata: data.metadata || {},
-    } as any);
+    });
     await db.update(chatSessions).set({ updatedAt: new Date() }).where(eq(chatSessions.id, data.sessionId));
-    return db.select().from(chatMessages).where(eq(chatMessages.id, id)).limit(1).then((r: any[]) => r[0]);
+    const rows = await db.select().from(chatMessages).where(eq(chatMessages.id, id)).limit(1);
+    return rows[0];
   },
 
   async updateSessionTitle(sessionId: string, title: string) {

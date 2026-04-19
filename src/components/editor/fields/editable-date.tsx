@@ -30,7 +30,7 @@ export function EditableDate({ label, value, onChange }: EditableDateProps) {
 
   const displayText = useMemo(() => {
     if (!selectedYear || !selectedMonth) return '';
-    return t('dateDisplay', { year: selectedYear, month: t(`months.${selectedMonth}` as any) });
+    return t('dateDisplay', { year: selectedYear, month: t(`months.${selectedMonth}` ) });
   }, [selectedYear, selectedMonth, t]);
 
   const handleMonthClick = (month: string) => {
@@ -104,7 +104,7 @@ export function EditableDate({ label, value, onChange }: EditableDateProps) {
                     }`}
                     onClick={() => handleMonthClick(m)}
                   >
-                    {t(`months.${m}` as any)}
+                    {t(`months.${m}` )}
                   </Button>
                 );
               })}

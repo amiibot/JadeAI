@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import {
   Dialog,
   DialogContent,
@@ -118,12 +118,12 @@ export function ImportJsonDialog({ open, onOpenChange }: ImportJsonDialogProps) 
         onOpenChange(false);
         router.push(`/editor/${newResume.id}`);
       }, 1000);
-    } catch (err: any) {
+    } catch (err) {
       setState('error');
       if (err instanceof SyntaxError) {
         setErrorMessage(t('invalidFormat'));
       } else {
-        setErrorMessage(err.message || t('error'));
+        setErrorMessage(err instanceof Error ? err.message : t('error'));
       }
     }
   }, [selectedFile, onOpenChange, router, t]);

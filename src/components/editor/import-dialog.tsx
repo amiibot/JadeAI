@@ -106,12 +106,14 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
 
       setState('success');
       setTimeout(() => onOpenChange(false), 1500);
-    } catch (err: any) {
+    } catch (err) {
       setState('error');
       if (err instanceof SyntaxError) {
         setErrorMessage(t('invalidFormat'));
-      } else {
+      } else if (err instanceof Error) {
         setErrorMessage(err.message || t('error'));
+      } else {
+        setErrorMessage(t('error'));
       }
     }
   }, [selectedFile, currentResume, setResume, save, onOpenChange, t]);

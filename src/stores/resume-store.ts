@@ -39,17 +39,17 @@ export const useResumeStore = create<ResumeStore>((set, get) => ({
 
     // Normalize: ensure all items/categories in section content have id fields
     const sections = (resume.sections || []).map((s) => {
-      const content = s.content as unknown as Record<string, unknown>;
-      if (Array.isArray(content?.items)) {
-        content.items = (content.items as any[]).map((item) =>
-          typeof item === 'object' && item !== null && !item.id
+      const content = s.content as unknown as Record<string, unknown> & { items?: unknown[]; categories?: unknown[] };
+      if (Array.isArray(content.items)) {
+        content.items = content.items.map((item) =>
+          typeof item === 'object' && item !== null && !('id' in item)
             ? { ...item, id: generateId() }
             : item
         );
       }
-      if (Array.isArray(content?.categories)) {
-        content.categories = (content.categories as any[]).map((cat) =>
-          typeof cat === 'object' && cat !== null && !cat.id
+      if (Array.isArray(content.categories)) {
+        content.categories = content.categories.map((cat) =>
+          typeof cat === 'object' && cat !== null && !('id' in cat)
             ? { ...cat, id: generateId() }
             : cat
         );

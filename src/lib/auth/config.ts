@@ -53,9 +53,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const authUser: LocalAuthUser = {
           id: dbUser.id,
           name: dbUser.name,
-          email: dbUser.email,
-          image: dbUser.avatarUrl,
-          username: dbUser.username,
+          email: dbUser.email ?? undefined,
+          image: dbUser.avatarUrl ?? undefined,
+          username: dbUser.username ?? undefined,
           authType: 'local',
         };
 

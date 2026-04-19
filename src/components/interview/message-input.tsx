@@ -28,7 +28,7 @@ export function MessageInput({ input, isLoading, onChange, onSubmit }: MessageIn
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
               e.preventDefault();
-              onSubmit(e as any);
+              e.currentTarget.form?.requestSubmit();
             }
           }}
         />

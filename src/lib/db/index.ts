@@ -1,9 +1,10 @@
 import { config } from '@/lib/config';
-import { SQLiteAdapter } from './adapters/sqlite';
-import { PostgreSQLAdapter } from './adapters/postgresql';
-import type { DatabaseAdapter } from './adapter';
+import { SQLiteAdapter, type SQLiteDb } from './adapters/sqlite';
+import { PostgreSQLAdapter, type PostgreSQLDb } from './adapters/postgresql';
 
-let adapter: DatabaseAdapter;
+type Db = SQLiteDb & PostgreSQLDb;
+
+let adapter: SQLiteAdapter | PostgreSQLAdapter;
 
 if (config.db.type === 'postgresql') {
   adapter = new PostgreSQLAdapter(process.env.DATABASE_URL!);
@@ -26,5 +27,5 @@ const _initPromise = adapter.initialize().catch((e) =>
 /** Await this before any DB operation to ensure tables exist */
 export const dbReady = _initPromise;
 
-export const db = adapter.db;
+export const db = adapter.db as Db;
 export { adapter };

@@ -6,8 +6,14 @@ import type { DatabaseAdapter } from '../adapter';
 import { mkdirSync } from 'fs';
 import { dirname, resolve } from 'path';
 
-export class SQLiteAdapter implements DatabaseAdapter {
-  db;
+function createDb(sqlite: Database.Database) {
+  return drizzle(sqlite, { schema });
+}
+
+export type SQLiteDb = ReturnType<typeof createDb>;
+
+export class SQLiteAdapter implements DatabaseAdapter<SQLiteDb> {
+  db: SQLiteDb;
   private sqlite: Database.Database;
 
   constructor(path: string) {
@@ -15,7 +21,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
     this.sqlite = new Database(path);
     this.sqlite.pragma('journal_mode = WAL');
     this.sqlite.pragma('foreign_keys = ON');
-    this.db = drizzle(this.sqlite, { schema });
+    this.db = createDb(this.sqlite);
 
     // Auto-run migrations (synchronous for SQLite)
     try {
@@ -27,8 +33,8 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   async initialize(): Promise<void> {
     try {
-      const row = this.sqlite.prepare('SELECT count(*) as count FROM users').get() as any;
-      if (row?.count === 0) {
+      const row = this.sqlite.prepare('SELECT count(*) as count FROM users').get() as { count: number } | undefined;
+      if ((row?.count ?? 0) === 0) {
         const { seedDemoUser } = await import('../seed-demo');
         await seedDemoUser(this.db);
         console.log('[DB] SQLite auto-seed complete');

@@ -1,12 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import type { QrCodeItem } from '@/types/resume';
+import { useEffect, useMemo, useState } from 'react';
 import { generateQrSvg } from '@/lib/qrcode';
 
+type QrPreviewItem = {
+  id?: string;
+  label?: string;
+  name?: string;
+  title?: string;
+  url?: string;
+};
+
 interface QrCodesPreviewProps {
-  items: QrCodeItem[];
+  items: ReadonlyArray<QrPreviewItem>;
 }
+
+type NormalizedQrCodeItem = {
+  id: string;
+  label: string;
+  url: string;
+};
 
 function isValidUrl(str: string): boolean {
   if (!str.trim()) return false;
@@ -22,16 +35,27 @@ function isValidUrl(str: string): boolean {
 }
 
 export function QrCodesPreview({ items }: QrCodesPreviewProps) {
-  const filtered = items.filter((q) => isValidUrl(q.url));
+  const filtered = useMemo<NormalizedQrCodeItem[]>(() => (
+    items.flatMap((item, index) => {
+      if (typeof item.url !== 'string' || !isValidUrl(item.url)) {
+        return [];
+      }
+
+      return [{
+        id: item.id ?? `qr-${index}`,
+        label: item.label ?? item.name ?? item.title ?? '',
+        url: item.url,
+      }];
+    })
+  ), [items]);
   const [svgs, setSvgs] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (filtered.length === 0) {
-      setSvgs({});
       return;
     }
     let cancelled = false;
-    (async () => {
+    void (async () => {
       const results: Record<string, string> = {};
       for (const qr of filtered) {
         try {
@@ -42,9 +66,10 @@ export function QrCodesPreview({ items }: QrCodesPreviewProps) {
       }
       if (!cancelled) setSvgs(results);
     })();
-    return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filtered)]);
+    return () => {
+      cancelled = true;
+    };
+  }, [filtered]);
 
   if (filtered.length === 0) return null;
   const hasAnySvg = filtered.some((qr) => svgs[qr.id]);

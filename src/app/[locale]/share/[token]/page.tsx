@@ -6,7 +6,7 @@ import { ResumePreview } from '@/components/preview/resume-preview';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Lock, FileX2 } from 'lucide-react';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/navigation';
 import type { Resume } from '@/types/resume';
 
 export default function SharePage({ params }: { params: Promise<{ token: string }> }) {

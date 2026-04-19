@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { UIMessage } from 'ai';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import { useInterviewStore } from '@/stores/interview-store';
 import { useInterviewChat } from '@/hooks/use-interview-chat';
 import { useSettingsStore } from '@/stores/settings-store';
@@ -18,10 +18,10 @@ import { ThinkingIndicator } from './thinking-indicator';
 import type { InterviewerConfig } from '@/types/interview';
 
 /** Convert DB messages to UIMessage format */
-function dbMessagesToUIMessages(dbMessages: any[]): UIMessage[] {
+function dbMessagesToUIMessages(dbMessages: { id: string; role: string; content: string }[]): UIMessage[] {
   return dbMessages
-    .filter((m: any) => m.role !== 'system')
-    .map((m: any) => ({
+    .filter((m) => m.role !== 'system')
+    .map((m) => ({
       id: m.id,
       role: m.role === 'interviewer' ? ('assistant' as const) : ('user' as const),
       parts: [{ type: 'text' as const, text: m.content }],
@@ -83,8 +83,8 @@ export function InterviewRoom({ sessionId, initialMessages }: InterviewRoomProps
     if (!messages.length || isLoading || isViewingHistory) return;
     const lastMsg = messages[messages.length - 1];
     if (lastMsg.role !== 'assistant') return;
-    const text = lastMsg.parts?.find((p: any) => p.type === 'text');
-    if ((text as any)?.text?.includes('[ROUND_COMPLETE]')) {
+    const text = lastMsg.parts?.find((p) => p.type === 'text');
+    if (text?.type === 'text' && text.text.includes('[ROUND_COMPLETE]')) {
       setShowTransition(true);
     }
   }, [messages, isLoading, isViewingHistory]);
@@ -98,14 +98,14 @@ export function InterviewRoom({ sessionId, initialMessages }: InterviewRoomProps
     setCurrentRoundIndex(index);
 
     // Fetch messages for this round
-      try {
-      const res = await fetch(`/api/interview/${sessionId}`, {
-        });
-      const { rounds: roundsWithMessages } = await res.json();
-      const roundData = roundsWithMessages.find((r: any) => r.id === targetRound.id);
+    try {
+      const res = await fetch(`/api/interview/${sessionId}`);
+      const { rounds: roundsWithMessages } = await res.json() as { rounds: Array<{ id: string; messages?: { id: string; role: string; content: string }[] }> };
+      const roundData = roundsWithMessages.find((r: { id: string }) => r.id === targetRound.id);
+      const roundMessages = roundData?.messages ?? [];
 
-      if (roundData?.messages?.length > 0) {
-        setMessages(dbMessagesToUIMessages(roundData.messages));
+      if (roundMessages.length > 0) {
+        setMessages(dbMessagesToUIMessages(roundMessages));
       } else {
         setMessages([]);
       }

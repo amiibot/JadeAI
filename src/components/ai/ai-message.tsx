@@ -8,15 +8,19 @@ import { useTranslations } from 'next-intl';
 import type { UIMessage } from 'ai';
 import { useUIStore } from '@/stores/ui-store';
 
+type MessagePart = UIMessage['parts'][number];
+
+type ToolPart = Extract<MessagePart, { type: `tool-${string}` }>;
+
 interface AIMessageProps {
   message: UIMessage;
 }
 
-function isToolPart(part: any): boolean {
+function isToolPart(part: MessagePart): part is ToolPart {
   return typeof part.type === 'string' && part.type.startsWith('tool-');
 }
 
-function getToolName(part: any): string {
+function getToolName(part: ToolPart): string {
   // AI SDK v6: type is "tool-{toolName}", e.g., "tool-updateSection"
   return part.type.split('-').slice(1).join('-');
 }
@@ -63,7 +67,7 @@ function CollapsibleBlock({
   );
 }
 
-function ToolCallCard({ part }: { part: any }) {
+function ToolCallCard({ part }: { part: ToolPart }) {
   const t = useTranslations('ai');
 
   const toolName = getToolName(part);
@@ -74,7 +78,7 @@ function ToolCallCard({ part }: { part: any }) {
   const isCompleted = state === 'output-available';
   const isError = state === 'output-error';
   const isRunning = !isCompleted && !isError;
-  const isSuccess = isCompleted && result?.success !== false;
+  const isSuccess = isCompleted && (typeof result !== 'object' || result === null || (result as { success?: boolean }).success !== false);
 
   const argsStr = JSON.stringify(args, null, 2);
   const resultStr = result ? JSON.stringify(result, null, 2) : '';
@@ -146,8 +150,8 @@ export function AIMessage({ message }: AIMessageProps) {
 
   const userText = isUser
     ? (message.parts || [])
-        .filter((p) => p.type === 'text')
-        .map((p) => (p as { type: 'text'; text: string }).text)
+        .filter((p: MessagePart): p is Extract<MessagePart, { type: 'text' }> => p.type === 'text')
+        .map((p) => p.text)
         .join('')
     : '';
 
@@ -174,9 +178,9 @@ export function AIMessage({ message }: AIMessageProps) {
         {isUser ? (
           <p className="whitespace-pre-wrap">{userText}</p>
         ) : (
-          (message.parts || []).map((part, i) => {
+          (message.parts || []).map((part: MessagePart, i) => {
             if (part.type === 'text') {
-              const text = (part as { type: 'text'; text: string }).text;
+              const text = part.text;
               if (!text) return null;
               if (text === '__API_KEY_MISSING__') {
                 return <APIKeyMissingCard key={i} />;
@@ -188,7 +192,7 @@ export function AIMessage({ message }: AIMessageProps) {
               );
             }
             if (isToolPart(part)) {
-              return <ToolCallCard key={(part as any).toolCallId || i} part={part} />;
+              return <ToolCallCard key={part.toolCallId || i} part={part} />;
             }
             return null;
           })

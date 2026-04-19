@@ -27,7 +27,7 @@ export function dbMessagesToUIMessages(dbMessages: DBMessage[]): UIMessage[] {
             state: 'output-available',
             input: op.args,
             output: op.result ?? { success: true },
-          } as any);
+          } );
         }
       }
     } else if (msg.role === 'assistant' && metadata.toolCalls) {
@@ -44,7 +44,7 @@ export function dbMessagesToUIMessages(dbMessages: DBMessage[]): UIMessage[] {
           state: 'output-available',
           input: tc.args,
           output: tr?.result ?? { success: true },
-        } as any);
+        } );
       }
 
       if (msg.content) {

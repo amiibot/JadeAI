@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/navigation';
 import { ArrowRight } from 'lucide-react';
 import { ResumePreview } from '@/components/preview/resume-preview';
 import type { Resume } from '@/types/resume';

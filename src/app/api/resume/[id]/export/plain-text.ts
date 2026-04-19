@@ -125,7 +125,7 @@ export function generatePlainText(resume: ResumeWithSections): string {
       default: {
         const custom = section.content as CustomContent;
         lines.push(`== ${section.title} ==`);
-        for (const item of (custom as any).items || []) {
+        for (const item of (custom ).items || []) {
           lines.push(`- ${safe(item.title)}${item.subtitle ? ` - ${item.subtitle}` : ''}`);
           if (item.date) lines.push(`  ${item.date}`);
           if (item.description) lines.push(`  ${item.description}`);

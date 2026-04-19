@@ -4,10 +4,17 @@ import type {
   PersonalInfoContent,
   SkillsContent,
   SummaryContent,
+  ResumeSectionItem,
+  ResumeSkillCategory,
 } from '@/types/resume';
 
 export type ResumeWithSections = NonNullable<Awaited<ReturnType<typeof resumeRepository.findById>>>;
 export type Section = ResumeWithSections['sections'][number];
+export type SectionContentItem = ResumeSectionItem;
+export type SectionSkillCategory = ResumeSkillCategory;
+export type SectionContentShape = import('@/types/resume').SectionContentShape & {
+  _qrSvgs?: Record<string, string>;
+};
 
 // ─── Helpers ──────────────────────────────────────────────────
 
@@ -25,7 +32,8 @@ export function safe(val: unknown): string {
 }
 
 /** Join degree and field with separator */
-export function degreeField(degree: string, field: string | undefined): string {
+export function degreeField(degree?: string, field?: string): string {
+  if (!degree) return field || '';
   if (!field) return degree;
   return `${degree} - ${field}`;
 }
@@ -69,11 +77,11 @@ export function md(text: unknown): string {
 // ─── Section empty check ──────────────────────────────────────
 
 export function isSectionEmpty(section: Section): boolean {
-  const content = section.content as any;
+  const content = section.content as SummaryContent | SkillsContent | { items?: ResumeSectionItem[] };
   if (section.type === 'summary') return !(content as SummaryContent).text;
   if (section.type === 'skills') {
     const categories = (content as SkillsContent).categories;
-    return !categories?.length || categories.every((cat: any) => !cat.skills?.length);
+    return !categories?.length || categories.every((cat) => !cat.skills?.length);
   }
   if ('items' in content) return !content.items?.length;
   return false;
@@ -93,7 +101,7 @@ export function getPersonalInfo(resume: ResumeWithSections): PersonalInfoContent
 export function buildHighlights(highlights: string[] | undefined, liClass: string, bulletStyle?: string): string {
   if (!highlights?.length) return '';
   if (bulletStyle === 'custom-dot') {
-    return highlights.map(h =>
+    return highlights.filter(Boolean).map(h =>
       `<li class="flex items-start gap-2 text-sm text-zinc-600"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" style="background:linear-gradient(135deg,#7c3aed,#f97316)"></span>${md(h)}</li>`
     ).join('');
   }
@@ -103,12 +111,12 @@ export function buildHighlights(highlights: string[] | undefined, liClass: strin
 // ─── QR codes inline HTML (SVGs pre-generated in builders.ts) ─
 
 export function buildQrCodesHtml(section: Section): string {
-  const c = section.content as any;
-  const svgs = (c._qrSvgs || {}) as Record<string, string>;
-  const items = (c.items || []).filter((q: any) => q.url?.trim() && svgs[q.id]);
+  const c = section.content as SectionContentShape;
+  const svgs = c._qrSvgs || {};
+  const items = (c.items || []).filter((q) => q.url?.trim() && svgs[q.id || '']);
   if (items.length === 0) return '';
-  return `<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px 24px;padding-top:4px">${items.map((qr: any) =>
-    `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:96px">${svgs[qr.id]}<span style="font-size:10px;color:#6b7280;line-height:1.2;text-align:center;word-break:break-all;max-width:96px">${esc(qr.label)}</span></div>`
+  return `<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px 24px;padding-top:4px">${items.map((qr) =>
+    `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:96px">${svgs[qr.id || ''] || ''}<span style="font-size:10px;color:#6b7280;line-height:1.2;text-align:center;word-break:break-all;max-width:96px">${esc(qr.label || qr.name || qr.title || '')}</span></div>`
   ).join('')}</div>`;
 }
 
@@ -128,7 +136,7 @@ export const DEFAULT_THEME = {
   lineSpacing: 1.5,
   margin: { top: 20, right: 20, bottom: 20, left: 20 },
   sectionSpacing: 16,
-  avatarStyle: 'oneInch' as const,
+  avatarStyle: 'oneInch' as 'oneInch' | 'circle',
 };
 
 function isDark(hex: string): boolean {
@@ -137,6 +145,28 @@ function isDark(hex: string): boolean {
   const g = parseInt(c.substring(2, 4), 16) / 255;
   const b = parseInt(c.substring(4, 6), 16) / 255;
   return 0.299 * r + 0.587 * g + 0.114 * b < 0.4;
+}
+
+export function buildClassicSectionContent(section: Section, lang: string = 'en'): string {
+  const c = section.content as SectionContentShape;
+  if (section.type === 'summary') return `<div class="text-sm text-zinc-600 leading-relaxed">${md((c as SummaryContent).text)}</div>`;
+  if (section.type === 'work_experience') {
+    return `<div class="space-y-3">${(c.items || []).map((it) => `<div> <div class="flex items-baseline justify-between"><div><span class="font-semibold text-zinc-800 text-sm">${esc(it.position)}</span>${it.company ? `<span class="text-sm text-zinc-600"> at ${esc(it.company)}</span>` : ''}${it.location ? `<span class="text-sm text-zinc-400"> , ${esc(it.location)}</span>` : ''}</div><span class="text-xs text-zinc-400">${esc(it.startDate)} - ${esc(it.endDate) || (it.current ? (lang === 'zh' ? '至今' : 'Present') : '')}</span></div> ${it.description ? `<div class="mt-1 text-sm text-zinc-600">${md(it.description)}</div>` : ''} ${it.technologies?.length ? `<p class="mt-0.5 text-xs text-zinc-400">${lang === 'zh' ? '技术栈' : 'Tech'}: ${esc(it.technologies.join(', '))}</p>` : ''} ${it.highlights?.length ? `<ul class="mt-1 list-disc pl-4">${buildHighlights(it.highlights, 'text-sm text-zinc-600')}</ul>` : ''} </div>`).join('')}</div>`;
+  }
+  if (section.type === 'education') {
+    return `<div class="space-y-3">${(c.items || []).map((it) => `<div> <div class="flex items-baseline justify-between"><div><span class="font-semibold text-zinc-800 text-sm">${esc(degreeField(it.degree || '', it.field))}</span>${it.institution ? `<span class="text-sm text-zinc-600"> - ${esc(it.institution)}</span>` : ''}${it.location ? `<span class="text-sm text-zinc-400"> , ${esc(it.location)}</span>` : ''}</div><span class="text-xs text-zinc-400">${esc(it.startDate)} - ${esc(it.endDate) || (lang === 'zh' ? '至今' : 'Present')}</span></div> ${it.gpa ? `<p class="text-sm text-zinc-500">GPA: ${esc(it.gpa)}</p>` : ''} ${it.highlights?.length ? `<ul class="mt-1 list-disc pl-4">${buildHighlights(it.highlights, 'text-sm text-zinc-600')}</ul>` : ''} </div>`).join('')}</div>`;
+  }
+  if (section.type === 'skills') {
+    return `<div class="space-y-1">${((c as SkillsContent).categories || []).map((cat) => `<div class="flex text-sm"><span class="font-medium text-zinc-700 w-28 shrink-0">${esc(cat.name)}:</span><span class="text-zinc-600">${esc((cat.skills || []).join(', '))}</span></div>`).join('')}</div>`;
+  }
+  if (section.type === 'projects' || section.type === 'github' || section.type === 'certifications' || section.type === 'languages' || section.type === 'custom') {
+    return '';
+  }
+  if (section.type === 'qr_codes') return buildQrCodesHtml(section);
+  if (c.items) {
+    return `<div class="space-y-2">${c.items.map((it) => `<div><span class="text-sm font-medium text-zinc-700">${esc(it.name || it.title || it.language)}</span>${it.description ? `<div class="text-sm text-zinc-600">${md(it.description)}</div>` : ''}</div>`).join('')}</div>`;
+  }
+  return '';
 }
 
 export function buildExportThemeCSS(theme: typeof DEFAULT_THEME, template: string): string {

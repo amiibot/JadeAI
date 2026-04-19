@@ -1,12 +1,18 @@
 import { users, resumes, resumeSections } from './schema';
+import type { SQLiteDb } from './adapters/sqlite';
+import type { PostgreSQLDb } from './adapters/postgresql';
+
+export function seedDemoUser(db: SQLiteDb): Promise<void>;
+export function seedDemoUser(db: PostgreSQLDb): Promise<void>;
 
 /**
  * Seed a demo local user with a sample resume.
  * Called automatically when the database is empty.
  */
-export async function seedDemoUser(db: any) {
+export async function seedDemoUser(db: SQLiteDb | PostgreSQLDb) {
+  const database = db as SQLiteDb & PostgreSQLDb;
   const userId = crypto.randomUUID();
-  await db.insert(users).values({
+  await database.insert(users).values({
     id: userId,
     name: '陈思远',
     username: 'demo',
@@ -14,7 +20,7 @@ export async function seedDemoUser(db: any) {
   });
 
   const resumeId = crypto.randomUUID();
-  await db.insert(resumes).values({
+  await database.insert(resumes).values({
     id: resumeId,
     userId,
     title: '示例简历 - 陈思远',
@@ -165,11 +171,11 @@ export async function seedDemoUser(db: any) {
   ];
 
   for (const section of sections) {
-    await db.insert(resumeSections).values({
+    await database.insert(resumeSections).values({
       id: crypto.randomUUID(),
       resumeId,
       ...section,
-    } as any);
+    } );
   }
 
   console.log('[DB] Auto-seed complete: demo user created');

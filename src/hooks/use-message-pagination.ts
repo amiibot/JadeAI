@@ -43,8 +43,8 @@ export function useMessagePagination() {
 
       // All initial messages go through useChat's setMessages, not historicalMessages
       return uiMessages;
-    } catch (err: any) {
-      if (err?.name === 'AbortError') return [];
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') return [];
       return [];
     }
   }, []);

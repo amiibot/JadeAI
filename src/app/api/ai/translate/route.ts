@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
     }
 
     const allSections = sectionIds
-      ? workingSections.filter((s: any) => sectionIds.includes(s.id))
+      ? workingSections.filter((s: (typeof workingSections)[number]) => sectionIds.includes(s.id))
       : workingSections;
 
     if (allSections.length === 0) {
@@ -149,17 +149,18 @@ export async function POST(request: NextRequest) {
     // Save stripped fields so we can merge them back after translation
     const strippedFields = new Map<string, Record<string, unknown>>();
 
-    const sectionsData = allSections.map((s: any) => {
+    const sectionsData = allSections.map((s: (typeof allSections)[number]) => {
       const fieldsToStrip = STRIP_FIELDS[s.type];
       let content = s.content;
 
       if (fieldsToStrip && content && typeof content === 'object') {
         const saved: Record<string, unknown> = {};
-        content = { ...content };
+        const mutableContent = { ...content } as Record<string, unknown>;
+        content = mutableContent;
         for (const field of fieldsToStrip) {
-          if (field in content) {
-            saved[field] = content[field];
-            delete content[field];
+          if (field in mutableContent) {
+            saved[field] = mutableContent[field];
+            delete mutableContent[field];
           }
         }
         if (Object.keys(saved).length > 0) {
@@ -229,7 +230,7 @@ export async function POST(request: NextRequest) {
             console.error(
               'Some sections failed to translate:',
               results
-                .filter((r) => r.status === 'rejected')
+                .filter((r: PromiseSettledResult<z.infer<typeof singleSectionSchema>>) => r.status === 'rejected')
                 .map((f) => (f as PromiseRejectedResult).reason)
             );
           }
@@ -244,7 +245,7 @@ export async function POST(request: NextRequest) {
         try {
           const updatedResume = await resumeRepository.findById(targetResumeId);
           const updatedSections = sectionIds
-            ? updatedResume?.sections.filter((s: any) => sectionIds.includes(s.id))
+            ? updatedResume?.sections.filter((s: (typeof updatedResume.sections)[number]) => sectionIds.includes(s.id))
             : updatedResume?.sections;
 
           send({

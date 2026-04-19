@@ -63,8 +63,8 @@ export function CoverLetterDialog({ open, onOpenChange, resumeId }: CoverLetterD
 
       const data: CoverLetterResult = await res.json();
       setResult(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to generate cover letter');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate cover letter');
     } finally {
       setIsGenerating(false);
     }
@@ -155,7 +155,7 @@ export function CoverLetterDialog({ open, onOpenChange, resumeId }: CoverLetterD
                     onClick={() => setTone(t_tone)}
                     disabled={isGenerating}
                   >
-                    {t(`tone${t_tone.charAt(0).toUpperCase() + t_tone.slice(1)}` as any)}
+                    {t(`tone${t_tone.charAt(0).toUpperCase() + t_tone.slice(1)}` )}
                   </button>
                 ))}
               </div>

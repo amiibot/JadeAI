@@ -29,7 +29,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useUIStore } from '@/stores/ui-store';
 import { useSettingsStore, getAIHeaders, type AIProvider } from '@/stores/settings-store';
 import { useTourStore } from '@/stores/tour-store';
-import { usePathname, useRouter } from '@/i18n/routing';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { locales, localeNames } from '@/i18n/config';
 import { cn } from '@/lib/utils';
 

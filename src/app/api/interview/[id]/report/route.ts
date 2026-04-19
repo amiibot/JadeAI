@@ -40,8 +40,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     const roundsWithMessages = await interviewRepository.findAllMessagesBySessionId(sessionId);
 
-    const conversationLog = roundsWithMessages.map(({ round, messages }) => {
-      const config = round.interviewerConfig as any;
+    const conversationLog = roundsWithMessages.map(({ round, messages }: (typeof roundsWithMessages)[number]) => {
+      const config = round.interviewerConfig as { name: string };
       return {
         interviewerType: round.interviewerType,
         interviewerName: config.name,

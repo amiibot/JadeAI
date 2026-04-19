@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from 'react';
 import { useResumeStore } from '@/stores/resume-store';
 import { useEditorStore } from '@/stores/editor-store';
-import type { ResumeSection } from '@/types/resume';
+import type { ResumeSection, SectionContent } from '@/types/resume';
 
 function getHeaders() {
   return {
@@ -42,7 +42,7 @@ export function useEditor(resumeId: string) {
   }, [loadResume, resetResume, resetEditor]);
 
   const handleUpdateSection = useCallback(
-    (sectionId: string, content: any) => {
+    (sectionId: string, content: Partial<SectionContent>) => {
       pushSnapshot(sections);
       updateSection(sectionId, content);
     },

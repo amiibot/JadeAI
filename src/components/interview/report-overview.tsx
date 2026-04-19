@@ -19,7 +19,7 @@ interface ReportOverviewProps {
 export function ReportOverview({ report, session }: ReportOverviewProps) {
   const t = useTranslations('interview.report');
   const grade = getGrade(report.overallScore);
-  const interviewers = session.selectedInterviewers as any[];
+  const interviewers = session.selectedInterviewers;
 
   return (
     <div className="rounded-xl border bg-white p-6 dark:bg-zinc-900">

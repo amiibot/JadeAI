@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import {
   Dialog,
   DialogContent,
@@ -16,6 +16,7 @@ import { useResumeStore } from '@/stores/resume-store';
 import { LanguageSelect } from '@/components/ui/language-select';
 import { Languages, Loader2, CheckCircle2, AlertCircle, FileEdit, FilePlus2 } from 'lucide-react';
 import { getAIHeaders } from '@/stores/settings-store';
+import type { ResumeSection } from '@/types/resume';
 import { cn } from '@/lib/utils';
 
 interface TranslateDialogProps {
@@ -127,13 +128,13 @@ export function TranslateDialog({ open, onOpenChange, resumeId }: TranslateDialo
 
           // In overwrite mode, apply each translated section to the store in real-time
           if (mode === 'overwrite') {
-            const section = data.section as { sectionId: string; title: string; content: any } | undefined;
+            const section = data.section as { sectionId: string; title: string; content: ResumeSection['content'] } | undefined;
             if (section) {
               const current = useResumeStore.getState().currentResume;
               if (current) {
                 useResumeStore.getState().setResume({
                   ...current,
-                  sections: current.sections.map((s: any) =>
+                  sections: current.sections.map((s: ResumeSection) =>
                     s.id === section.sectionId
                       ? { ...s, title: section.title, content: section.content }
                       : s
@@ -160,7 +161,7 @@ export function TranslateDialog({ open, onOpenChange, resumeId }: TranslateDialo
               useResumeStore.getState().setResume({
                 ...current,
                 language: data.language as string,
-                sections: data.sections as any,
+                sections: data.sections as ResumeSection[],
               });
             }
 
@@ -170,10 +171,10 @@ export function TranslateDialog({ open, onOpenChange, resumeId }: TranslateDialo
           }
         }
       });
-    } catch (err: any) {
-      if (err.name === 'AbortError') return;
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') return;
       setState('error');
-      setErrorMessage(err.message || t('error'));
+      setErrorMessage(err instanceof Error ? err.message : t('error'));
     }
   }, [resumeId, targetLanguage, mode, onOpenChange, t, router]);
 

@@ -24,7 +24,7 @@ export async function GET(
     }
 
     const shares = await shareRepository.findByResumeId(id);
-    const sharesWithUrl = shares.map((s: any) => ({
+    const sharesWithUrl = shares.map((s: (typeof shares)[number]) => ({
       ...s,
       shareUrl: getShareUrl(s.token, request),
       hasPassword: !!s.password,

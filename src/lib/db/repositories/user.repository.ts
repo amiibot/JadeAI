@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '../index';
 import { users } from '../schema';
 import { createSampleResume } from '../sample-resume';
-import { normalizeUserSettings, type UserSettings } from '../json-normalize';
+import { normalizeUserSettings } from '../json-normalize';
 
 const SETTINGS_KEYS = ['aiProvider', 'aiBaseURL', 'aiModel', 'autoSave', 'autoSaveInterval'] as const;
 

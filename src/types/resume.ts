@@ -73,6 +73,12 @@ export interface SkillCategory {
   skills: string[];
 }
 
+export interface ResumeSkillCategory {
+  id?: string;
+  name?: string;
+  skills?: string[];
+}
+
 export interface SkillsContent {
   categories: SkillCategory[];
 }
@@ -136,6 +142,41 @@ export interface GitHubRepoItem {
   description: string;
 }
 
+export interface ResumeSectionItem {
+  id?: string;
+  name?: string;
+  title?: string;
+  subtitle?: string;
+  date?: string;
+  description?: string;
+  company?: string;
+  position?: string;
+  location?: string;
+  startDate?: string;
+  endDate?: string | null;
+  current?: boolean;
+  technologies?: string[];
+  highlights?: string[];
+  institution?: string;
+  degree?: string;
+  field?: string;
+  gpa?: string;
+  issuer?: string;
+  language?: string;
+  proficiency?: string;
+  stars?: number;
+  repoUrl?: string;
+  url?: string;
+  label?: string;
+  skills?: string[];
+}
+
+export interface SectionContentShape {
+  items?: ResumeSectionItem[];
+  categories?: ResumeSkillCategory[];
+  text?: string;
+}
+
 export interface GitHubContent {
   items: GitHubRepoItem[];
 }
@@ -160,7 +201,7 @@ export interface ResumeSection {
   title: string;
   sortOrder: number;
   visible: boolean;
-  content: SectionContent;
+  content: SectionContent & SectionContentShape;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,4 +1,4 @@
-import type { ResumeSection, SummaryContent, SkillsContent } from '@/types/resume';
+import type { ResumeSection, SummaryContent, SkillsContent, SectionContentShape, ResumeSectionItem, ResumeSkillCategory, ThemeConfig } from '@/types/resume';
 
 /** Lightweight markdown → HTML for resume text fields (summary, descriptions, highlights).
  *  Supports: **bold**, `code`, line breaks, and "- item" lists. */
@@ -32,13 +32,20 @@ export function md(text: unknown): string {
 }
 
 /** Join degree and field with separator */
-export function degreeField(degree: string, field: string | undefined): string {
+export function degreeField(degree?: string, field?: string): string {
+  if (!degree) return field || '';
   if (!field) return degree;
   return `${degree} - ${field}`;
 }
 
+export type SectionContentItem = ResumeSectionItem;
+export type SectionSkillCategory = ResumeSkillCategory;
+export type { SectionContentShape };
+
+export type PreviewThemeConfig = ThemeConfig;
+
 export function isSectionEmpty(section: ResumeSection): boolean {
-  const content = section.content as any;
+  const content = section.content as SectionContentShape;
 
   if (section.type === 'summary') {
     return !(content as SummaryContent).text;

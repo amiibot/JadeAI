@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/navigation';
 import { ReportOverview } from './report-overview';
 import { RadarChart } from './radar-chart';
 import { RoundEvaluation } from './round-evaluation';

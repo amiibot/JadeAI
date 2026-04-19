@@ -72,7 +72,7 @@ export function InterviewerCard({ interviewer, selected, onToggle, index }: Inte
         {interviewer.name[0]}
       </div>
       <div className="text-[11px] font-semibold leading-tight">{interviewer.name}</div>
-      <div className="text-[9px] text-zinc-400">{t(type as any)}</div>
+      <div className="text-[9px] text-zinc-400">{t(type )}</div>
     </div>
   );
 }

@@ -124,7 +124,9 @@ function formatDate(value: string | number): string {
 }
 
 /* ── Result view (shared between new analysis & history detail) ── */
-function JdAnalysisResultView({ result, jobDescription, t }: { result: JdAnalysisResult; jobDescription?: string; t: any }) {
+type Translator = (key: string, values?: Record<string, string | number | Date>) => string;
+
+function JdAnalysisResultView({ result, jobDescription, t }: { result: JdAnalysisResult; jobDescription?: string; t: Translator }) {
   const [jdExpanded, setJdExpanded] = useState(false);
 
   return (
@@ -330,8 +332,8 @@ export function JdAnalysisDialog({ open, onOpenChange, resumeId }: JdAnalysisDia
       setResult(data);
       // Refresh history count
       fetchHistory();
-    } catch (err: any) {
-      setError(err.message || 'Failed to analyze');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to analyze');
     } finally {
       setIsAnalyzing(false);
     }

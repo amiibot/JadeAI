@@ -2,7 +2,8 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
+import { useResume } from '@/hooks/use-resume';
 import {
   Dialog,
   DialogContent,
@@ -22,7 +23,7 @@ import { templateLabelsMap } from '@/lib/template-labels';
 interface CreateResumeDialogProps {
   open: boolean;
   onClose: () => void;
-  onCreate: (data: { title?: string; template?: string; language?: string }) => Promise<any>;
+  onCreate: ReturnType<typeof useResume>['createResume'];
 }
 
 type Tab = 'template' | 'upload';
@@ -95,8 +96,8 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
       const resume = await res.json();
       resetAndClose();
       router.push(`/editor/${resume.id}`);
-    } catch (err: any) {
-      setParseError(err.message || t('dashboard.upload.parseFailed'));
+    } catch (err) {
+      setParseError(err instanceof Error ? err.message : t('dashboard.upload.parseFailed'));
     } finally {
       setIsParsing(false);
     }

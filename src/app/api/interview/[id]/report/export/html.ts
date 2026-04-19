@@ -14,7 +14,7 @@ function starHtml(score: number): string {
   ).join('');
 }
 
-export function generateInterviewReportHtml(report: any, session: any): string {
+export function generateInterviewReportHtml(report: { overallScore: number; overallFeedback: string; roundEvaluations?: unknown; dimensionScores?: unknown; improvementPlan?: unknown }, session: { createdAt: string | number | Date; jobTitle: string }): string {
   const grade = getGradeLabel(report.overallScore);
   const rounds = (report.roundEvaluations || []) as RoundEvaluation[];
   const dimensions = (report.dimensionScores || []) as DimensionScore[];

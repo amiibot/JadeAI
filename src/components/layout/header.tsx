@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Settings, Menu } from 'lucide-react';
 import { LocaleSwitcher } from './locale-switcher';
 import { UserMenu } from './user-menu';
-import { Link, usePathname } from '@/i18n/routing';
+import { Link, usePathname } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useUIStore } from '@/stores/ui-store';

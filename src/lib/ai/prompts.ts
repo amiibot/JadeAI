@@ -6,7 +6,7 @@ export function getSystemPrompt(resumeContext: string): string {
       const sections = JSON.parse(resumeContext);
       if (Array.isArray(sections)) {
         sectionList = sections
-          .map((s: any) => `  - [${s.type}] "${s.title}" (sectionId: ${s.id})`)
+          .map((s) => `  - [${s.type}] "${s.title}" (sectionId: ${s.id})`)
           .join('\n');
       }
     } catch { /* ignore parse errors */ }

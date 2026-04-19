@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { InterviewCard } from './interview-card';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/navigation';
 import type { InterviewSession } from '@/types/interview';
 
 export function InterviewLobby() {

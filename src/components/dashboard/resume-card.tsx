@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Copy, Trash2, MoreVertical, Share2, Pencil } from 'lucide-react';
 import {

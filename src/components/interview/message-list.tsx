@@ -19,8 +19,8 @@ export function MessageList({ messages }: MessageListProps) {
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4">
       {messages.map((msg) => {
-        const textPart = msg.parts?.find((p: any) => p.type === 'text');
-        const content = (textPart as any)?.text || '';
+        const textPart = msg.parts?.find((p) => p.type === 'text');
+        const content = (textPart )?.text || '';
         if (!content) return null;
 
         // Hide system trigger messages

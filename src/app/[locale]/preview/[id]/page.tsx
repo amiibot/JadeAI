@@ -4,7 +4,7 @@ import { use, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import { ResumePreview } from '@/components/preview/resume-preview';
 import { usePdfExport } from '@/hooks/use-pdf-export';
 import type { Resume } from '@/types/resume';

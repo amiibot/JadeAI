@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import { Loader2, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
 import {
   Dialog,
@@ -80,8 +80,8 @@ export function GenerateResumeDialog({ open, onOpenChange, onCreated }: Generate
       setResult(data);
       setState('success');
       onCreated?.();
-    } catch (err: any) {
-      setError(err.message || 'Failed to generate resume');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate resume');
       setState('error');
     }
   };

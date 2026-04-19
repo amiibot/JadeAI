@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Trash2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/navigation';
 import type { InterviewSession } from '@/types/interview';
 
 const AVATAR_GRADIENTS: Record<string, string> = {
@@ -53,7 +53,7 @@ interface InterviewCardProps {
 
 export function InterviewCard({ session, onDelete }: InterviewCardProps) {
   const t = useTranslations('interview');
-  const interviewers = session.selectedInterviewers as any[];
+  const interviewers = session.selectedInterviewers;
   const isCompleted = session.status === 'completed';
   const currentRound = session.currentRound ?? 0;
   const totalRounds = interviewers.length;
@@ -61,7 +61,7 @@ export function InterviewCard({ session, onDelete }: InterviewCardProps) {
 
   // For completed sessions, we'd need the score from the report
   // For now we show progress info
-  const score = (session as any).report?.overallScore;
+  const score = session.report?.overallScore;
 
   return (
     <div className="group relative rounded-xl border border-zinc-200 bg-white p-4 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
@@ -102,7 +102,7 @@ export function InterviewCard({ session, onDelete }: InterviewCardProps) {
 
       {/* Interviewer tags */}
       <div className="mb-3 flex flex-wrap gap-1.5">
-        {interviewers.map((iv: any, i: number) => {
+        {interviewers.map((iv, i: number) => {
           const type = iv.type?.startsWith('custom_') ? 'custom' : iv.type;
           const gradient = AVATAR_GRADIENTS[type] || 'from-zinc-500 to-zinc-400';
           const tagStyle = TAG_STYLES[type] || 'bg-zinc-50 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300';
@@ -122,7 +122,7 @@ export function InterviewCard({ session, onDelete }: InterviewCardProps) {
                 {iv.name?.[0] || '?'}
               </div>
               <span className="text-[10px]">
-                {t(`interviewers.${type}` as any)}
+                {t(`interviewers.${type}` )}
                 {isDone && <Check className="ml-0.5 inline h-2.5 w-2.5" />}
                 {isCurrent && <span className="ml-0.5 font-semibold">·当前</span>}
               </span>

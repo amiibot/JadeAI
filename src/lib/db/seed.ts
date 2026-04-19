@@ -211,7 +211,7 @@ async function seed() {
       id: crypto.randomUUID(),
       resumeId,
       ...section,
-    } as any);
+    } );
   }
 
   console.log('Seed complete! Demo resume created for user "陈思远"');

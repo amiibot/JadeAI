@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     // List all
     const checks = await analysisRepository.findGrammarChecksByResumeId(resumeId);
 
-    const list = checks.map((c: any) => ({
+    const list = checks.map((c: (typeof checks)[number]) => ({
       id: c.id,
       score: c.score,
       issueCount: c.issueCount,
