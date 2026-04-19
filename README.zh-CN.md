@@ -184,7 +184,7 @@
 
 ### Docker 部署（推荐）
 
-> 说明：这是一个基于原始 JadeAI 的个人修改版。当前默认登录方式为家庭本地登录，部署时需提供 `AUTH_SECRET`，并确保本地账号 JSON 文件位于 `/app/data/local-auth-users.json`。
+> 说明：这是一个基于原始 JadeAI 的个人修改版。当前默认登录方式为家庭本地登录，部署时需提供 `AUTH_SECRET`，远端访问场景应把 `AUTH_URL` 设为用户实际访问的公网地址，并确保本地账号 JSON 文件位于 `/app/data/local-auth-users.json`。
 
 ```bash
 # 先生成一个密钥
@@ -192,6 +192,7 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
+  -e AUTH_URL=https://jade.example.com \
   -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
@@ -199,6 +200,8 @@ docker run -d -p 3000:3000 \
 打开 [http://localhost:3000](http://localhost:3000)。首次启动自动完成数据库迁移和数据初始化。
 
 > **`AUTH_SECRET`** 为必填项，用于会话加密。通过 `openssl rand -base64 32` 生成。
+
+> **`AUTH_URL`** 建议在远端 Docker / 反向代理部署时设置为用户实际访问的公网 origin，例如 `https://jade.example.com`。不要填写 `http://0.0.0.0:3000` 这类容器监听地址。
 
 > 先用 `pnpm auth:hash -- "你的密码"` 生成 `passwordHash`，再写入 `data/local-auth-users.json`。
 
@@ -217,6 +220,7 @@ docker run -d -p 3000:3000 \
 ```bash
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<你生成的密钥> \
+  -e AUTH_URL=https://jade.example.com \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
   -v jadeai-data:/app/data \
@@ -255,6 +259,8 @@ DB_TYPE=sqlite
 
 # 认证
 AUTH_SECRET=your-auth-secret-key-change-me
+# 本地开发可选，远端部署建议设置为公网访问地址
+AUTH_URL=http://localhost:3000
 ```
 
 创建 `data/local-auth-users.json`：
@@ -292,6 +298,7 @@ pnpm dev
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `AUTH_SECRET` | 是 | — | 会话加密密钥 |
+| `AUTH_URL` | 远端部署建议 | — | 认证跳转使用的公网站点地址，例如 `https://jade.example.com` |
 | `DB_TYPE` | 否 | `sqlite` | 数据库类型：`sqlite` 或 `postgresql` |
 | `DATABASE_URL` | PostgreSQL 时 | — | PostgreSQL 连接字符串 |
 | `SQLITE_PATH` | 否 | `./data/jade.db` | SQLite 数据库文件路径 |

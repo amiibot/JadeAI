@@ -182,7 +182,7 @@ The following resume sections support Markdown syntax:
 
 ### Docker (Recommended)
 
-> Note: This repository is a personal modified fork of the original JadeAI project. The default login flow is now local family login. Deployment should provide `AUTH_SECRET` and ensure the local auth user file exists at `/app/data/local-auth-users.json`.
+> Note: This repository is a personal modified fork of the original JadeAI project. The default login flow is now local family login. Deployment should provide `AUTH_SECRET`, set `AUTH_URL` to the public site origin for remote access, and ensure the local auth user file exists at `/app/data/local-auth-users.json`.
 
 ```bash
 # Generate a secret key first
@@ -190,6 +190,7 @@ openssl rand -base64 32
 
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
+  -e AUTH_URL=https://jade.example.com \
   -v jadeai-data:/app/data \
   csania/jadeai:latest
 ```
@@ -197,6 +198,8 @@ docker run -d -p 3000:3000 \
 Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and seeds on first start.
 
 > **`AUTH_SECRET`** is required for session encryption. Generate one with `openssl rand -base64 32`.
+
+> **`AUTH_URL`** should be set in remote Docker / reverse-proxy deployments to the public origin users actually access, for example `https://jade.example.com`. Do not set it to container listener addresses such as `http://0.0.0.0:3000`.
 
 > Generate `passwordHash` first with `pnpm auth:hash -- "your-password"`, then write it into `data/local-auth-users.json`.
 
@@ -215,6 +218,7 @@ Open [http://localhost:3000](http://localhost:3000). Database auto-migrates and 
 ```bash
 docker run -d -p 3000:3000 \
   -e AUTH_SECRET=<your-generated-secret> \
+  -e AUTH_URL=https://jade.example.com \
   -e DB_TYPE=postgresql \
   -e DATABASE_URL=postgresql://user:pass@host:5432/jadeai \
   -v jadeai-data:/app/data \
@@ -253,6 +257,8 @@ DB_TYPE=sqlite
 
 # Auth
 AUTH_SECRET=your-auth-secret-key-change-me
+# Optional for local dev, recommended for remote deployments
+AUTH_URL=http://localhost:3000
 ```
 
 Create `data/local-auth-users.json`:
@@ -290,6 +296,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `AUTH_SECRET` | Yes | — | Secret key for session encryption |
+| `AUTH_URL` | Remote deploy recommended | — | Public site origin used for auth redirects, e.g. `https://jade.example.com` |
 | `DB_TYPE` | No | `sqlite` | Database type: `sqlite` or `postgresql` |
 | `DATABASE_URL` | When PostgreSQL | — | PostgreSQL connection string |
 | `SQLITE_PATH` | No | `./data/jade.db` | SQLite database file path |

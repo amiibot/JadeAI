@@ -1,18 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/use-auth';
+import { buildLocalizedDashboardPath, sanitizeRelativeCallbackPath } from '@/lib/utils/url';
 
 export function LoginButton() {
   const t = useTranslations('auth');
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/dashboard`;
+  const callbackUrl = useMemo(() => sanitizeRelativeCallbackPath(
+    searchParams.get('callbackUrl'),
+    buildLocalizedDashboardPath(locale),
+  ), [locale, searchParams]);
   const { signIn } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

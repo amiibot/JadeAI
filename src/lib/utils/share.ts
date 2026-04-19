@@ -1,13 +1,12 @@
 import { NextRequest } from 'next/server';
+import { getPublicOrigin } from './url';
 
 export function generateShareToken(): string {
   return crypto.randomUUID().replace(/-/g, '').slice(0, 16);
 }
 
 export function getShareUrl(token: string, request: NextRequest): string {
-  const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
-  const proto = request.headers.get('x-forwarded-proto') || 'https';
-  const origin = host ? `${proto}://${host}` : request.nextUrl.origin;
+  const origin = getPublicOrigin(request);
   return `${origin}/share/${token}`;
 }
 

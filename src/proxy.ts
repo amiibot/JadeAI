@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
+import { buildLoginUrl, getPublicOrigin } from '@/lib/utils/url';
 import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
@@ -31,8 +32,11 @@ export default async function proxy(request: NextRequest) {
   if (!token) {
     const localeMatch = pathname.match(/^\/(zh|en)/);
     const locale = localeMatch ? localeMatch[1] : 'zh';
-    const loginUrl = new URL(`/${locale}/login`, request.url);
-    loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname + request.nextUrl.search);
+    const loginUrl = buildLoginUrl(
+      getPublicOrigin(request),
+      locale,
+      request.nextUrl.pathname + request.nextUrl.search,
+    );
     return NextResponse.redirect(loginUrl);
   }
 
