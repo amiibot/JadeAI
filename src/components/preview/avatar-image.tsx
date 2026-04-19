@@ -23,6 +23,7 @@ export function AvatarImage({
   const borderRadius = isCircle ? '9999px' : '4px';
 
   const imgEl = (
+    // eslint-disable-next-line @next/next/no-img-element -- preview/export avatars use user-provided data URLs and need raw img rendering
     <img
       src={src}
       alt=""

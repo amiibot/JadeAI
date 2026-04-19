@@ -91,7 +91,7 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
 
   return (
     <div className="flex h-screen flex-col">
-      <EditorToolbar resumeId={id} />
+      <EditorToolbar />
       <EditorMobileTabBar />
 
       <div className="flex flex-1 overflow-hidden">
@@ -171,7 +171,6 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
       <ImportDialog
         open={activeModal === 'import'}
         onOpenChange={(open) => open ? openModal('import') : closeModal()}
-        resumeId={id}
       />
       <ShareDialog
         open={activeModal === 'share'}

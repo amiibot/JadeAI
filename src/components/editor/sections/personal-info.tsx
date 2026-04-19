@@ -85,6 +85,7 @@ export function PersonalInfoSection({ section, onUpdate }: Props) {
           className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-zinc-400 hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:bg-zinc-700"
         >
           {content.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element -- avatar picker previews a local data URL before persistence
             <img src={content.avatar} alt="Avatar" className="h-full w-full object-cover" />
           ) : (
             <Camera className="h-6 w-6 text-zinc-400" />

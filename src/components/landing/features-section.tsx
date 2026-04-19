@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   Sparkles,
@@ -15,7 +15,6 @@ import {
   Mic,
   Upload,
   Download,
-  type LucideIcon,
 } from 'lucide-react';
 
 const FEATURES = [
@@ -434,6 +433,7 @@ export function FeaturesSection() {
   const t = useTranslations('landing.features');
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const next = useCallback(() => {
     setActive((prev) => (prev + 1) % FEATURES.length);
@@ -445,11 +445,24 @@ export function FeaturesSection() {
     return () => clearInterval(timer);
   }, [paused, next]);
 
+  useEffect(() => {
+    return () => {
+      if (resumeTimerRef.current) {
+        clearTimeout(resumeTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleTabClick = (i: number) => {
+    if (resumeTimerRef.current) {
+      clearTimeout(resumeTimerRef.current);
+    }
     setActive(i);
     setPaused(true);
-    // Resume auto-cycle after 10s of inactivity
-    setTimeout(() => setPaused(false), 10000);
+    resumeTimerRef.current = setTimeout(() => {
+      setPaused(false);
+      resumeTimerRef.current = null;
+    }, 10000);
   };
 
   const feat = FEATURES[active];

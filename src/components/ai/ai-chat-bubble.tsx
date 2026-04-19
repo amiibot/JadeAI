@@ -77,7 +77,6 @@ export function AIChatBubble({ resumeId }: AIChatBubbleProps) {
   const autoWindowPos = useMemo(() => {
     if (typeof window === 'undefined') return { left: 100, top: 100 };
     return calcWindowPos(bubblePos.x, bubblePos.y, winSize.w, winSize.h);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bubblePos.x, bubblePos.y, winSize.w, winSize.h]);
 
   const winPos = windowPos ?? autoWindowPos;

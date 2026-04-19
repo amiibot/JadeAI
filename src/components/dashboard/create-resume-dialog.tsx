@@ -57,7 +57,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
     }
   };
 
-  const handleFileSelect = (selectedFile: File) => {
+  const handleFileSelect = useCallback((selectedFile: File) => {
     setParseError('');
     const validTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
     if (!validTypes.includes(selectedFile.type)) {
@@ -69,7 +69,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
       return;
     }
     setFile(selectedFile);
-  };
+  }, [t]);
 
   const handleUploadParse = async () => {
     if (!file) return;
@@ -116,7 +116,7 @@ export function CreateResumeDialog({ open, onClose, onCreate }: CreateResumeDial
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) handleFileSelect(droppedFile);
-  }, []);
+  }, [handleFileSelect]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();

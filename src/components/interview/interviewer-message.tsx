@@ -2,14 +2,11 @@
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import type { InterviewerConfig } from '@/types/interview';
-
 interface InterviewerMessageProps {
   content: string;
-  config: InterviewerConfig;
 }
 
-export function InterviewerMessage({ content, config }: InterviewerMessageProps) {
+export function InterviewerMessage({ content }: InterviewerMessageProps) {
   const displayContent = content.replace(/\[ROUND_COMPLETE\]/g, '').trim();
 
   return (

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveUser } from '@/lib/auth/helpers';
 import { interviewRepository } from '@/lib/db/repositories/interview.repository';
-import { buildHintPrompt, buildSkipPrompt, buildEndRoundPrompt } from '@/lib/ai/interview-prompts';
+import { buildHintPrompt, buildSkipPrompt } from '@/lib/ai/interview-prompts';
 import { dbReady } from '@/lib/db';
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

@@ -74,7 +74,8 @@ export default function DashboardPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState<SortOption>('lastEdited');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const initialView = getInitialView();
+  const [viewMode, setViewMode] = useState<ViewMode>(initialView);
   const [shareResumeId, setShareResumeId] = useState<string | null>(null);
   const startTour = useTourStore((s) => s.startTour);
 
@@ -86,11 +87,6 @@ export default function DashboardPage() {
     const timer = setTimeout(() => startTour('dashboard', DASHBOARD_TOUR_STEPS.length), 800);
     return () => clearTimeout(timer);
   }, [isLoading, startTour]);
-
-  // Hydrate view preference from localStorage on mount
-  useEffect(() => {
-    setViewMode(getInitialView());
-  }, []);
 
   // Persist view preference
   const handleViewChange = (mode: ViewMode) => {

@@ -3,7 +3,7 @@ import { resumeRepository } from '@/lib/db/repositories/resume.repository';
 import { resolveUser } from '@/lib/auth/helpers';
 import { DEFAULT_SECTIONS } from '@/lib/constants';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const user = await resolveUser();
     if (!user) {

@@ -23,12 +23,11 @@ import {
 interface ImportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  resumeId: string;
 }
 
 type ImportState = 'idle' | 'importing' | 'success' | 'error';
 
-export function ImportDialog({ open, onOpenChange, resumeId }: ImportDialogProps) {
+export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
   const t = useTranslations('import');
   const { currentResume, setResume, save } = useResumeStore();
 

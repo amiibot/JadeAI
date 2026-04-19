@@ -42,7 +42,9 @@ export async function GET(
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
       }
 
-      const { userId, sharePassword, ...publicResume } = resume;
+      const publicResume = { ...resume };
+      delete publicResume.userId;
+      delete publicResume.sharePassword;
       return NextResponse.json(publicResume);
     }
 
@@ -74,7 +76,9 @@ export async function GET(
 
     await resumeRepository.incrementViewCount(resume.id);
 
-    const { userId, sharePassword, ...publicResume } = resume;
+    const publicResume = { ...resume };
+    delete publicResume.userId;
+    delete publicResume.sharePassword;
     return NextResponse.json(publicResume);
   } catch (error) {
     console.error('GET /api/share/[token] error:', error);

@@ -1,33 +1,43 @@
 import { eq, desc, sql } from 'drizzle-orm';
 import { db } from '../index';
 import { resumes, resumeSections } from '../schema';
+import { normalizeThemeConfig } from '../json-normalize';
 
 export const resumeRepository = {
   async findAllByUserId(userId: string) {
-    return db.select().from(resumes).where(eq(resumes.userId, userId)).orderBy(desc(resumes.updatedAt));
+    const items = await db.select().from(resumes).where(eq(resumes.userId, userId)).orderBy(desc(resumes.updatedAt));
+    return items.map((resume: { themeConfig: unknown }) => ({ ...resume, themeConfig: normalizeThemeConfig(resume.themeConfig) }));
   },
 
   async findById(id: string) {
     const resume = await db.select().from(resumes).where(eq(resumes.id, id)).limit(1);
     if (!resume[0]) return null;
     const sections = await db.select().from(resumeSections).where(eq(resumeSections.resumeId, id)).orderBy(resumeSections.sortOrder);
-    return { ...resume[0], sections };
+    return { ...resume[0], themeConfig: normalizeThemeConfig(resume[0].themeConfig), sections };
   },
 
-  async create(data: { userId: string; title?: string; template?: string; language?: string }) {
+  async create(data: { userId: string; title?: string; template?: string; language?: string; themeConfig?: unknown }) {
     const id = crypto.randomUUID();
     await db.insert(resumes).values({
       id,
       userId: data.userId,
       title: data.title || '未命名简历',
       template: data.template || 'classic',
+      themeConfig: normalizeThemeConfig(data.themeConfig),
       language: data.language || 'zh',
     });
     return this.findById(id);
   },
 
   async update(id: string, data: Partial<{ title: string; template: string; themeConfig: unknown; language: string }>) {
-    await db.update(resumes).set({ ...data, updatedAt: new Date() } as any).where(eq(resumes.id, id));
+    const payload = {
+      ...(data.title && { title: data.title }),
+      ...(data.template && { template: data.template }),
+      ...(data.language && { language: data.language }),
+      ...(data.themeConfig !== undefined && { themeConfig: normalizeThemeConfig(data.themeConfig) }),
+      updatedAt: new Date(),
+    };
+    await db.update(resumes).set(payload).where(eq(resumes.id, id));
     return this.findById(id);
   },
 
@@ -45,7 +55,7 @@ export const resumeRepository = {
       userId,
       title: titleOverride ?? `${original.title} (副本)`,
       template: original.template,
-      themeConfig: original.themeConfig,
+      themeConfig: normalizeThemeConfig(original.themeConfig),
       language: original.language,
     });
 
@@ -69,7 +79,7 @@ export const resumeRepository = {
     const resume = await db.select().from(resumes).where(eq(resumes.shareToken, token)).limit(1);
     if (!resume[0]) return null;
     const sections = await db.select().from(resumeSections).where(eq(resumeSections.resumeId, resume[0].id)).orderBy(resumeSections.sortOrder);
-    return { ...resume[0], sections };
+    return { ...resume[0], themeConfig: normalizeThemeConfig(resume[0].themeConfig), sections };
   },
 
   async incrementViewCount(id: string) {

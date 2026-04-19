@@ -2,9 +2,20 @@ import { eq } from 'drizzle-orm';
 import { db } from '../index';
 import { users } from '../schema';
 import { createSampleResume } from '../sample-resume';
+import { normalizeUserSettings, type UserSettings } from '../json-normalize';
+
+const SETTINGS_KEYS = ['aiProvider', 'aiBaseURL', 'aiModel', 'autoSave', 'autoSaveInterval'] as const;
 
 function normalizeUsername(username: string) {
   return username.trim().toLowerCase();
+}
+
+function pickSettings(value: Record<string, unknown>) {
+  const filtered: Record<string, unknown> = {};
+  for (const key of SETTINGS_KEYS) {
+    if (key in value) filtered[key] = value[key];
+  }
+  return filtered;
 }
 
 export const userRepository = {
@@ -54,12 +65,12 @@ export const userRepository = {
 
   async getSettings(id: string) {
     const result = await db.select({ settings: users.settings }).from(users).where(eq(users.id, id)).limit(1);
-    return (result[0]?.settings || {}) as Record<string, unknown>;
+    return normalizeUserSettings(result[0]?.settings);
   },
 
   async updateSettings(id: string, settings: Record<string, unknown>) {
-    const current = await this.getSettings(id);
-    const merged = { ...current, ...settings };
+    const current = normalizeUserSettings((await db.select({ settings: users.settings }).from(users).where(eq(users.id, id)).limit(1))[0]?.settings);
+    const merged = { ...current, ...pickSettings(settings) };
     await db.update(users).set({ settings: merged, updatedAt: new Date() }).where(eq(users.id, id));
     return merged;
   },

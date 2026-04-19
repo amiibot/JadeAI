@@ -38,17 +38,18 @@ function getTargetRect(target: string): Rect | null {
   return { top: r.top, left: r.left, width: r.width, height: r.height };
 }
 
-function buildClipPath(rect: Rect): string {
-  const { top, left, width, height } = rect;
-  const t = top - PADDING;
-  const l = left - PADDING;
-  const r = left + width + PADDING;
-  const b = top + height + PADDING;
+function calcOverlaySegments(rect: Rect) {
+  const top = Math.max(0, rect.top - PADDING);
+  const left = Math.max(0, rect.left - PADDING);
+  const right = Math.min(window.innerWidth, rect.left + rect.width + PADDING);
+  const bottom = Math.min(window.innerHeight, rect.top + rect.height + PADDING);
 
-  return `polygon(
-    0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%,
-    ${l}px ${t}px, ${l}px ${b}px, ${r}px ${b}px, ${r}px ${t}px, ${l}px ${t}px
-  )`;
+  return [
+    { top: 0, left: 0, width: '100vw', height: top },
+    { top, left: 0, width: left, height: Math.max(0, bottom - top) },
+    { top, left: right, width: Math.max(0, window.innerWidth - right), height: Math.max(0, bottom - top) },
+    { top: bottom, left: 0, width: '100vw', height: Math.max(0, window.innerHeight - bottom) },
+  ];
 }
 
 function calcTooltipStyle(
@@ -96,13 +97,8 @@ export function TourOverlay({ tourId, steps }: TourOverlayProps) {
   const [rect, setRect] = useState<Rect | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltipSize, setTooltipSize] = useState({ w: 320, h: 160 });
-  const [mounted, setMounted] = useState(false);
 
   const isMyTour = isActive && activeTourId === tourId;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const updateRect = useCallback(() => {
     if (!isMyTour) return;
@@ -113,17 +109,21 @@ export function TourOverlay({ tourId, steps }: TourOverlayProps) {
   }, [isMyTour, currentStep, steps]);
 
   useEffect(() => {
-    if (!isMyTour) return;
+    if (!isMyTour) {
+      setRect(null);
+      return;
+    }
     // If target element doesn't exist, skip to next step
     const step = steps[currentStep];
     if (step && !document.querySelector(`[data-tour="${step.target}"]`)) {
       nextStep();
       return;
     }
-    updateRect();
+    const frameId = window.requestAnimationFrame(updateRect);
     window.addEventListener('resize', updateRect);
     window.addEventListener('scroll', updateRect, true);
     return () => {
+      window.cancelAnimationFrame(frameId);
       window.removeEventListener('resize', updateRect);
       window.removeEventListener('scroll', updateRect, true);
     };
@@ -137,31 +137,39 @@ export function TourOverlay({ tourId, steps }: TourOverlayProps) {
   }, [currentStep, isMyTour, rect]);
 
   // Skip on mobile
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
-    check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  if (!mounted || !isMyTour || isMobile) return null;
+  if (typeof document === 'undefined' || !isMyTour || isMobile) return null;
 
   const step = steps[currentStep];
   const isLast = currentStep === totalSteps - 1;
   const isFirst = currentStep === 0;
+  const overlaySegments = rect ? calcOverlaySegments(rect) : null;
 
   const overlay = (
     <>
       {/* Dark overlay with spotlight cutout */}
-      <div
-        className="fixed inset-0 z-[9999] transition-all duration-300"
-        style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          clipPath: rect ? buildClipPath(rect) : undefined,
-        }}
-        onClick={dismiss}
-      />
+      {overlaySegments ? overlaySegments.map((segment, index) => (
+        <div
+          key={index}
+          className="fixed z-[9999] bg-black/50 transition-all duration-300"
+          style={segment}
+          onClick={dismiss}
+        />
+      )) : (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/50 transition-all duration-300"
+          onClick={dismiss}
+        />
+      )}
 
       {/* Highlight ring around target */}
       {rect && (

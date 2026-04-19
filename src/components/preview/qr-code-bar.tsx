@@ -11,12 +11,9 @@ interface QrCodeBarProps {
 }
 
 export function QrCodeBar({ resume, template }: QrCodeBarProps) {
-  const qrSection = resume.sections.find((s) => s.type === 'qr_codes');
-  if (!qrSection || !qrSection.visible) return null;
-
-  const items = ((qrSection.content as QrCodesContent).items || []).filter((q) => q.url.trim());
-
   const [svgs, setSvgs] = useState<Record<string, string>>({});
+  const qrSection = resume.sections.find((s) => s.type === 'qr_codes');
+  const items = qrSection && qrSection.visible ? ((qrSection.content as QrCodesContent).items || []).filter((q) => q.url.trim()) : [];
 
   useEffect(() => {
     if (items.length === 0) {
@@ -39,7 +36,7 @@ export function QrCodeBar({ resume, template }: QrCodeBarProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(items)]);
 
-  if (items.length === 0) return null;
+  if (!qrSection || !qrSection.visible || items.length === 0) return null;
 
   const hasAnySvg = items.some((qr) => svgs[qr.id]);
   if (!hasAnySvg) return null;

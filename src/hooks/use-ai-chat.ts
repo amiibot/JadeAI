@@ -8,6 +8,10 @@ import { useResumeStore } from '@/stores/resume-store';
 import { useSettingsStore, getAIHeaders } from '@/stores/settings-store';
 import { generateId } from '@/lib/utils';
 
+function isCompletedToolPart(part: UIMessage['parts'][number]): part is UIMessage['parts'][number] & { type: string; state: 'output-available' } {
+  return typeof part.type === 'string' && part.type.startsWith('tool-') && 'state' in part && part.state === 'output-available';
+}
+
 interface UseAIChatOptions {
   resumeId: string;
   sessionId?: string;
@@ -19,22 +23,14 @@ export function useAIChat({ resumeId, sessionId, initialMessages, selectedModel 
   const [input, setInput] = useState('');
   const [localMessages, setLocalMessages] = useState<UIMessage[]>([]);
 
-  const modelRef = useRef(selectedModel);
-  modelRef.current = selectedModel;
-
-  const sessionIdRef = useRef(sessionId);
-  sessionIdRef.current = sessionId;
-
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: '/api/ai/chat',
-        body: () => ({ resumeId, model: modelRef.current, sessionId: sessionIdRef.current }),
-        // headers must be a function — useChat never updates the transport ref,
-        // so a static object would freeze stale values from before store hydration.
+        body: () => ({ resumeId, model: selectedModel, sessionId }),
         headers: () => ({ ...getAIHeaders() }),
       }),
-    [resumeId]
+    [resumeId, selectedModel, sessionId]
   );
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
@@ -68,9 +64,7 @@ export function useAIChat({ resumeId, sessionId, initialMessages, selectedModel 
   useEffect(() => {
     const completedToolCount = messages.reduce((count, m) => {
       if (m.role !== 'assistant' || !m.parts) return count;
-      return count + m.parts.filter((p: any) =>
-        typeof p.type === 'string' && p.type.startsWith('tool-') && p.state === 'output-available'
-      ).length;
+      return count + m.parts.filter(isCompletedToolPart).length;
     }, 0);
 
     if (completedToolCount > completedToolCountRef.current) {
@@ -85,9 +79,7 @@ export function useAIChat({ resumeId, sessionId, initialMessages, selectedModel 
       // Pre-calculate tool count from initial messages to avoid triggering a redundant reload
       const initialToolCount = initialMessages.reduce((count, m) => {
         if (m.role !== 'assistant' || !m.parts) return count;
-        return count + m.parts.filter((p: any) =>
-          typeof p.type === 'string' && p.type.startsWith('tool-') && p.state === 'output-available'
-        ).length;
+        return count + m.parts.filter(isCompletedToolPart).length;
       }, 0);
       completedToolCountRef.current = initialToolCount;
       setMessages(initialMessages);

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { resolveUser } from '@/lib/auth/helpers';
 import { userRepository } from '@/lib/db/repositories/user.repository';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
       const user = await resolveUser();
     if (!user) {

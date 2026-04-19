@@ -484,6 +484,7 @@ export default function LinkedInPhotoPage() {
                     )}
                   />
                   {capturedImage && (
+                    // eslint-disable-next-line @next/next/no-img-element -- local captured preview uses a transient data URL
                     <img
                       src={capturedImage}
                       alt="Captured selfie"
@@ -543,6 +544,7 @@ export default function LinkedInPhotoPage() {
             ) : uploadedImage ? (
               <div className="flex flex-col items-center gap-3">
                 <div className="relative overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- uploaded source preview uses a local object/data URL */}
                   <img
                     src={uploadedImage}
                     alt="Selfie preview"
@@ -722,6 +724,7 @@ export default function LinkedInPhotoPage() {
               ) : resultImage ? (
                 <div className="flex flex-col items-center gap-5">
                   <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- generated result preview renders a returned data URL directly */}
                     <img
                       src={resultImage}
                       alt="LinkedIn headshot"
