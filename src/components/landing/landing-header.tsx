@@ -15,7 +15,8 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 
-const GITHUB_REPO = 'twwch/JadeAI';
+const GITHUB_REPO = 'amiibot/JadeAI';
+const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
 
 function useGitHubStars() {
   const [stars, setStars] = useState<number | null>(null);
@@ -87,7 +88,7 @@ export function LandingHeader() {
 
         <div className="flex items-center gap-3">
           <a
-            href={`https://github.com/${GITHUB_REPO}`}
+            href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden items-center gap-1.5 rounded-full bg-brand-muted px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-brand-muted dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 sm:flex"
@@ -145,7 +146,7 @@ export function LandingHeader() {
                 </nav>
                 <div className="border-t border-zinc-100 p-4 dark:border-zinc-900">
                   <a
-                    href={`https://github.com/${GITHUB_REPO}`}
+                    href={GITHUB_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mb-3 flex items-center justify-center gap-1.5 rounded-lg bg-zinc-50 px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"

@@ -9,6 +9,8 @@ import { AIChatContent } from './ai-chat-panel';
 
 const WIN_W_DESKTOP = 440;
 const WIN_H_DESKTOP = 620;
+const MIN_W_DESKTOP = 360;
+const MIN_H_DESKTOP = 320;
 const BUBBLE_SIZE = 56; // h-14 = 56px
 const GAP = 12;
 const MARGIN = 8;
@@ -62,6 +64,7 @@ export function AIChatBubble({ resumeId }: AIChatBubbleProps) {
   // Chat window position (left/top, null = auto-calculate from bubble)
   const [windowPos, setWindowPos] = useState<{ left: number; top: number } | null>(null);
   const windowDragRef = useRef<{ startX: number; startY: number; origLeft: number; origTop: number; origBubbleX: number; origBubbleY: number } | null>(null);
+  const resizeRef = useRef<{ startX: number; startY: number; startW: number; startH: number; startLeft: number; startTop: number } | null>(null);
 
   // Tooltip
   const [showTooltip, setShowTooltip] = useState(false);
@@ -149,6 +152,49 @@ export function AIChatBubble({ resumeId }: AIChatBubbleProps) {
     document.addEventListener('mouseup', onMouseUp);
   }, [winPos, bubblePos]);
 
+  const onResizeMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    resizeRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startW: winSize.w,
+      startH: winSize.h,
+      startLeft: winPos.left,
+      startTop: winPos.top,
+    };
+
+    const onMouseMove = (ev: MouseEvent) => {
+      if (!resizeRef.current) return;
+      const dx = ev.clientX - resizeRef.current.startX;
+      const dy = ev.clientY - resizeRef.current.startY;
+      const nextW = Math.max(MIN_W_DESKTOP, resizeRef.current.startW - dx);
+      const nextH = Math.max(MIN_H_DESKTOP, resizeRef.current.startH - dy);
+      const maxW = window.innerWidth - MARGIN - resizeRef.current.startLeft;
+      const maxH = window.innerHeight - MARGIN - resizeRef.current.startTop;
+      const clampedW = Math.min(nextW, maxW);
+      const clampedH = Math.min(nextH, maxH);
+
+      setWinSize({
+        w: clampedW,
+        h: clampedH,
+      });
+      setWindowPos({
+        left: resizeRef.current.startLeft + (resizeRef.current.startW - clampedW),
+        top: resizeRef.current.startTop + (resizeRef.current.startH - clampedH),
+      });
+    };
+
+    const onMouseUp = () => {
+      resizeRef.current = null;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }, [winPos, winSize.w, winSize.h]);
+
   return (
     <>
       {/* Floating chat window — always mounted to preserve state, toggled via CSS */}
@@ -163,6 +209,10 @@ export function AIChatBubble({ resumeId }: AIChatBubbleProps) {
           pointerEvents: showAiChat ? 'auto' : 'none',
         }}
       >
+        <div
+          className="absolute left-0 top-0 z-20 h-5 w-5 cursor-nwse-resize touch-none"
+          onMouseDown={onResizeMouseDown}
+        />
         {/* Draggable title bar */}
         <div
           className="flex cursor-move items-center justify-between bg-gradient-to-r from-brand to-brand-hover px-4 py-2.5"
@@ -181,7 +231,7 @@ export function AIChatBubble({ resumeId }: AIChatBubbleProps) {
         </div>
 
         {/* Chat content */}
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <AIChatContent resumeId={resumeId} hideTitle />
         </div>
       </div>
