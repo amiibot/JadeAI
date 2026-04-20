@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import type { Resume, ResumeSection, SectionContent } from '@/types/resume';
 import { AUTOSAVE_DELAY } from '@/lib/constants';
-import { generateId } from '@/lib/utils';
 import { useSettingsStore } from '@/stores/settings-store';
+import { normalizeResumeSections } from '@/lib/db/json-normalize';
 
 interface ResumeStore {
   currentResume: Resume | null;
@@ -37,25 +37,10 @@ export const useResumeStore = create<ResumeStore>((set, get) => ({
     const { _saveTimeout } = get();
     if (_saveTimeout) clearTimeout(_saveTimeout);
 
-    // Normalize: ensure all items/categories in section content have id fields
-    const sections = (resume.sections || []).map((s) => {
-      const content = s.content as unknown as Record<string, unknown> & { items?: unknown[]; categories?: unknown[] };
-      if (Array.isArray(content.items)) {
-        content.items = content.items.map((item) =>
-          typeof item === 'object' && item !== null && !('id' in item)
-            ? { ...item, id: generateId() }
-            : item
-        );
-      }
-      if (Array.isArray(content.categories)) {
-        content.categories = content.categories.map((cat) =>
-          typeof cat === 'object' && cat !== null && !('id' in cat)
-            ? { ...cat, id: generateId() }
-            : cat
-        );
-      }
-      return { ...s, content: content as unknown as typeof s.content };
-    });
+    const sections = normalizeResumeSections(resume.sections || []).map((section) => ({
+      ...section,
+      content: section.content,
+    }));
 
     set({
       currentResume: { ...resume, sections },

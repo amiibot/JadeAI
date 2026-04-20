@@ -155,8 +155,8 @@ export async function POST(request: NextRequest) {
 
       if (fieldsToStrip && content && typeof content === 'object') {
         const saved: Record<string, unknown> = {};
-        const mutableContent = { ...content } as Record<string, unknown>;
-        content = mutableContent;
+        const mutableContent = { ...((content as unknown) as Record<string, unknown>) };
+        content = (mutableContent as unknown) as typeof s.content;
         for (const field of fieldsToStrip) {
           if (field in mutableContent) {
             saved[field] = mutableContent[field];

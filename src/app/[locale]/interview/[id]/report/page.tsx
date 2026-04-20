@@ -12,6 +12,11 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   const [session, setSession] = useState<InterviewSession | null>(null);
   const [loading, setLoading] = useState(true);
   const hydrated = useSettingsStore((s) => s._hydrated);
+  const hydrate = useSettingsStore((s) => s.hydrate);
+
+  useEffect(() => {
+    if (!hydrated) hydrate();
+  }, [hydrated, hydrate]);
 
   useEffect(() => {
     if (!hydrated) return;

@@ -19,6 +19,7 @@ import { LanguagesSection } from './sections/languages';
 import { CustomSection } from './sections/custom-section';
 import { GitHubSection } from './sections/github';
 import { QrCodesSection } from './sections/qr-codes';
+import { normalizeSectionContent } from '@/lib/db/json-normalize';
 
 interface SectionWrapperProps {
   section: ResumeSection;
@@ -69,6 +70,7 @@ export function SectionWrapper({ section, onUpdate, onRemove }: SectionWrapperPr
 
   const SectionComponent = sectionComponents[section.type];
   const isRenamable = section.type !== 'personal_info';
+  const safeSection = { ...section, content: normalizeSectionContent(section.content) as typeof section.content };
 
   return (
     <div
@@ -151,7 +153,7 @@ export function SectionWrapper({ section, onUpdate, onRemove }: SectionWrapperPr
         {!section.content || typeof section.content !== 'object' ? (
           <p className="text-sm text-red-400">{t('invalidSectionContent')}</p>
         ) : SectionComponent ? (
-          <SectionComponent section={section} onUpdate={onUpdate} />
+          <SectionComponent section={safeSection} onUpdate={onUpdate} />
         ) : (
           <p className="text-sm text-zinc-400">Unknown section type: {section.type}</p>
         )}

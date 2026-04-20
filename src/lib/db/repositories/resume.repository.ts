@@ -1,7 +1,7 @@
 import { eq, desc, sql } from 'drizzle-orm';
 import { db } from '../index';
 import { resumes, resumeSections } from '../schema';
-import { normalizeThemeConfig } from '../json-normalize';
+import { normalizeResumeSections, normalizeThemeConfig } from '../json-normalize';
 import type { ResumeSection } from '@/types/resume';
 
 export const resumeRepository = {
@@ -13,7 +13,9 @@ export const resumeRepository = {
   async findById(id: string) {
     const resume = await db.select().from(resumes).where(eq(resumes.id, id)).limit(1);
     if (!resume[0]) return null;
-    const sections = await db.select().from(resumeSections).where(eq(resumeSections.resumeId, id)).orderBy(resumeSections.sortOrder);
+    const sections = normalizeResumeSections(
+      await db.select().from(resumeSections).where(eq(resumeSections.resumeId, id)).orderBy(resumeSections.sortOrder)
+    );
     return { ...resume[0], themeConfig: normalizeThemeConfig(resume[0].themeConfig), sections };
   },
 
@@ -79,7 +81,9 @@ export const resumeRepository = {
   async findByShareToken(token: string) {
     const resume = await db.select().from(resumes).where(eq(resumes.shareToken, token)).limit(1);
     if (!resume[0]) return null;
-    const sections = await db.select().from(resumeSections).where(eq(resumeSections.resumeId, resume[0].id)).orderBy(resumeSections.sortOrder);
+    const sections = normalizeResumeSections(
+      await db.select().from(resumeSections).where(eq(resumeSections.resumeId, resume[0].id)).orderBy(resumeSections.sortOrder)
+    );
     return { ...resume[0], themeConfig: normalizeThemeConfig(resume[0].themeConfig), sections };
   },
 

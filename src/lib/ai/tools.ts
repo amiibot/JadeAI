@@ -108,7 +108,7 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
           }));
         }
 
-        const updatedContent = { ...(section.content as Record<string, unknown>), [actualField]: parsedValue };
+        const updatedContent = { ...((section.content as unknown) as Record<string, unknown>), [actualField]: parsedValue };
         await resumeRepository.updateSection(sectionId, { content: updatedContent });
 
         return { success: true, sectionType: section.type, field: actualField, updatedContent };
@@ -165,7 +165,7 @@ Use field="items" or field="categories" to update list sections. Each item MUST 
         const section = resume.sections.find((s) => s.id === sectionId);
         if (!section) return { success: false, error: 'Section not found' };
 
-        const updatedContent = { ...(section.content as Record<string, unknown>), [field]: improvedText };
+        const updatedContent = { ...((section.content as unknown) as Record<string, unknown>), [field]: improvedText };
         await resumeRepository.updateSection(sectionId, { content: updatedContent });
 
         return { success: true, sectionType: section.type, field, improvedText };

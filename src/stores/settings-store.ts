@@ -217,7 +217,3 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   },
 }));
 
-// Auto-hydrate on client side so settings are ready before any component uses them
-if (typeof window !== 'undefined') {
-  useSettingsStore.getState().hydrate();
-}

@@ -1,4 +1,6 @@
-import type { ThemeConfig } from '@/types/resume';
+import type { ResumeSection, ResumeSectionItem, ResumeSkillCategory, ThemeConfig } from '@/types/resume';
+
+type NormalizedSectionContent = ResumeSection['content'];
 
 const DEFAULT_THEME: ThemeConfig = {
   primaryColor: '#1a1a1a',
@@ -45,6 +47,69 @@ export function normalizeUserSettings(value: unknown): UserSettings {
   if (typeof source.autoSave === 'boolean') normalized.autoSave = source.autoSave;
   if (typeof source.autoSaveInterval === 'number') normalized.autoSaveInterval = source.autoSaveInterval;
   return normalized;
+}
+
+function toStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === 'string');
+}
+
+function normalizeSectionItem(item: unknown, index: number): ResumeSectionItem {
+  if (!isRecord(item)) {
+    return { id: `item-${index}` };
+  }
+
+  const normalized: ResumeSectionItem = {
+    ...item,
+    id: typeof item.id === 'string' && item.id.trim() ? item.id : `item-${index}`,
+  };
+
+  if ('highlights' in item) normalized.highlights = toStringArray(item.highlights);
+  if ('technologies' in item) normalized.technologies = toStringArray(item.technologies);
+  if ('skills' in item) normalized.skills = toStringArray(item.skills);
+
+  return normalized;
+}
+
+function normalizeSkillCategory(item: unknown, index: number): ResumeSkillCategory {
+  if (!isRecord(item)) {
+    return { id: `category-${index}`, name: '', skills: [] };
+  }
+
+  return {
+    ...item,
+    id: typeof item.id === 'string' && item.id.trim() ? item.id : `category-${index}`,
+    name: typeof item.name === 'string' ? item.name : '',
+    skills: toStringArray(item.skills),
+  };
+}
+
+export function normalizeSectionContent(value: unknown): NormalizedSectionContent {
+  const source = parseMaybeJson(value);
+  if (!isRecord(source)) return {} as unknown as NormalizedSectionContent;
+
+  const normalized: Record<string, unknown> = { ...source };
+
+  if ('items' in source) {
+    normalized.items = Array.isArray(source.items)
+      ? source.items.map((item, index) => normalizeSectionItem(item, index))
+      : [];
+  }
+
+  if ('categories' in source) {
+    normalized.categories = Array.isArray(source.categories)
+      ? source.categories.map((category, index) => normalizeSkillCategory(category, index))
+      : [];
+  }
+
+  return normalized as unknown as NormalizedSectionContent;
+}
+
+export function normalizeResumeSections<T extends { content: unknown }>(sections: T[]): T[] {
+  return sections.map((section) => ({
+    ...section,
+    content: normalizeSectionContent(section.content) as T['content'],
+  })) as T[];
 }
 
 export function normalizeThemeConfig(value: unknown): ThemeConfig {
