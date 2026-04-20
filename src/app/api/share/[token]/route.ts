@@ -14,7 +14,6 @@ export async function GET(
     // 1. Try new resume_shares table first
     const share = await shareRepository.findByToken(token);
     if (share) {
-      console.log('[share/token] found in resumeShares, isActive:', share.isActive, typeof share.isActive);
       if (!share.isActive) {
         return NextResponse.json({ error: 'This share link has been disabled' }, { status: 403 });
       }

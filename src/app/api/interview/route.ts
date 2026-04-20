@@ -32,15 +32,19 @@ export async function POST(request: NextRequest) {
     selectedInterviewers: interviewers,
   });
 
+  if (!session) {
+    return NextResponse.json({ error: 'Failed to create interview session' }, { status: 500 });
+  }
+
   for (let i = 0; i < interviewers.length; i++) {
     await interviewRepository.createRound({
-      sessionId: session!.id,
+      sessionId: session.id,
       interviewerType: interviewers[i].type,
       interviewerConfig: interviewers[i],
       sortOrder: i,
     });
   }
 
-  const rounds = await interviewRepository.findRoundsBySessionId(session!.id);
+  const rounds = await interviewRepository.findRoundsBySessionId(session.id);
   return NextResponse.json({ session, rounds }, { status: 201 });
 }

@@ -38,7 +38,11 @@ async function readNDJSON(
   response: Response,
   onLine: (data: Record<string, unknown>) => void
 ) {
-  const reader = response.body!.getReader();
+  if (!response.body) {
+    throw new Error('Response body is missing');
+  }
+
+  const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
 

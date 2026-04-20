@@ -37,7 +37,6 @@ export class SQLiteAdapter implements DatabaseAdapter<SQLiteDb> {
       if ((row?.count ?? 0) === 0) {
         const { seedDemoUser } = await import('../seed-demo');
         await seedDemoUser(this.db);
-        console.log('[DB] SQLite auto-seed complete');
       }
     } catch (e) {
       console.error('[DB] SQLite auto-seed failed:', e);

@@ -40,7 +40,6 @@ export class PostgreSQLAdapter implements DatabaseAdapter<PostgreSQLDb> {
         });
       }
 
-      console.log('[DB] PostgreSQL migrations applied');
     } catch (e) {
       console.error('[DB] PostgreSQL migration failed:', e);
     }
@@ -52,7 +51,6 @@ export class PostgreSQLAdapter implements DatabaseAdapter<PostgreSQLDb> {
       if (count === 0) {
         const { seedDemoUser } = await import('../seed-demo');
         await seedDemoUser(this.db);
-        console.log('[DB] PostgreSQL auto-seed complete');
       }
     } catch (e) {
       console.error('[DB] PostgreSQL auto-seed failed:', e);

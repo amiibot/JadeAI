@@ -14,8 +14,6 @@ function loadAvatarBase64(): string {
 }
 
 async function seed() {
-  console.log('Seeding database...');
-
   const avatar = loadAvatarBase64();
 
   // Create a demo local user
@@ -214,7 +212,6 @@ async function seed() {
     } );
   }
 
-  console.log('Seed complete! Demo resume created for user "陈思远"');
   process.exit(0);
 }
 

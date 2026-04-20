@@ -167,9 +167,13 @@ function resolveTheme(cfg: unknown, template?: string): DocxTheme {
   let headerLight: boolean;
 
   if (wantsDarkHeader) {
+    const templateHeaderBg = tc?.headerBg;
+    if (!templateHeaderBg) {
+      throw new Error('Missing template header background color');
+    }
     headerBg = userCfg.primaryColor
       ? strip(userCfg.primaryColor as string)
-      : strip(tc!.headerBg!);
+      : strip(templateHeaderBg);
     headerLight = false;
   } else {
     headerLight = true;

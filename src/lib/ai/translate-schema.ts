@@ -14,7 +14,7 @@ export type TranslateInput = z.infer<typeof translateInputSchema>;
 export const translatedSectionSchema = z.object({
   sectionId: z.string().describe('The original section ID'),
   title: z.string().describe('The translated section title'),
-  content: z.record(z.string(), z.any()).describe('The translated section content, preserving the same structure as the original'),
+  content: z.record(z.string(), z.unknown()).describe('The translated section content, preserving the same structure as the original'),
 });
 
 // Output schema for the AI translation response

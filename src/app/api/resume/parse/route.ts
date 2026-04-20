@@ -75,16 +75,16 @@ export async function POST(request: NextRequest) {
 
       if (pdfText.length > 200) {
         // Text-based PDF — send extracted text directly (handles multi-page perfectly)
-        console.log('[parse] PDF text extraction: %d chars', pdfText.length);
+        console.error('[parse] PDF text extraction: %d chars', pdfText.length);
         messages.push({
           role: 'user',
           content: `Below is the full text extracted from a resume PDF. Extract all resume information using the EXACT JSON schema from the system prompt.\n\n---\n${pdfText}\n---`,
         });
       } else {
         // Scanned/image-based PDF — convert each page to an image
-        console.log('[parse] PDF has little text (%d chars), converting pages to images', pdfText.length);
+        console.error('[parse] PDF has little text (%d chars), converting pages to images', pdfText.length);
         const pageImages = await pdfPagesToImages(buffer);
-        console.log('[parse] Converted %d PDF pages to images', pageImages.length);
+        console.error('[parse] Converted %d PDF pages to images', pageImages.length);
         const contentParts: Array<{ type: 'image'; image: string } | { type: 'text'; text: string }> = [];
         for (const png of pageImages) {
           contentParts.push({ type: 'image', image: `data:image/png;base64,${Buffer.from(png).toString('base64')}` });
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       providerOptions: getJsonProviderOptions(aiConfig),
     });
 
-    console.log('[parse] finishReason=%s, length=%d', result.finishReason, result.text.length);
+    console.error('[parse] finishReason=%s, length=%d', result.finishReason, result.text.length);
 
     // Parse JSON from response
     const raw = parseJsonFromText(result.text);

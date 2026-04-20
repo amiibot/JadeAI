@@ -30,7 +30,7 @@ const MAX_CONCURRENCY = 4;
 const singleSectionSchema = z.object({
   sectionId: z.string(),
   title: z.string(),
-  content: z.any(),
+  content: z.unknown(),
 });
 
 function getSectionTranslatePrompt(targetLanguage: string): string {
@@ -203,8 +203,13 @@ export async function POST(request: NextRequest) {
 
               // Merge back stripped fields (e.g. avatar)
               const saved = strippedFields.get(translated.sectionId);
+              const translatedContent = (
+                translated.content && typeof translated.content === 'object'
+                  ? translated.content
+                  : {}
+              ) as Record<string, unknown>;
               const content = saved
-                ? { ...translated.content, ...saved }
+                ? { ...translatedContent, ...saved }
                 : translated.content;
 
               await resumeRepository.updateSection(translated.sectionId, {

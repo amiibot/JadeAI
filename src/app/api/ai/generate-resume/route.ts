@@ -3,7 +3,11 @@ import { generateText } from 'ai';
 import { getModel, extractAIConfig, getJsonProviderOptions, AIConfigError } from '@/lib/ai/provider';
 import { resolveUser } from '@/lib/auth/helpers';
 import { resumeRepository } from '@/lib/db/repositories/resume.repository';
-import { generateResumeInputSchema, type GenerateResumeOutput } from '@/lib/ai/generate-resume-schema';
+import {
+  generateResumeInputSchema,
+  generateResumeOutputSchema,
+  type GenerateResumeOutput,
+} from '@/lib/ai/generate-resume-schema';
 
 const SECTION_TITLES: Record<string, Record<string, string>> = {
   zh: {
@@ -45,16 +49,6 @@ Resume generation guidelines:
 }
 
 import { extractJson } from '@/lib/ai/extract-json';
-import { z } from 'zod/v4';
-
-const generateResumeOutputSchema = z.object({
-  personal_info: z.any(),
-  summary: z.any(),
-  work_experience: z.any(),
-  education: z.any(),
-  skills: z.any(),
-  projects: z.any(),
-});
 
 export async function POST(request: NextRequest) {
   try {

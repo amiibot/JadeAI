@@ -7,7 +7,11 @@ type Db = SQLiteDb & PostgreSQLDb;
 let adapter: SQLiteAdapter | PostgreSQLAdapter;
 
 if (config.db.type === 'postgresql') {
-  adapter = new PostgreSQLAdapter(process.env.DATABASE_URL!);
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL is required when DB_TYPE=postgresql');
+  }
+  adapter = new PostgreSQLAdapter(databaseUrl);
 } else {
   if (process.env.VERCEL) {
     throw new Error(

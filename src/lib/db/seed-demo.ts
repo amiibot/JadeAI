@@ -178,5 +178,4 @@ export async function seedDemoUser(db: SQLiteDb | PostgreSQLDb) {
     } );
   }
 
-  console.log('[DB] Auto-seed complete: demo user created');
 }
